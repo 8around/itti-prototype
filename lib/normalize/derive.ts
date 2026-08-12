@@ -73,6 +73,29 @@ export function deriveOperatingMargin(operatingIncome: Resolution, revenue: Reso
 }
 
 /**
+ * 지배주주 귀속 순이익 폴백 — **비지배지분이 애초에 없는 회사** 대응.
+ *
+ * 연결 자회사에 소액주주가 없는 회사는 `ifrs-full_ProfitLossAttributableToOwnersOfParent`와
+ * `…ToNoncontrollingInterests` 행을 **둘 다 공시하지 않는다**. 나눌 것이 없으니 총액 한 줄로
+ * 끝내는 것이다(20종목 중 신라젠·앱클론이 실제로 이 경우). 이때 총액이 곧 지배주주 몫이므로
+ * 그대로 채택하는 것이 회계적으로 정확하다.
+ *
+ * **비지배지분 행이 존재하는데 지배주주 행만 없는 경우에는 폴백하지 않는다** — 그때는 총액에
+ * 남의 몫이 섞여 있어 같은 값으로 쓰면 틀리기 때문이다. 그런 회사는 MISSING으로 남겨
+ * "폴백 체인을 보강하라"는 신호를 유지한다.
+ */
+export function deriveNetIncomeAttributableFallback(attributable: Resolution, total: Resolution, hasNoncontrollingRow: boolean): Resolution {
+  if (attributable.displayState === "OK" || hasNoncontrollingRow || total.normalized === null) return attributable;
+  return {
+    ...total,
+    metricKey: attributable.metricKey,
+    // 원래 후보의 시도 이력(NO_ROW 2회)을 유지해 "왜 폴백했는지"가 출처 패널에서 그대로 보이게 한다.
+    attempts: [...attributable.attempts, ...total.attempts],
+    derivation: `지배주주 귀속 행·비지배지분 행이 모두 없음 → 비지배지분이 존재하지 않는 구조로 판정, 당기순이익 총액 ${formatAmount(total.normalized)}을 그대로 채택`,
+  };
+}
+
+/**
  * 순이익률 = 당기순이익 ÷ 매출액 × 100.
  * DART 산출값(M211200)이 있으면 그쪽이 1순위 — 이 함수는 `preferIndx`로 폴백될 때만 쓰인다.
  */

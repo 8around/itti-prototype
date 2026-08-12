@@ -1,4 +1,4 @@
-import { formatComma, NULL_PLACEHOLDER } from "./chartUtils";
+import { chartDigits, formatChartValue, NULL_PLACEHOLDER } from "./chartUtils";
 
 /**
  * QuarterBars — 분기 실적 세로 막대 (목업 `.qbrow/.qbcol/.qbfill(.prov)`, 화면 ③④ "매출액/영업이익").
@@ -21,6 +21,7 @@ export type QuarterBarsProps = {
 
 export default function QuarterBars({ bars, unit }: QuarterBarsProps) {
   const max = Math.max(1, ...bars.map((b) => (b.value === null ? 0 : Math.abs(b.value))));
+  const digits = chartDigits(bars.map((b) => b.value));
 
   return (
     <div data-chart="quarter-bars">
@@ -38,7 +39,7 @@ export default function QuarterBars({ bars, unit }: QuarterBarsProps) {
                   </div>
                 ) : (
                   <div className={`qbfill${bar.provisional ? " prov" : ""}`} style={{ height: `${heightPct}%` }}>
-                    <span className={`qbv${bar.provisional ? " prov" : ""}`}>{formatComma(bar.value as number)}</span>
+                    <span className={`qbv${bar.provisional ? " prov" : ""}`}>{formatChartValue(bar.value as number, digits)}</span>
                   </div>
                 )}
               </div>

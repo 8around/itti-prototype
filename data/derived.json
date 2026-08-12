@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-12T12:06:45.757Z",
+  "generatedAt": "2026-08-12T12:53:59.431Z",
   "parserVersion": "t4.1",
   "years": [
     "2023",
@@ -47171,13 +47171,31 @@
                   "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
                   "sjDiv": "CIS",
                   "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLoss",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLoss",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
                 }
               ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLoss",
+                "accountNm": "당기순이익(손실)",
+                "sjDiv": "CIS",
+                "rawValue": "-20369238698",
+                "ord": 21
+              },
               "fsDiv": "CFS",
               "fsDivFallbackApplied": false,
-              "normalized": null,
-              "displayState": "MISSING",
-              "parserVersion": "t4.1"
+              "normalized": -20369238698,
+              "displayState": "OK",
+              "parserVersion": "t4.1",
+              "derivation": "지배주주 귀속 행·비지배지분 행이 모두 없음 → 비지배지분이 존재하지 않는 구조로 판정, 당기순이익 총액 -20,369,238,698을 그대로 채택"
             },
             "current_assets": {
               "metricKey": "current_assets",
@@ -48231,13 +48249,31 @@
                   "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
                   "sjDiv": "CIS",
                   "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLoss",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLoss",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
                 }
               ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLoss",
+                "accountNm": "당기순이익(손실)",
+                "sjDiv": "CIS",
+                "rawValue": "-26525745518",
+                "ord": 21
+              },
               "fsDiv": "CFS",
               "fsDivFallbackApplied": false,
-              "normalized": null,
-              "displayState": "MISSING",
-              "parserVersion": "t4.1"
+              "normalized": -26525745518,
+              "displayState": "OK",
+              "parserVersion": "t4.1",
+              "derivation": "지배주주 귀속 행·비지배지분 행이 모두 없음 → 비지배지분이 존재하지 않는 구조로 판정, 당기순이익 총액 -26,525,745,518을 그대로 채택"
             },
             "current_assets": {
               "metricKey": "current_assets",
@@ -48960,8 +48996,9 @@
               "fsDiv": "CFS",
               "fsDivFallbackApplied": false,
               "parserVersion": "t4.1",
-              "normalized": null,
-              "displayState": "MISSING"
+              "normalized": -30.22453078035013,
+              "displayState": "OK",
+              "derivation": "2024 YoY(vs 2023) = (-26,525,745,518 − -20,369,238,698) ÷ |-20,369,238,698| × 100"
             }
           }
         },
@@ -49286,13 +49323,31 @@
                   "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
                   "sjDiv": "CIS",
                   "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLoss",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLoss",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
                 }
               ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLoss",
+                "accountNm": "당기순이익(손실)",
+                "sjDiv": "CIS",
+                "rawValue": "-24189964056",
+                "ord": 21
+              },
               "fsDiv": "CFS",
               "fsDivFallbackApplied": false,
-              "normalized": null,
-              "displayState": "MISSING",
-              "parserVersion": "t4.1"
+              "normalized": -24189964056,
+              "displayState": "OK",
+              "parserVersion": "t4.1",
+              "derivation": "지배주주 귀속 행·비지배지분 행이 모두 없음 → 비지배지분이 존재하지 않는 구조로 판정, 당기순이익 총액 -24,189,964,056을 그대로 채택"
             },
             "current_assets": {
               "metricKey": "current_assets",
@@ -50015,8 +50070,9 @@
               "fsDiv": "CFS",
               "fsDivFallbackApplied": false,
               "parserVersion": "t4.1",
-              "normalized": null,
-              "displayState": "MISSING"
+              "normalized": 8.805714660931853,
+              "displayState": "OK",
+              "derivation": "2025 YoY(vs 2024) = (-24,189,964,056 − -26,525,745,518) ÷ |-26,525,745,518| × 100"
             }
           }
         }
@@ -51844,7 +51900,7 @@
       ],
       "coverage": {
         "candidates": 162,
-        "hit": 119
+        "hit": 124
       }
     },
     {
@@ -62450,13 +62506,31 @@
                   "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
                   "sjDiv": "CIS",
                   "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLoss",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLoss",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
                 }
               ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLoss",
+                "accountNm": "당기순이익(손)",
+                "sjDiv": "CIS",
+                "rawValue": "-12904282435",
+                "ord": 20
+              },
               "fsDiv": "OFS",
               "fsDivFallbackApplied": true,
-              "normalized": null,
-              "displayState": "MISSING",
-              "parserVersion": "t4.1"
+              "normalized": -12904282435,
+              "displayState": "OK",
+              "parserVersion": "t4.1",
+              "derivation": "지배주주 귀속 행·비지배지분 행이 모두 없음 → 비지배지분이 존재하지 않는 구조로 판정, 당기순이익 총액 -12,904,282,435을 그대로 채택"
             },
             "current_assets": {
               "metricKey": "current_assets",
@@ -63529,13 +63603,31 @@
                   "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
                   "sjDiv": "CIS",
                   "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLoss",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLoss",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
                 }
               ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLoss",
+                "accountNm": "당기순이익(손)",
+                "sjDiv": "CIS",
+                "rawValue": "-16301551979",
+                "ord": 20
+              },
               "fsDiv": "OFS",
               "fsDivFallbackApplied": true,
-              "normalized": null,
-              "displayState": "MISSING",
-              "parserVersion": "t4.1"
+              "normalized": -16301551979,
+              "displayState": "OK",
+              "parserVersion": "t4.1",
+              "derivation": "지배주주 귀속 행·비지배지분 행이 모두 없음 → 비지배지분이 존재하지 않는 구조로 판정, 당기순이익 총액 -16,301,551,979을 그대로 채택"
             },
             "current_assets": {
               "metricKey": "current_assets",
@@ -64284,8 +64376,9 @@
               "fsDiv": "OFS",
               "fsDivFallbackApplied": true,
               "parserVersion": "t4.1",
-              "normalized": null,
-              "displayState": "MISSING"
+              "normalized": -26.326683107815906,
+              "displayState": "OK",
+              "derivation": "2024 YoY(vs 2023) = (-16,301,551,979 − -12,904,282,435) ÷ |-12,904,282,435| × 100"
             }
           }
         },
@@ -64610,13 +64703,31 @@
                   "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
                   "sjDiv": "CIS",
                   "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLoss",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLoss",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
                 }
               ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLoss",
+                "accountNm": "당기순이익(손실)",
+                "sjDiv": "CIS",
+                "rawValue": "-17906959742",
+                "ord": 20
+              },
               "fsDiv": "OFS",
               "fsDivFallbackApplied": true,
-              "normalized": null,
-              "displayState": "MISSING",
-              "parserVersion": "t4.1"
+              "normalized": -17906959742,
+              "displayState": "OK",
+              "parserVersion": "t4.1",
+              "derivation": "지배주주 귀속 행·비지배지분 행이 모두 없음 → 비지배지분이 존재하지 않는 구조로 판정, 당기순이익 총액 -17,906,959,742을 그대로 채택"
             },
             "current_assets": {
               "metricKey": "current_assets",
@@ -65365,8 +65476,9 @@
               "fsDiv": "OFS",
               "fsDivFallbackApplied": true,
               "parserVersion": "t4.1",
-              "normalized": null,
-              "displayState": "MISSING"
+              "normalized": -9.848189700392453,
+              "displayState": "OK",
+              "derivation": "2025 YoY(vs 2024) = (-17,906,959,742 − -16,301,551,979) ÷ |-16,301,551,979| × 100"
             }
           }
         }
@@ -67198,7 +67310,7 @@
       ],
       "coverage": {
         "candidates": 162,
-        "hit": 124
+        "hit": 129
       }
     },
     {

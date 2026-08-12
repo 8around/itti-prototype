@@ -43,10 +43,26 @@ export type LineChartProps = {
   unit?: string;
 };
 
-const VB_W = 236;
-const VB_H = 70;
-const MARGIN_X = 22;
-const PAD_Y = 10;
+/**
+ * ## 종횡비 — 이 컴포넌트에서 가장 중요한 수치
+ *
+ * 예전에는 `viewBox="0 0 236 70"` + `preserveAspectRatio="none"` + `height:70px` 고정이었다.
+ * 목업이 폭 430px 모바일 칼럼 기준이라 그 조합이 맞았지만, 지금 상세 화면은 폭 900px라
+ * **가로로만 3.6배 늘어나** 세 가지가 한꺼번에 망가졌다.
+ *
+ * - 기울기가 눌려 추세가 평평해 보인다 (사용자 지적: "위아래로 눌려 있다")
+ * - 마커 `<circle>`이 가로로 늘어난 타원이 된다
+ * - `stroke-width`가 선의 각도에 따라 달라진다 (수평은 얇고 수직은 두껍게)
+ *
+ * → `preserveAspectRatio`를 기본값(`meet`, 균일 스케일)으로 되돌리고 높이를 `auto`로 준다.
+ * 이제 폭이 변해도 **비율이 유지**되므로 어떤 폭에서도 왜곡이 없다. viewBox 종횡비 4:1은
+ * 900px 칼럼에서 약 225px 높이가 되어 9개 분기 추이를 읽기에 충분하고, 390px 모바일에서는
+ * 약 98px로 자연히 줄어든다.
+ */
+const VB_W = 720;
+const VB_H = 180;
+const MARGIN_X = 40;
+const PAD_Y = 22;
 
 type Xy = { x: number; y: number };
 
@@ -91,29 +107,30 @@ export default function LineChart({ points, color = "var(--green)", baseline, un
 
   return (
     <div data-chart="line-chart">
-      <svg viewBox={`0 0 ${VB_W} ${VB_H}`} preserveAspectRatio="none" style={{ width: "100%", height: 70, display: "block" }}>
-        {hasNegative && <line x1={0} y1={toY(0)} x2={VB_W} y2={toY(0)} stroke="var(--line)" strokeWidth={1} />}
-        {baseline && (
-          <line x1={0} y1={toY(baseline.value)} x2={VB_W} y2={toY(baseline.value)} stroke="var(--up)" strokeWidth={1.2} strokeDasharray="4 3" />
-        )}
+      <svg viewBox={`0 0 ${VB_W} ${VB_H}`} style={{ width: "100%", height: "auto", display: "block" }} role="img">
+        {/* 최대·최소 눈금선 — 값이 좁은 범위에 몰려 있을 때 선이 어디쯤인지 가늠하게 해 준다. */}
+        <line x1={0} y1={toY(max)} x2={VB_W} y2={toY(max)} stroke="var(--line-2)" strokeWidth={1} />
+        <line x1={0} y1={toY(min)} x2={VB_W} y2={toY(min)} stroke="var(--line-2)" strokeWidth={1} />
+        {hasNegative && <line x1={0} y1={toY(0)} x2={VB_W} y2={toY(0)} stroke="var(--line)" strokeWidth={1.5} />}
+        {baseline && <line x1={0} y1={toY(baseline.value)} x2={VB_W} y2={toY(baseline.value)} stroke="var(--up)" strokeWidth={1.5} strokeDasharray="7 5" />}
         {solidRuns.map((run, ri) => (
           <polyline
             key={`solid-${ri}`}
             points={run.map((p) => `${p.x},${p.y}`).join(" ")}
             fill="none"
             stroke={color}
-            strokeWidth={2.2}
+            strokeWidth={2.6}
             strokeLinejoin="round"
             strokeLinecap="round"
           />
         ))}
         {dashedRuns.map((run, ri) => (
-          <polyline key={`dash-${ri}`} points={run.map((p) => `${p.x},${p.y}`).join(" ")} fill="none" stroke="var(--prov)" strokeWidth={2.2} strokeDasharray="4 3" />
+          <polyline key={`dash-${ri}`} points={run.map((p) => `${p.x},${p.y}`).join(" ")} fill="none" stroke="var(--prov)" strokeWidth={2.6} strokeDasharray="7 5" />
         ))}
         {points.map((p, i) => {
           const y = ys[i];
           if (y === null) return null;
-          return <circle key={p.label} cx={xs[i]} cy={y} r={p.provisional ? 3.2 : 2.8} fill="#fff" stroke={p.provisional ? "var(--prov)" : color} strokeWidth={p.provisional ? 2 : 1.8} />;
+          return <circle key={p.label} cx={xs[i]} cy={y} r={p.provisional ? 5 : 4.2} fill="var(--paper)" stroke={p.provisional ? "var(--prov)" : color} strokeWidth={2.4} />;
         })}
       </svg>
       <div className="qbrow eps">

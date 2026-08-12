@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { deriveBps, deriveGrowth, deriveInterestCoverage, deriveNetDebt } from "./derive";
+import { deriveBps, deriveGrowth, deriveInterestCoverage, deriveNetDebt, deriveNetIncomeAttributableFallback } from "./derive";
 import type { Resolution } from "./types";
 
 /** 파생 함수는 Resolution만 입력으로 받으므로 스냅샷 없이 최소 픽스처로 검증한다. */
@@ -81,6 +81,41 @@ describe("deriveNetDebt — 순차입금(합산형)", () => {
     const netDebt = deriveNetDebt([], [{ accountId: "ifrs-full_ShorttermBorrowings", sjDiv: "BS", result: "NO_ROW" }], cash, res("total_assets", 1));
     expect(netDebt.displayState).toBe("MISSING");
     expect(netDebt.normalized).toBeNull();
+  });
+});
+
+describe("deriveNetIncomeAttributableFallback — 비지배지분이 없는 회사", () => {
+  const missingAttr: Resolution = {
+    metricKey: "net_income_attributable_to_owners",
+    attempts: [
+      { accountId: "ifrs-full_ProfitLossAttributableToOwnersOfParent", sjDiv: "IS", result: "NO_ROW" },
+      { accountId: "ifrs-full_ProfitLossAttributableToOwnersOfParent", sjDiv: "CIS", result: "NO_ROW" },
+    ],
+    fsDiv: "CFS",
+    fsDivFallbackApplied: false,
+    normalized: null,
+    displayState: "MISSING",
+    parserVersion: "t4.1",
+  };
+
+  it("지배주주 행·비지배 행이 모두 없으면 총액을 채택하고 판정 근거를 남긴다 (신라젠 2024 실측 −26,525,745,518)", () => {
+    const result = deriveNetIncomeAttributableFallback(missingAttr, res("net_income", -26525745518), false);
+    expect(result.displayState).toBe("OK");
+    expect(result.normalized).toBe(-26525745518);
+    expect(result.derivation).toContain("비지배지분이 존재하지 않는 구조");
+    // 왜 폴백했는지가 출처 패널에서 보이도록 원래 NO_ROW 시도 이력이 남아 있어야 한다.
+    expect(result.attempts.filter((a) => a.result === "NO_ROW")).toHaveLength(2);
+  });
+
+  it("비지배 행이 있는데 지배주주 행만 없으면 폴백하지 않는다 — 총액에 남의 몫이 섞여 있다", () => {
+    const result = deriveNetIncomeAttributableFallback(missingAttr, res("net_income", 515011000000), true);
+    expect(result.displayState).toBe("MISSING");
+    expect(result.normalized).toBeNull();
+  });
+
+  it("지배주주 행이 이미 있으면 그대로 통과시킨다", () => {
+    const ok = res("net_income_attributable_to_owners", -690854000000);
+    expect(deriveNetIncomeAttributableFallback(ok, res("net_income", 515011000000), false)).toBe(ok);
   });
 });
 

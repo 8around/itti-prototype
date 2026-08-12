@@ -1,4 +1,4 @@
-import { formatComma, NULL_PLACEHOLDER } from "./chartUtils";
+import { chartDigits, formatChartValue, NULL_PLACEHOLDER } from "./chartUtils";
 
 /**
  * StackedBars — **기간별 누적 막대**. 7셋 SET2(재무상태) 전용.
@@ -32,6 +32,7 @@ export type StackedBarsProps = {
 export default function StackedBars({ periods, unit }: StackedBarsProps) {
   const totals = periods.map((p) => (p.equity === null || p.liabilities === null ? null : p.equity + p.liabilities));
   const max = Math.max(1, ...totals.map((t) => (t === null ? 0 : Math.abs(t))));
+  const digits = chartDigits(totals);
 
   return (
     <div data-chart="stacked-bars">
@@ -59,7 +60,7 @@ export default function StackedBars({ periods, unit }: StackedBarsProps) {
               <div className="qbtrack">
                 <div className="sbstack" style={{ height: `${totalPct}%` }}>
                   {/* 총계 라벨은 막대 위로 삐져나오므로 클리핑되는 .sbsegs 밖에 둔다. */}
-                  <span className="qbv">{formatComma(total)}</span>
+                  <span className="qbv">{formatChartValue(total, digits)}</span>
                   <div className="sbsegs">
                     <div className="sbseg sbliab" style={{ height: `${100 - equityShare}%` }} />
                     <div className="sbseg sbequity" style={{ height: `${equityShare}%` }} />

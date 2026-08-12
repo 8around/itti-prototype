@@ -256,11 +256,13 @@ a {
 /* ---- QuarterBars (.qbrow/.qbfill.prov) — 목업 327-336줄, 화면 ③④ 매출액/영업이익 ---- */
 .qb-unit {
   font-family: var(--mono);
-  font-size: 8.5px;
+  font-size: 10px;
   color: var(--gray-2);
   font-weight: 500;
   text-align: right;
-  margin-bottom: 4px;
+  /* 막대 위 값 라벨(.qbv)이 트랙 위로 17px 떠오르므로, 여백이 좁으면 단위 표기와 같은 줄에
+     나란히 붙어 "1,338,734억원"처럼 한 덩어리로 읽힌다. */
+  margin-bottom: 16px;
 }
 .qbrow {
   display: flex;
@@ -273,11 +275,26 @@ a {
   flex-direction: column;
   min-width: 0;
 }
+/* 목업 원본은 86px이었다 — 폭 430px 모바일 칼럼 기준이라 그 높이가 맞았지만, 상세 화면은
+   폭 900px라 같은 높이가 "위아래로 눌린" 막대로 읽힌다(사용자 지적). 폭에 비례해 키우되
+   좁은 화면에서는 목업 값으로 되돌린다. LineChart의 종횡비 수정과 같은 이유·같은 방향. */
 .qbtrack {
-  height: 86px;
+  height: 172px;
   display: flex;
   align-items: flex-end;
   justify-content: center;
+}
+@media (max-width: 560px) {
+  .qbtrack {
+    height: 110px;
+  }
+  .qbv {
+    font-size: 8.5px;
+    top: -14px;
+  }
+  .qbx {
+    font-size: 7.5px;
+  }
 }
 .qbfill {
   width: 78%;
@@ -294,13 +311,14 @@ a {
 .qbfill.empty {
   background: var(--line);
 }
+/* 막대 위 값 라벨. 목업의 8.5px는 430px 칼럼 기준이라 900px 화면에서는 지나치게 작다. */
 .qbv {
   position: absolute;
-  top: -14px;
+  top: -17px;
   left: -4px;
   right: -4px;
   text-align: center;
-  font-size: 8.5px;
+  font-size: 10.5px;
   font-weight: 800;
   color: var(--ink-2);
   white-space: nowrap;
@@ -320,11 +338,11 @@ a {
   display: none;
 }
 .qbx {
-  font-size: 7.5px;
+  font-size: 10px;
   font-weight: 700;
   color: var(--gray);
   text-align: center;
-  margin-top: 5px;
+  margin-top: 6px;
   white-space: nowrap;
 }
 .qbx.prov {
@@ -406,13 +424,18 @@ a {
   flex-direction: column;
 }
 .zbtop {
-  height: 56px;
+  height: 118px;
   display: flex;
   align-items: flex-end;
   justify-content: center;
 }
+/* 음수 막대가 하나도 없으면(.noneg) 이 구획은 순수한 빈 여백이라 얇게 접는다 —
+   ZeroAxisBars.tsx의 hasNegative 판정과 짝이다. */
+.zbrow.noneg .zbbot {
+  height: 14px;
+}
 .zbbot {
-  height: 26px;
+  height: 54px;
   display: flex;
   align-items: flex-start;
   justify-content: center;

@@ -1,4 +1,4 @@
-import { CHART_PALETTE, formatComma, formatPct1, NULL_PLACEHOLDER } from "./chartUtils";
+import { CHART_PALETTE, chartDigits, formatChartValue, formatPct1, NULL_PLACEHOLDER } from "./chartUtils";
 
 /**
  * StackedBar100 — 가로 100% 스택 막대 (목업 `.mix/.mixlist`, 화면 ⑦ "재무상태" 자산·부채·자본
@@ -19,6 +19,7 @@ export default function StackedBar100({ segments }: StackedBar100Props) {
   const defined = segments.filter((s): s is { label: string; value: number } => s.value !== null && s.value > 0);
   const total = defined.reduce((sum, s) => sum + s.value, 0);
   const colorByLabel = new Map(defined.map((s, i) => [s.label, CHART_PALETTE[i % CHART_PALETTE.length]]));
+  const digits = chartDigits(segments.map((s) => s.value));
 
   return (
     <div data-chart="stacked-bar-100">
@@ -34,7 +35,7 @@ export default function StackedBar100({ segments }: StackedBar100Props) {
             <div className="mx" key={s.label}>
               <i style={{ background: missing ? "var(--line)" : colorByLabel.get(s.label) }} />
               {s.label}
-              <b className={missing ? "muted" : undefined}>{missing ? NULL_PLACEHOLDER : formatComma(s.value!)}</b>
+              <b className={missing ? "muted" : undefined}>{missing ? NULL_PLACEHOLDER : formatChartValue(s.value!, digits)}</b>
               {!missing && <em>{formatPct1((s.value! / total) * 100)}</em>}
             </div>
           );

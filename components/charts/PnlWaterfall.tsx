@@ -1,4 +1,4 @@
-import { formatComma, NULL_PLACEHOLDER } from "./chartUtils";
+import { chartDigits, formatChartValue, NULL_PLACEHOLDER } from "./chartUtils";
 
 /**
  * PnlWaterfall — 손익 구조 워터폴 (목업 `.wf/.wfrow`, 화면 ⑥ "손익 구조").
@@ -19,6 +19,7 @@ export type PnlWaterfallProps = {
 };
 
 export default function PnlWaterfall({ rows }: PnlWaterfallProps) {
+  const digits = chartDigits(rows.map((r) => r.value));
   return (
     <div className="wf" data-chart="pnl-waterfall">
       {rows.map((row) => {
@@ -30,7 +31,7 @@ export default function PnlWaterfall({ rows }: PnlWaterfallProps) {
             <span className="wbar">
               <i className={missing ? "empty" : undefined} style={{ width: missing ? "2px" : `${widthPct}%` }} />
             </span>
-            <span className="wv">{missing ? NULL_PLACEHOLDER : formatComma(row.value as number)}</span>
+            <span className="wv">{missing ? NULL_PLACEHOLDER : formatChartValue(row.value as number, digits)}</span>
             <span className="wm">{missing ? NULL_PLACEHOLDER : `${(row.ratioPct as number).toFixed(1)}%`}</span>
           </div>
         );

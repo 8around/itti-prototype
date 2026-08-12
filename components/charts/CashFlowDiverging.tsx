@@ -1,4 +1,4 @@
-import { formatComma, NULL_PLACEHOLDER } from "./chartUtils";
+import { chartDigits, formatChartValue, NULL_PLACEHOLDER } from "./chartUtils";
 
 /**
  * CashFlowDiverging — 현금흐름 발산 막대 (목업 `.flowrow/.fill.pos|.neg`, 화면 ⑥ "현금흐름").
@@ -18,6 +18,7 @@ export type CashFlowDivergingProps = {
 
 export default function CashFlowDiverging({ rows }: CashFlowDivergingProps) {
   const max = Math.max(1, ...rows.map((r) => (r.value === null ? 0 : Math.abs(r.value))));
+  const digits = chartDigits(rows.map((r) => r.value));
 
   return (
     <div data-chart="cash-flow-diverging">
@@ -37,7 +38,7 @@ export default function CashFlowDiverging({ rows }: CashFlowDivergingProps) {
               )}
             </span>
             <span className={`fv${missing ? "" : negative ? " down" : " up"}`}>
-              {missing ? NULL_PLACEHOLDER : `${negative ? "" : "+"}${formatComma(row.value as number)}`}
+              {missing ? NULL_PLACEHOLDER : `${negative ? "" : "+"}${formatChartValue(row.value as number, digits)}`}
             </span>
           </div>
         );

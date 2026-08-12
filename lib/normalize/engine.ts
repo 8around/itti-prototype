@@ -23,6 +23,7 @@ import {
   deriveGrossMargin,
   deriveInterestCoverage,
   deriveNetDebt,
+  deriveNetIncomeAttributableFallback,
   deriveNetMargin,
   deriveGrowth,
   deriveOperatingMargin,
@@ -99,6 +100,16 @@ export function resolveStockYear(dir: string, stock: StockRef, year: string): Ye
     const q3Res = resolveAcntAllField(candidate, q3List, "thstrm_add_amount", fsRes.fsDiv, fsRes.fsDivFallbackApplied);
     resolutions[`q4_${key}`] = deriveQ4(`q4_${key}`, resolutions[key], q3Res);
   }
+
+  // 지배주주 귀속 순이익 폴백 — 비지배지분 행 존재 여부가 판정 근거이므로 원본 list를 직접 본다.
+  const hasNoncontrollingRow = list.some(
+    (r) => r.account_id === "ifrs-full_ProfitLossAttributableToNoncontrollingInterests" && r.account_detail === "-" && (r.sj_div === "IS" || r.sj_div === "CIS"),
+  );
+  resolutions.net_income_attributable_to_owners = deriveNetIncomeAttributableFallback(
+    resolutions.net_income_attributable_to_owners,
+    resolutions.net_income,
+    hasNoncontrollingRow,
+  );
 
   resolutions.roa = deriveRoa(resolutions.net_income, resolutions.total_assets);
   resolutions.operating_margin = deriveOperatingMargin(resolutions.operating_income, resolutions.revenue);

@@ -1,4 +1,4 @@
-import { formatComma, NULL_PLACEHOLDER } from "./chartUtils";
+import { chartDigits, formatChartValue, NULL_PLACEHOLDER } from "./chartUtils";
 
 /**
  * ZeroAxisBars — 0 기준선 발산 막대 (목업 `.zbrow/.zbtop/.zbbot/.zline`, 화면 ④ "순이익").
@@ -18,9 +18,14 @@ export type ZeroAxisBarsProps = {
 
 export default function ZeroAxisBars({ bars }: ZeroAxisBarsProps) {
   const max = Math.max(1, ...bars.map((b) => (b.value === null ? 0 : Math.abs(b.value))));
+  const digits = chartDigits(bars.map((b) => b.value));
+  // 전 구간 흑자면 기준선 아래 구획이 통째로 빈 여백이 된다 — 트랙을 키우고 나서 이 공백이
+  // 눈에 띄게 커졌다. 음수가 하나도 없을 때만 아래 구획을 얇게 접는다(기준선 자체는 유지 —
+  // "0을 기준으로 본다"는 이 차트의 의미가 사라지면 안 되므로).
+  const hasNegative = bars.some((b) => b.value !== null && b.value < 0);
 
   return (
-    <div className="zbrow" data-chart="zero-axis-bars">
+    <div className={`zbrow${hasNegative ? "" : " noneg"}`} data-chart="zero-axis-bars">
       {bars.map((bar) => {
         const missing = bar.value === null;
         const negative = !missing && (bar.value as number) < 0;
@@ -30,7 +35,7 @@ export default function ZeroAxisBars({ bars }: ZeroAxisBarsProps) {
             <div className="zbtop">
               {!missing && !negative && (
                 <div className="zbf" style={{ height: `${heightPct}%` }}>
-                  <span className="qbv">{formatComma(bar.value as number)}</span>
+                  <span className="qbv">{formatChartValue(bar.value as number, digits)}</span>
                 </div>
               )}
               {missing && (
@@ -43,7 +48,7 @@ export default function ZeroAxisBars({ bars }: ZeroAxisBarsProps) {
             <div className="zbbot">
               {negative && (
                 <div className="zbf" style={{ height: `${heightPct}%` }}>
-                  <span className="qbv down">{formatComma(bar.value as number)}</span>
+                  <span className="qbv down">{formatChartValue(bar.value as number, digits)}</span>
                 </div>
               )}
             </div>
