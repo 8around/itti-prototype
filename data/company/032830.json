@@ -1,0 +1,29 @@
+{
+  "requestUrl": "https://opendart.fss.or.kr/api/company.json?crtfc_key=***MASKED***&corp_code=00126256",
+  "status": "000",
+  "message": "정상",
+  "fetchedAt": "2026-08-12T02:52:30.420Z",
+  "elapsedMs": 44,
+  "bytes": 528,
+  "body": {
+    "status": "000",
+    "message": "정상",
+    "corp_code": "00126256",
+    "corp_name": "삼성생명보험(주)",
+    "corp_name_eng": "Samsung Life Insurance co., Ltd",
+    "stock_name": "삼성생명",
+    "stock_code": "032830",
+    "ceo_nm": "홍원학",
+    "corp_cls": "Y",
+    "jurir_no": "1101110005953",
+    "bizr_no": "1048126688",
+    "adres": "서울특별시 서초구 서초대로74길 11 (서초동) 삼성생명보험 주식회사",
+    "hm_url": "www.samsunglife.com",
+    "ir_url": "",
+    "phn_no": "02-751-8157",
+    "fax_no": "02-751-8100",
+    "induty_code": "65110",
+    "est_dt": "19570404",
+    "acc_mt": "12"
+  }
+}

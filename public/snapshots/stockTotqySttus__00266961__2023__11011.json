@@ -1,0 +1,68 @@
+{
+  "requestUrl": "https://opendart.fss.or.kr/api/stockTotqySttus.json?crtfc_key=***MASKED***&corp_code=00266961&bsns_year=2023&reprt_code=11011",
+  "status": "000",
+  "message": "정상",
+  "fetchedAt": "2026-08-12T03:10:12.025Z",
+  "elapsedMs": 143,
+  "bytes": 1180,
+  "body": {
+    "status": "000",
+    "message": "정상",
+    "list": [
+      {
+        "rcept_no": "20240318000844",
+        "corp_cls": "Y",
+        "corp_code": "00266961",
+        "corp_name": "NAVER",
+        "se": "보통주",
+        "isu_stock_totqy": "300,000,000",
+        "now_to_isu_stock_totqy": "240,638,520",
+        "now_to_dcrs_stock_totqy": "78,229,926",
+        "redc": "-",
+        "profit_incnr": "2,404,801",
+        "rdmstk_repy": "-",
+        "etc": "75,825,125",
+        "istc_totqy": "162,408,594",
+        "tesstk_co": "11,794,852",
+        "distb_stock_co": "150,613,742",
+        "stlm_dt": "2023-12-31"
+      },
+      {
+        "rcept_no": "20240318000844",
+        "corp_cls": "Y",
+        "corp_code": "00266961",
+        "corp_name": "NAVER",
+        "se": "합계",
+        "isu_stock_totqy": "300,000,000",
+        "now_to_isu_stock_totqy": "240,638,520",
+        "now_to_dcrs_stock_totqy": "78,229,926",
+        "redc": "-",
+        "profit_incnr": "2,404,801",
+        "rdmstk_repy": "-",
+        "etc": "75,825,125",
+        "istc_totqy": "162,408,594",
+        "tesstk_co": "11,794,852",
+        "distb_stock_co": "150,613,742",
+        "stlm_dt": "2023-12-31"
+      },
+      {
+        "rcept_no": "20240318000844",
+        "corp_cls": "Y",
+        "corp_code": "00266961",
+        "corp_name": "NAVER",
+        "se": "비고",
+        "isu_stock_totqy": "-",
+        "now_to_isu_stock_totqy": "-",
+        "now_to_dcrs_stock_totqy": "-",
+        "redc": "-",
+        "profit_incnr": "자기주식 소각",
+        "rdmstk_repy": "-",
+        "etc": "인적분할",
+        "istc_totqy": "-",
+        "tesstk_co": "-",
+        "distb_stock_co": "-",
+        "stlm_dt": "2023-12-31"
+      }
+    ]
+  }
+}

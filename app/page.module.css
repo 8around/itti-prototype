@@ -1,0 +1,174 @@
+/* / (20종목 카드 리스트) 전용 레이아웃 CSS. MetricValue 자체 스타일은 app/globals.css(T6)에 있다. */
+
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 20px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.lead {
+  font-size: 13px;
+  color: var(--gray);
+  font-weight: 500;
+  max-width: 880px;
+  line-height: 1.6;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  padding: 16px 17px;
+  box-shadow: var(--shadow);
+  transition: border-color 0.15s ease;
+}
+
+.card:hover {
+  border-color: var(--green-bd);
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.name {
+  font-size: 15px;
+  font-weight: 900;
+  color: var(--ink);
+}
+
+.badge {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 5px;
+  flex: none;
+  white-space: nowrap;
+}
+
+.badgeStandard {
+  background: var(--green-bg);
+  color: var(--green-dk);
+  border: 1px solid var(--green-bd);
+}
+
+.badgeFin {
+  background: var(--t2-bg);
+  color: var(--t2);
+  border: 1px solid var(--t2-bg);
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--gray);
+}
+
+.fyBadge {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--orange-dk);
+  background: var(--orange-bg);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.coverageRow {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.coverageTrack {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--wash);
+  overflow: hidden;
+}
+
+.coverageFill {
+  height: 100%;
+  background: var(--green);
+  border-radius: 3px;
+}
+
+.coverageText {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--gray);
+}
+
+.repMetric {
+  border-top: 1px solid var(--line-2);
+  padding-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.repLabel {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+.repYears {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.repYear {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.repYearLabel {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  color: var(--gray-2);
+  width: 32px;
+  flex: none;
+}
+
+/* MetricValue는 공용 컴포넌트라 손대지 않는다 — 카드 안에서만 축소 표기하도록 스코프 오버라이드. */
+.repYear :global(.mv-num) {
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.note {
+  font-size: 10px;
+  color: var(--gray-2);
+  font-weight: 500;
+  line-height: 1.5;
+  border-top: 1px solid var(--line-2);
+  padding-top: 8px;
+  margin-top: -2px;
+}

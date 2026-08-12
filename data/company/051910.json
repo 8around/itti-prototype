@@ -1,0 +1,29 @@
+{
+  "requestUrl": "https://opendart.fss.or.kr/api/company.json?crtfc_key=***MASKED***&corp_code=00356361",
+  "status": "000",
+  "message": "정상",
+  "fetchedAt": "2026-08-12T02:52:29.584Z",
+  "elapsedMs": 61,
+  "bytes": 447,
+  "body": {
+    "status": "000",
+    "message": "정상",
+    "corp_code": "00356361",
+    "corp_name": "(주)LG화학",
+    "corp_name_eng": "LG CHEM LTD",
+    "stock_name": "LG화학",
+    "stock_code": "051910",
+    "ceo_nm": "김동춘",
+    "corp_cls": "Y",
+    "jurir_no": "1101112207995",
+    "bizr_no": "1078198139",
+    "adres": "서울특별시 영등포구  여의대로 128",
+    "hm_url": "www.lgchem.com",
+    "ir_url": "",
+    "phn_no": "02-3777-1114",
+    "fax_no": "02-3773-7813",
+    "induty_code": "20111",
+    "est_dt": "20010401",
+    "acc_mt": "12"
+  }
+}

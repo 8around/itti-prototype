@@ -1,0 +1,74 @@
+{
+  "requestUrl": "https://opendart.fss.or.kr/api/fnlttSinglIndx.json?crtfc_key=***MASKED***&corp_code=00104856&bsns_year=2023&reprt_code=11011&idx_cl_code=M220000",
+  "status": "000",
+  "message": "정상",
+  "fetchedAt": "2026-08-12T03:10:24.541Z",
+  "elapsedMs": 74,
+  "bytes": 1213,
+  "body": {
+    "status": "000",
+    "message": "정상",
+    "list": [
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2023",
+        "corp_code": "00104856",
+        "stock_code": "016360",
+        "stlm_dt": "2023-12-31",
+        "idx_cl_code": "M220000",
+        "idx_cl_nm": "안정성지표",
+        "idx_code": "M221000",
+        "idx_nm": "자기자본비율",
+        "idx_val": "11.72"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2023",
+        "corp_code": "00104856",
+        "stock_code": "016360",
+        "stlm_dt": "2023-12-31",
+        "idx_cl_code": "M220000",
+        "idx_cl_nm": "안정성지표",
+        "idx_code": "M221100",
+        "idx_nm": "부채비율",
+        "idx_val": "753.245"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2023",
+        "corp_code": "00104856",
+        "stock_code": "016360",
+        "stlm_dt": "2023-12-31",
+        "idx_cl_code": "M220000",
+        "idx_cl_nm": "안정성지표",
+        "idx_code": "M223000",
+        "idx_nm": "자본유보율",
+        "idx_val": "1302.453"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2023",
+        "corp_code": "00104856",
+        "stock_code": "016360",
+        "stlm_dt": "2023-12-31",
+        "idx_cl_code": "M220000",
+        "idx_cl_nm": "안정성지표",
+        "idx_code": "M223200",
+        "idx_nm": "재무레버리지",
+        "idx_val": "853.245"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2023",
+        "corp_code": "00104856",
+        "stock_code": "016360",
+        "stlm_dt": "2023-12-31",
+        "idx_cl_code": "M220000",
+        "idx_cl_nm": "안정성지표",
+        "idx_code": "M224100",
+        "idx_nm": "유형자산구성비율",
+        "idx_val": "0.155"
+      }
+    ]
+  }
+}

@@ -1,0 +1,131 @@
+{
+  "requestUrl": "https://opendart.fss.or.kr/api/fnlttSinglIndx.json?crtfc_key=***MASKED***&corp_code=00688996&bsns_year=2025&reprt_code=11011&idx_cl_code=M230000",
+  "status": "000",
+  "message": "정상",
+  "fetchedAt": "2026-08-12T03:10:22.267Z",
+  "elapsedMs": 101,
+  "bytes": 2382,
+  "body": {
+    "status": "000",
+    "message": "정상",
+    "list": [
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2025",
+        "corp_code": "00688996",
+        "stock_code": "105560",
+        "stlm_dt": "2025-12-31",
+        "idx_cl_code": "M230000",
+        "idx_cl_nm": "성장성지표",
+        "idx_code": "M231000",
+        "idx_nm": "매출액증가율(YoY)"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2025",
+        "corp_code": "00688996",
+        "stock_code": "105560",
+        "stlm_dt": "2025-12-31",
+        "idx_cl_code": "M230000",
+        "idx_cl_nm": "성장성지표",
+        "idx_code": "M231400",
+        "idx_nm": "영업이익증가율(YoY)",
+        "idx_val": "5.872"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2025",
+        "corp_code": "00688996",
+        "stock_code": "105560",
+        "stlm_dt": "2025-12-31",
+        "idx_cl_code": "M230000",
+        "idx_cl_nm": "성장성지표",
+        "idx_code": "M231600",
+        "idx_nm": "세전계속사업이익증가율(YoY)"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2025",
+        "corp_code": "00688996",
+        "stock_code": "105560",
+        "stlm_dt": "2025-12-31",
+        "idx_cl_code": "M230000",
+        "idx_cl_nm": "성장성지표",
+        "idx_code": "M231800",
+        "idx_nm": "순이익증가율(YoY)",
+        "idx_val": "16.15"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2025",
+        "corp_code": "00688996",
+        "stock_code": "105560",
+        "stlm_dt": "2025-12-31",
+        "idx_cl_code": "M230000",
+        "idx_cl_nm": "성장성지표",
+        "idx_code": "M231910",
+        "idx_nm": "총포괄이익증가율(YoY)",
+        "idx_val": "43.29"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2025",
+        "corp_code": "00688996",
+        "stock_code": "105560",
+        "stlm_dt": "2025-12-31",
+        "idx_cl_code": "M230000",
+        "idx_cl_nm": "성장성지표",
+        "idx_code": "M233000",
+        "idx_nm": "총자산증가율",
+        "idx_val": "5.288"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2025",
+        "corp_code": "00688996",
+        "stock_code": "105560",
+        "stlm_dt": "2025-12-31",
+        "idx_cl_code": "M230000",
+        "idx_cl_nm": "성장성지표",
+        "idx_code": "M233200",
+        "idx_nm": "유형자산증가율",
+        "idx_val": "-4.753"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2025",
+        "corp_code": "00688996",
+        "stock_code": "105560",
+        "stlm_dt": "2025-12-31",
+        "idx_cl_code": "M230000",
+        "idx_cl_nm": "성장성지표",
+        "idx_code": "M233400",
+        "idx_nm": "부채총계증가율",
+        "idx_val": "5.596"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2025",
+        "corp_code": "00688996",
+        "stock_code": "105560",
+        "stlm_dt": "2025-12-31",
+        "idx_cl_code": "M230000",
+        "idx_cl_nm": "성장성지표",
+        "idx_code": "M233500",
+        "idx_nm": "총차입금증가율"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2025",
+        "corp_code": "00688996",
+        "stock_code": "105560",
+        "stlm_dt": "2025-12-31",
+        "idx_cl_code": "M230000",
+        "idx_cl_nm": "성장성지표",
+        "idx_code": "M233600",
+        "idx_nm": "자기자본증가율",
+        "idx_val": "1.697"
+      }
+    ]
+  }
+}

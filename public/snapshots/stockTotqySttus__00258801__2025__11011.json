@@ -1,0 +1,68 @@
+{
+  "requestUrl": "https://opendart.fss.or.kr/api/stockTotqySttus.json?crtfc_key=***MASKED***&corp_code=00258801&bsns_year=2025&reprt_code=11011",
+  "status": "000",
+  "message": "정상",
+  "fetchedAt": "2026-08-12T03:10:10.597Z",
+  "elapsedMs": 125,
+  "bytes": 1157,
+  "body": {
+    "status": "000",
+    "message": "정상",
+    "list": [
+      {
+        "rcept_no": "20260318001423",
+        "corp_cls": "Y",
+        "corp_code": "00258801",
+        "corp_name": "카카오",
+        "se": "보통주",
+        "isu_stock_totqy": "750,000,000",
+        "now_to_isu_stock_totqy": "467,808,422",
+        "now_to_dcrs_stock_totqy": "25,313,202",
+        "redc": "24,813,202",
+        "profit_incnr": "500,000",
+        "rdmstk_repy": "-",
+        "etc": "-",
+        "istc_totqy": "442,495,220",
+        "tesstk_co": "2,440,723",
+        "distb_stock_co": "440,054,497",
+        "stlm_dt": "2025-12-31"
+      },
+      {
+        "rcept_no": "20260318001423",
+        "corp_cls": "Y",
+        "corp_code": "00258801",
+        "corp_name": "카카오",
+        "se": "합계",
+        "isu_stock_totqy": "750,000,000",
+        "now_to_isu_stock_totqy": "467,808,422",
+        "now_to_dcrs_stock_totqy": "25,313,202",
+        "redc": "24,813,202",
+        "profit_incnr": "500,000",
+        "rdmstk_repy": "-",
+        "etc": "-",
+        "istc_totqy": "442,495,220",
+        "tesstk_co": "2,440,723",
+        "distb_stock_co": "440,054,497",
+        "stlm_dt": "2025-12-31"
+      },
+      {
+        "rcept_no": "20260318001423",
+        "corp_cls": "Y",
+        "corp_code": "00258801",
+        "corp_name": "카카오",
+        "se": "비고",
+        "isu_stock_totqy": "-",
+        "now_to_isu_stock_totqy": "-",
+        "now_to_dcrs_stock_totqy": "-",
+        "redc": "-",
+        "profit_incnr": "-",
+        "rdmstk_repy": "-",
+        "etc": "-",
+        "istc_totqy": "-",
+        "tesstk_co": "-",
+        "distb_stock_co": "-",
+        "stlm_dt": "2025-12-31"
+      }
+    ]
+  }
+}

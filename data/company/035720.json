@@ -1,0 +1,29 @@
+{
+  "requestUrl": "https://opendart.fss.or.kr/api/company.json?crtfc_key=***MASKED***&corp_code=00258801",
+  "status": "000",
+  "message": "정상",
+  "fetchedAt": "2026-08-12T02:52:29.646Z",
+  "elapsedMs": 52,
+  "bytes": 484,
+  "body": {
+    "status": "000",
+    "message": "정상",
+    "corp_code": "00258801",
+    "corp_name": "(주)카카오",
+    "corp_name_eng": "Kakao Corp.",
+    "stock_name": "카카오",
+    "stock_code": "035720",
+    "ceo_nm": "정신아",
+    "corp_cls": "Y",
+    "jurir_no": "1101111129497",
+    "bizr_no": "1208147521",
+    "adres": "제주특별자치도 제주시 첨단로 242",
+    "hm_url": "www.kakaocorp.com",
+    "ir_url": "https://www.kakaocorp.com/ir/main",
+    "phn_no": "02-6718-1082",
+    "fax_no": "02-6718-3647",
+    "induty_code": "63120",
+    "est_dt": "19950216",
+    "acc_mt": "12"
+  }
+}

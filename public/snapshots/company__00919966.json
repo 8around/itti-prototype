@@ -1,0 +1,29 @@
+{
+  "requestUrl": "https://opendart.fss.or.kr/api/company.json?crtfc_key=***MASKED***&corp_code=00919966",
+  "status": "000",
+  "message": "정상",
+  "fetchedAt": "2026-08-12T02:52:29.904Z",
+  "elapsedMs": 48,
+  "bytes": 493,
+  "body": {
+    "status": "000",
+    "message": "정상",
+    "corp_code": "00919966",
+    "corp_name": "신라젠(주)",
+    "corp_name_eng": "SillaJen, Inc.",
+    "stock_name": "신라젠",
+    "stock_code": "215600",
+    "ceo_nm": "박상근, 한상규",
+    "corp_cls": "K",
+    "jurir_no": "1801110550194",
+    "bizr_no": "6038161936",
+    "adres": "서울특별시 중구 청계천로 106 3층(수표동, 크리스탈스퀘어)",
+    "hm_url": "www.sillajen.com",
+    "ir_url": "",
+    "phn_no": "02-368-2600",
+    "fax_no": "027837555",
+    "induty_code": "70113",
+    "est_dt": "20060328",
+    "acc_mt": "12"
+  }
+}

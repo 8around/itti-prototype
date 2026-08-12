@@ -1,0 +1,29 @@
+{
+  "requestUrl": "https://opendart.fss.or.kr/api/company.json?crtfc_key=***MASKED***&corp_code=00159616",
+  "status": "000",
+  "message": "정상",
+  "fetchedAt": "2026-08-12T02:52:29.953Z",
+  "elapsedMs": 53,
+  "bytes": 621,
+  "body": {
+    "status": "000",
+    "message": "정상",
+    "corp_code": "00159616",
+    "corp_name": "두산에너빌리티(주)",
+    "corp_name_eng": "DOOSAN ENERBILITY CO., LTD.",
+    "stock_name": "두산에너빌리티",
+    "stock_code": "034020",
+    "ceo_nm": "박지원, 정연인, 박상현",
+    "corp_cls": "Y",
+    "jurir_no": "1942110000943",
+    "bizr_no": "6098104684",
+    "adres": "경상남도 창원시 성산구  두산볼보로 22 두산중공업 주식회사",
+    "hm_url": "https://www.doosanenerbility.com/kr",
+    "ir_url": "https://www.doosanenerbility.com/kr/investment/ir_data",
+    "phn_no": "055-278-6114",
+    "fax_no": "055-264-5551",
+    "induty_code": "29119",
+    "est_dt": "19620920",
+    "acc_mt": "12"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "requestUrl": "https://opendart.fss.or.kr/api/company.json?crtfc_key=***MASKED***&corp_code=00991191",
+  "status": "000",
+  "message": "정상",
+  "fetchedAt": "2026-08-12T02:52:30.070Z",
+  "elapsedMs": 90,
+  "bytes": 478,
+  "body": {
+    "status": "000",
+    "message": "정상",
+    "corp_code": "00991191",
+    "corp_name": "앱클론(주)",
+    "corp_name_eng": "AbClon Inc.",
+    "stock_name": "앱클론",
+    "stock_code": "174900",
+    "ceo_nm": "이종서",
+    "corp_cls": "K",
+    "jurir_no": "1101114379213",
+    "bizr_no": "1138640428",
+    "adres": "서울특별시 구로구 디지털로 285 에이스트윈타워 1차 1401호",
+    "hm_url": "www.abclon.com",
+    "ir_url": "",
+    "phn_no": "02-2109-1294",
+    "fax_no": "02-2109-1296",
+    "induty_code": "213",
+    "est_dt": "20100625",
+    "acc_mt": "12"
+  }
+}

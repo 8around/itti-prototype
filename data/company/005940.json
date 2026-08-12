@@ -1,0 +1,29 @@
+{
+  "requestUrl": "https://opendart.fss.or.kr/api/company.json?crtfc_key=***MASKED***&corp_code=00120182",
+  "status": "000",
+  "message": "정상",
+  "fetchedAt": "2026-08-12T02:52:30.372Z",
+  "elapsedMs": 46,
+  "bytes": 530,
+  "body": {
+    "status": "000",
+    "message": "정상",
+    "corp_code": "00120182",
+    "corp_name": "엔에이치투자증권(주)",
+    "corp_name_eng": "NH INVESTMENT & SECURITIES CO.,LTD. ",
+    "stock_name": "NH투자증권",
+    "stock_code": "005940",
+    "ceo_nm": "신재욱, 배광수",
+    "corp_cls": "Y",
+    "jurir_no": "1101110098130",
+    "bizr_no": "1168103693",
+    "adres": "서울특별시 영등포구 여의대로 108 파크원NH금융타워(타워2)",
+    "hm_url": "www.nhqv.com",
+    "ir_url": "",
+    "phn_no": "02-768-7000",
+    "fax_no": "768-7229",
+    "induty_code": "66121",
+    "est_dt": "19690116",
+    "acc_mt": "12"
+  }
+}

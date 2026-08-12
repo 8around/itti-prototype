@@ -1,0 +1,85 @@
+{
+  "requestUrl": "https://opendart.fss.or.kr/api/fnlttSinglIndx.json?crtfc_key=***MASKED***&corp_code=00126256&bsns_year=2025&reprt_code=11011&idx_cl_code=M240000",
+  "status": "000",
+  "message": "정상",
+  "fetchedAt": "2026-08-12T03:10:28.357Z",
+  "elapsedMs": 70,
+  "bytes": 1438,
+  "body": {
+    "status": "000",
+    "message": "정상",
+    "list": [
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2025",
+        "corp_code": "00126256",
+        "stock_code": "032830",
+        "stlm_dt": "2025-12-31",
+        "idx_cl_code": "M240000",
+        "idx_cl_nm": "활동성지표",
+        "idx_code": "M241000",
+        "idx_nm": "총자산회전율",
+        "idx_val": "11.343"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2025",
+        "corp_code": "00126256",
+        "stock_code": "032830",
+        "stlm_dt": "2025-12-31",
+        "idx_cl_code": "M240000",
+        "idx_cl_nm": "활동성지표",
+        "idx_code": "M241600",
+        "idx_nm": "유형자산회전율",
+        "idx_val": "5957.4"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2025",
+        "corp_code": "00126256",
+        "stock_code": "032830",
+        "stlm_dt": "2025-12-31",
+        "idx_cl_code": "M240000",
+        "idx_cl_nm": "활동성지표",
+        "idx_code": "M241800",
+        "idx_nm": "타인자본회전율",
+        "idx_val": "13.428"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2025",
+        "corp_code": "00126256",
+        "stock_code": "032830",
+        "stlm_dt": "2025-12-31",
+        "idx_cl_code": "M240000",
+        "idx_cl_nm": "활동성지표",
+        "idx_code": "M241900",
+        "idx_nm": "자기자본회전율",
+        "idx_val": "73.046"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2025",
+        "corp_code": "00126256",
+        "stock_code": "032830",
+        "stlm_dt": "2025-12-31",
+        "idx_cl_code": "M240000",
+        "idx_cl_nm": "활동성지표",
+        "idx_code": "M242000",
+        "idx_nm": "자본금회전율",
+        "idx_val": "#########"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2025",
+        "corp_code": "00126256",
+        "stock_code": "032830",
+        "stlm_dt": "2025-12-31",
+        "idx_cl_code": "M240000",
+        "idx_cl_nm": "활동성지표",
+        "idx_code": "M451000",
+        "idx_nm": "배당성향(%)"
+      }
+    ]
+  }
+}
