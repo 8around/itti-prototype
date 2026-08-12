@@ -47,3 +47,50 @@ a {
     color-scheme: dark;
   }
 }
+
+/* ============================================================
+   T5 SourcePanel — 최소 토큰
+   전체 목업 :root 토큰(40여 개) 이식은 T6 소관. 여기서는 SourcePanel/.srcfoot이
+   당장 쓰는 것만 선언한다. T6가 같은 이름으로 재정의할 수 있으므로 값 자체를
+   여기서 임의로 늘리지 말 것 — 이 블록은 T5 종료 후에도 유지되되 T6가 흡수한다.
+   ============================================================ */
+:root {
+  --green: #2e7d32;
+  --up: #d32f2f;
+  --down: #1565c0;
+  --line: #e3eae4;
+  --wash: #f4f7f4;
+  --ink: #16241d;
+}
+
+/* 모든 수치·차트 밑에 붙는 출처 슬롯 한 줄. <summary>에 적용한다 (전역 유틸 클래스). */
+.srcfoot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 4px;
+  border-top: 1px dashed var(--line);
+  color: var(--ink);
+  font-size: 12px;
+  opacity: 0.72;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+.srcfoot::-webkit-details-marker {
+  display: none;
+}
+
+.srcfoot:hover {
+  opacity: 1;
+  background: var(--wash);
+}
+
+.srcfoot:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+/* ============================================================
+   /T5 토큰
+   ============================================================ */

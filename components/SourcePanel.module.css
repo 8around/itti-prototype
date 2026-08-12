@@ -1,0 +1,208 @@
+/* T5 SourcePanel — 전용 스타일. 전역 토큰(--green/--up/--down/--line/--wash/--ink)은
+   app/globals.css에 정의되어 있다. .srcfoot(요약 줄)도 전역 클래스라 여기 없다. */
+
+.panel {
+  margin: 8px 0;
+  font-size: 13px;
+  color: var(--ink);
+}
+
+.body {
+  padding: 12px 4px 4px;
+  border-left: 2px solid var(--line);
+  margin-left: 2px;
+}
+
+.tabBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.tabButton {
+  padding: 5px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--wash);
+  color: var(--ink);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.tabButton:hover {
+  border-color: var(--green);
+}
+
+.tabButtonActive {
+  background: var(--green);
+  border-color: var(--green);
+  color: #fff;
+}
+
+.tabPanel {
+  padding: 4px 2px 8px;
+}
+
+.hint {
+  color: var(--ink);
+  opacity: 0.6;
+  font-size: 12px;
+}
+
+.errorText {
+  color: var(--up);
+  font-size: 12px;
+}
+
+.mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  word-break: break-all;
+}
+
+.metaGrid {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 4px 12px;
+  font-size: 12px;
+  margin: 0 0 10px;
+}
+
+.metaGrid dt {
+  color: var(--ink);
+  opacity: 0.6;
+}
+
+.metaGrid dd {
+  margin: 0;
+}
+
+/* 지금 다시 호출 */
+
+.probeBox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-top: 8px;
+  border-top: 1px dashed var(--line);
+}
+
+.probeButton {
+  padding: 6px 12px;
+  border: 1px solid var(--green);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--green);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.probeButton:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.badgeMatch,
+.badgeDiff,
+.badgeError {
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badgeMatch {
+  background: #e6f0e6;
+  color: var(--green);
+}
+
+.badgeDiff {
+  background: #fdf1e0;
+  color: #a15c00;
+}
+
+.badgeError {
+  background: #fbe6e6;
+  color: var(--up);
+}
+
+/* 원본 JSON */
+
+.toggleRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.rawList {
+  max-height: 480px;
+  overflow-y: auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.rawRow {
+  margin: 0;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.rawRow:last-child {
+  border-bottom: none;
+}
+
+.rawRowHit {
+  background: #fff6d9;
+}
+
+/* 폴백 이력 */
+
+.fallbackNote {
+  font-size: 12px;
+  color: #a15c00;
+  margin-bottom: 8px;
+}
+
+.attemptList {
+  list-style: none;
+  margin: 0 0 8px;
+  padding: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.attemptHit {
+  color: var(--green);
+}
+
+.attemptMiss {
+  color: var(--ink);
+  opacity: 0.75;
+}
+
+.fallbackSummary {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* 정규화 */
+
+.normalizeSteps {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
