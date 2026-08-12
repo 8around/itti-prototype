@@ -1,0 +1,68 @@
+{
+  "requestUrl": "https://opendart.fss.or.kr/api/stockTotqySttus.json?crtfc_key=***MASKED***&corp_code=00413046&bsns_year=2023&reprt_code=11011",
+  "status": "000",
+  "message": "정상",
+  "fetchedAt": "2026-08-12T03:10:13.751Z",
+  "elapsedMs": 98,
+  "bytes": 1184,
+  "body": {
+    "status": "000",
+    "message": "정상",
+    "list": [
+      {
+        "rcept_no": "20240318000913",
+        "corp_cls": "Y",
+        "corp_code": "00413046",
+        "corp_name": "셀트리온",
+        "se": "보통주",
+        "isu_stock_totqy": "400,000,000",
+        "now_to_isu_stock_totqy": "312,509,610",
+        "now_to_dcrs_stock_totqy": "92,219,090",
+        "redc": "4,819,244",
+        "profit_incnr": "-",
+        "rdmstk_repy": "-",
+        "etc": "87,399,846",
+        "istc_totqy": "220,290,520",
+        "tesstk_co": "13,082,991",
+        "distb_stock_co": "207,207,529",
+        "stlm_dt": "2023-12-31"
+      },
+      {
+        "rcept_no": "20240318000913",
+        "corp_cls": "Y",
+        "corp_code": "00413046",
+        "corp_name": "셀트리온",
+        "se": "합계",
+        "isu_stock_totqy": "400,000,000",
+        "now_to_isu_stock_totqy": "312,509,610",
+        "now_to_dcrs_stock_totqy": "92,219,090",
+        "redc": "4,819,244",
+        "profit_incnr": "-",
+        "rdmstk_repy": "-",
+        "etc": "87,399,846",
+        "istc_totqy": "220,290,520",
+        "tesstk_co": "13,082,991",
+        "distb_stock_co": "207,207,529",
+        "stlm_dt": "2023-12-31"
+      },
+      {
+        "rcept_no": "20240318000913",
+        "corp_cls": "Y",
+        "corp_code": "00413046",
+        "corp_name": "셀트리온",
+        "se": "비고",
+        "isu_stock_totqy": "-",
+        "now_to_isu_stock_totqy": "-",
+        "now_to_dcrs_stock_totqy": "-",
+        "redc": "-",
+        "profit_incnr": "-",
+        "rdmstk_repy": "-",
+        "etc": "주식 병합",
+        "istc_totqy": "-",
+        "tesstk_co": "-",
+        "distb_stock_co": "-",
+        "stlm_dt": "2023-12-31"
+      }
+    ]
+  }
+}

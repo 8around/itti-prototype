@@ -1,0 +1,29 @@
+{
+  "requestUrl": "https://opendart.fss.or.kr/api/company.json?crtfc_key=***MASKED***&corp_code=00159102",
+  "status": "000",
+  "message": "정상",
+  "fetchedAt": "2026-08-12T02:52:30.465Z",
+  "elapsedMs": 61,
+  "bytes": 477,
+  "body": {
+    "status": "000",
+    "message": "정상",
+    "corp_code": "00159102",
+    "corp_name": "DB손해보험(주)",
+    "corp_name_eng": "DB INSURANCE CO.,LTD",
+    "stock_name": "DB손해보험",
+    "stock_code": "005830",
+    "ceo_nm": "김정남, 정종표",
+    "corp_cls": "Y",
+    "jurir_no": "1101110095285",
+    "bizr_no": "2018145593",
+    "adres": "서울특별시 강남구  테헤란로 432",
+    "hm_url": "www.idbins.com",
+    "ir_url": "",
+    "phn_no": "02-1588-0100",
+    "fax_no": "0505-181-0027",
+    "induty_code": "65121",
+    "est_dt": "19681101",
+    "acc_mt": "12"
+  }
+}

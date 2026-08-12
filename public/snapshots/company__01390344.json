@@ -1,0 +1,29 @@
+{
+  "requestUrl": "https://opendart.fss.or.kr/api/company.json?crtfc_key=***MASKED***&corp_code=01390344",
+  "status": "000",
+  "message": "정상",
+  "fetchedAt": "2026-08-12T02:52:30.007Z",
+  "elapsedMs": 62,
+  "bytes": 535,
+  "body": {
+    "status": "000",
+    "message": "정상",
+    "corp_code": "01390344",
+    "corp_name": "에이치디현대중공업(주)",
+    "corp_name_eng": "HD HYUNDAI HEAVY INDUSTRIES CO.,LTD.",
+    "stock_name": "HD현대중공업",
+    "stock_code": "329180",
+    "ceo_nm": "이상균, 금석호 (각자 대표이사)",
+    "corp_cls": "Y",
+    "jurir_no": "2301110312741",
+    "bizr_no": "2528701412",
+    "adres": "울산광역시 동구 방어진순환도로 1000",
+    "hm_url": "www.hhi.co.kr",
+    "ir_url": "",
+    "phn_no": "052-202-2114",
+    "fax_no": "052-202-3315",
+    "induty_code": "31113",
+    "est_dt": "20190603",
+    "acc_mt": "12"
+  }
+}

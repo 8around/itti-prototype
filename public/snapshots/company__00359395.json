@@ -1,0 +1,29 @@
+{
+  "requestUrl": "https://opendart.fss.or.kr/api/company.json?crtfc_key=***MASKED***&corp_code=00359395",
+  "status": "000",
+  "message": "정상",
+  "fetchedAt": "2026-08-12T02:52:29.832Z",
+  "elapsedMs": 71,
+  "bytes": 471,
+  "body": {
+    "status": "000",
+    "message": "정상",
+    "corp_code": "00359395",
+    "corp_name": "(주)헬릭스미스",
+    "corp_name_eng": "Helixmith Co., Ltd",
+    "stock_name": "헬릭스미스",
+    "stock_code": "084990",
+    "ceo_nm": "장송선",
+    "corp_cls": "K",
+    "jurir_no": "1101111343930",
+    "bizr_no": "1018142428",
+    "adres": "서울특별시 강서구 마곡중앙8로7길 21 -",
+    "hm_url": "helixmith.com",
+    "ir_url": "",
+    "phn_no": "02-2102-7200",
+    "fax_no": "02-887-0011",
+    "induty_code": "70113",
+    "est_dt": "19961121",
+    "acc_mt": "12"
+  }
+}

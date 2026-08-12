@@ -1,0 +1,190 @@
+{
+  "requestUrl": "https://opendart.fss.or.kr/api/fnlttSinglIndx.json?crtfc_key=***MASKED***&corp_code=00164779&bsns_year=2023&reprt_code=11011&idx_cl_code=M210000",
+  "status": "000",
+  "message": "정상",
+  "fetchedAt": "2026-08-12T03:10:02.071Z",
+  "elapsedMs": 284,
+  "bytes": 3549,
+  "body": {
+    "status": "000",
+    "message": "정상",
+    "list": [
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2023",
+        "corp_code": "00164779",
+        "stock_code": "000660",
+        "stlm_dt": "2023-12-31",
+        "idx_cl_code": "M210000",
+        "idx_cl_nm": "수익성지표",
+        "idx_code": "M211100",
+        "idx_nm": "세전계속사업이익률"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2023",
+        "corp_code": "00164779",
+        "stock_code": "000660",
+        "stlm_dt": "2023-12-31",
+        "idx_cl_code": "M210000",
+        "idx_cl_nm": "수익성지표",
+        "idx_code": "M211200",
+        "idx_nm": "순이익률",
+        "idx_val": "-27.888"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2023",
+        "corp_code": "00164779",
+        "stock_code": "000660",
+        "stlm_dt": "2023-12-31",
+        "idx_cl_code": "M210000",
+        "idx_cl_nm": "수익성지표",
+        "idx_code": "M211250",
+        "idx_nm": "총포괄이익률",
+        "idx_val": "-27.582"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2023",
+        "corp_code": "00164779",
+        "stock_code": "000660",
+        "stlm_dt": "2023-12-31",
+        "idx_cl_code": "M210000",
+        "idx_cl_nm": "수익성지표",
+        "idx_code": "M211300",
+        "idx_nm": "매출총이익률",
+        "idx_val": "-1.628"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2023",
+        "corp_code": "00164779",
+        "stock_code": "000660",
+        "stlm_dt": "2023-12-31",
+        "idx_cl_code": "M210000",
+        "idx_cl_nm": "수익성지표",
+        "idx_code": "M211400",
+        "idx_nm": "매출원가율",
+        "idx_val": "101.628"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2023",
+        "corp_code": "00164779",
+        "stock_code": "000660",
+        "stlm_dt": "2023-12-31",
+        "idx_cl_code": "M210000",
+        "idx_cl_nm": "수익성지표",
+        "idx_code": "M211550",
+        "idx_nm": "ROE",
+        "idx_val": "-15.647"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2023",
+        "corp_code": "00164779",
+        "stock_code": "000660",
+        "stlm_dt": "2023-12-31",
+        "idx_cl_code": "M210000",
+        "idx_cl_nm": "수익성지표",
+        "idx_code": "M211800",
+        "idx_nm": "판관비율",
+        "idx_val": "21.965"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2023",
+        "corp_code": "00164779",
+        "stock_code": "000660",
+        "stlm_dt": "2023-12-31",
+        "idx_cl_code": "M210000",
+        "idx_cl_nm": "수익성지표",
+        "idx_code": "M212000",
+        "idx_nm": "총자산영업이익률",
+        "idx_val": "-7.571"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2023",
+        "corp_code": "00164779",
+        "stock_code": "000660",
+        "stlm_dt": "2023-12-31",
+        "idx_cl_code": "M210000",
+        "idx_cl_nm": "수익성지표",
+        "idx_code": "M212100",
+        "idx_nm": "총자산세전계속사업이익률"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2023",
+        "corp_code": "00164779",
+        "stock_code": "000660",
+        "stlm_dt": "2023-12-31",
+        "idx_cl_code": "M210000",
+        "idx_cl_nm": "수익성지표",
+        "idx_code": "M212200",
+        "idx_nm": "자기자본영업이익률",
+        "idx_val": "-13.237"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2023",
+        "corp_code": "00164779",
+        "stock_code": "000660",
+        "stlm_dt": "2023-12-31",
+        "idx_cl_code": "M210000",
+        "idx_cl_nm": "수익성지표",
+        "idx_code": "M212300",
+        "idx_nm": "자기자본세전계속사업이익률"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2023",
+        "corp_code": "00164779",
+        "stock_code": "000660",
+        "stlm_dt": "2023-12-31",
+        "idx_cl_code": "M210000",
+        "idx_cl_nm": "수익성지표",
+        "idx_code": "M212400",
+        "idx_nm": "자본금영업이익률",
+        "idx_val": "-211.346"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2023",
+        "corp_code": "00164779",
+        "stock_code": "000660",
+        "stlm_dt": "2023-12-31",
+        "idx_cl_code": "M210000",
+        "idx_cl_nm": "수익성지표",
+        "idx_code": "M212500",
+        "idx_nm": "자본금세전계속사업이익률"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2023",
+        "corp_code": "00164779",
+        "stock_code": "000660",
+        "stlm_dt": "2023-12-31",
+        "idx_cl_code": "M210000",
+        "idx_cl_nm": "수익성지표",
+        "idx_code": "M212600",
+        "idx_nm": "납입자본이익률",
+        "idx_val": "-249.82"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2023",
+        "corp_code": "00164779",
+        "stock_code": "000660",
+        "stlm_dt": "2023-12-31",
+        "idx_cl_code": "M210000",
+        "idx_cl_nm": "수익성지표",
+        "idx_code": "M212700",
+        "idx_nm": "영업수익경비율",
+        "idx_val": "21.965"
+      }
+    ]
+  }
+}

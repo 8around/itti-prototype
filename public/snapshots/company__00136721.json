@@ -1,0 +1,29 @@
+{
+  "requestUrl": "https://opendart.fss.or.kr/api/company.json?crtfc_key=***MASKED***&corp_code=00136721",
+  "status": "000",
+  "message": "정상",
+  "fetchedAt": "2026-08-12T02:52:30.527Z",
+  "elapsedMs": 64,
+  "bytes": 522,
+  "body": {
+    "status": "000",
+    "message": "정상",
+    "corp_code": "00136721",
+    "corp_name": "신영증권(주)",
+    "corp_name_eng": "SHINYOUNG SECURITIES CO.,LTD",
+    "stock_name": "신영증권",
+    "stock_code": "001720",
+    "ceo_nm": "금정호, 김대일",
+    "corp_cls": "Y",
+    "jurir_no": "1101110006612",
+    "bizr_no": "1168110802",
+    "adres": "서울특별시 영등포구 국제금융로8길 16 (여의도동, 신영증권빌딩)",
+    "hm_url": "www.shinyoung.com",
+    "ir_url": "",
+    "phn_no": "02-2004-9000",
+    "fax_no": "786-2884",
+    "induty_code": "66121",
+    "est_dt": "19560225",
+    "acc_mt": "03"
+  }
+}

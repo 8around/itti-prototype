@@ -1,0 +1,144 @@
+{
+  "requestUrl": "https://opendart.fss.or.kr/api/fnlttSinglIndx.json?crtfc_key=***MASKED***&corp_code=00991191&bsns_year=2024&reprt_code=11011&idx_cl_code=M240000",
+  "status": "000",
+  "message": "정상",
+  "fetchedAt": "2026-08-12T03:10:20.562Z",
+  "elapsedMs": 91,
+  "bytes": 2611,
+  "body": {
+    "status": "000",
+    "message": "정상",
+    "list": [
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2024",
+        "corp_code": "00991191",
+        "stock_code": "174900",
+        "stlm_dt": "2024-12-31",
+        "idx_cl_code": "M240000",
+        "idx_cl_nm": "활동성지표",
+        "idx_code": "M241000",
+        "idx_nm": "총자산회전율",
+        "idx_val": "4.999"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2024",
+        "corp_code": "00991191",
+        "stock_code": "174900",
+        "stlm_dt": "2024-12-31",
+        "idx_cl_code": "M240000",
+        "idx_cl_nm": "활동성지표",
+        "idx_code": "M241100",
+        "idx_nm": "매출채권회전율"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2024",
+        "corp_code": "00991191",
+        "stock_code": "174900",
+        "stlm_dt": "2024-12-31",
+        "idx_cl_code": "M240000",
+        "idx_cl_nm": "활동성지표",
+        "idx_code": "M241200",
+        "idx_nm": "재고자산회전율",
+        "idx_val": "#########"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2024",
+        "corp_code": "00991191",
+        "stock_code": "174900",
+        "stlm_dt": "2024-12-31",
+        "idx_cl_code": "M240000",
+        "idx_cl_nm": "활동성지표",
+        "idx_code": "M241300",
+        "idx_nm": "매출원가/재고자산",
+        "idx_val": "#########"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2024",
+        "corp_code": "00991191",
+        "stock_code": "174900",
+        "stlm_dt": "2024-12-31",
+        "idx_cl_code": "M240000",
+        "idx_cl_nm": "활동성지표",
+        "idx_code": "M241400",
+        "idx_nm": "매입채무회전율",
+        "idx_val": "212.245"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2024",
+        "corp_code": "00991191",
+        "stock_code": "174900",
+        "stlm_dt": "2024-12-31",
+        "idx_cl_code": "M240000",
+        "idx_cl_nm": "활동성지표",
+        "idx_code": "M241500",
+        "idx_nm": "비유동자산회전율",
+        "idx_val": "9.166"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2024",
+        "corp_code": "00991191",
+        "stock_code": "174900",
+        "stlm_dt": "2024-12-31",
+        "idx_cl_code": "M240000",
+        "idx_cl_nm": "활동성지표",
+        "idx_code": "M241600",
+        "idx_nm": "유형자산회전율",
+        "idx_val": "9.488"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2024",
+        "corp_code": "00991191",
+        "stock_code": "174900",
+        "stlm_dt": "2024-12-31",
+        "idx_cl_code": "M240000",
+        "idx_cl_nm": "활동성지표",
+        "idx_code": "M241800",
+        "idx_nm": "타인자본회전율",
+        "idx_val": "12.653"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2024",
+        "corp_code": "00991191",
+        "stock_code": "174900",
+        "stlm_dt": "2024-12-31",
+        "idx_cl_code": "M240000",
+        "idx_cl_nm": "활동성지표",
+        "idx_code": "M241900",
+        "idx_nm": "자기자본회전율",
+        "idx_val": "8.263"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2024",
+        "corp_code": "00991191",
+        "stock_code": "174900",
+        "stlm_dt": "2024-12-31",
+        "idx_cl_code": "M240000",
+        "idx_cl_nm": "활동성지표",
+        "idx_code": "M242000",
+        "idx_nm": "자본금회전율",
+        "idx_val": "26.645"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2024",
+        "corp_code": "00991191",
+        "stock_code": "174900",
+        "stlm_dt": "2024-12-31",
+        "idx_cl_code": "M240000",
+        "idx_cl_nm": "활동성지표",
+        "idx_code": "M451000",
+        "idx_nm": "배당성향(%)"
+      }
+    ]
+  }
+}

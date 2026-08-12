@@ -1,0 +1,81 @@
+{
+  "requestUrl": "https://opendart.fss.or.kr/api/fnlttSinglIndx.json?crtfc_key=***MASKED***&corp_code=00688996&bsns_year=2023&reprt_code=11011&idx_cl_code=M240000",
+  "status": "000",
+  "message": "정상",
+  "fetchedAt": "2026-08-12T03:10:21.779Z",
+  "elapsedMs": 96,
+  "bytes": 1359,
+  "body": {
+    "status": "000",
+    "message": "정상",
+    "list": [
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2023",
+        "corp_code": "00688996",
+        "stock_code": "105560",
+        "stlm_dt": "2023-12-31",
+        "idx_cl_code": "M240000",
+        "idx_cl_nm": "활동성지표",
+        "idx_code": "M241000",
+        "idx_nm": "총자산회전율"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2023",
+        "corp_code": "00688996",
+        "stock_code": "105560",
+        "stlm_dt": "2023-12-31",
+        "idx_cl_code": "M240000",
+        "idx_cl_nm": "활동성지표",
+        "idx_code": "M241600",
+        "idx_nm": "유형자산회전율"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2023",
+        "corp_code": "00688996",
+        "stock_code": "105560",
+        "stlm_dt": "2023-12-31",
+        "idx_cl_code": "M240000",
+        "idx_cl_nm": "활동성지표",
+        "idx_code": "M241800",
+        "idx_nm": "타인자본회전율"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2023",
+        "corp_code": "00688996",
+        "stock_code": "105560",
+        "stlm_dt": "2023-12-31",
+        "idx_cl_code": "M240000",
+        "idx_cl_nm": "활동성지표",
+        "idx_code": "M241900",
+        "idx_nm": "자기자본회전율"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2023",
+        "corp_code": "00688996",
+        "stock_code": "105560",
+        "stlm_dt": "2023-12-31",
+        "idx_cl_code": "M240000",
+        "idx_cl_nm": "활동성지표",
+        "idx_code": "M242000",
+        "idx_nm": "자본금회전율"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2023",
+        "corp_code": "00688996",
+        "stock_code": "105560",
+        "stlm_dt": "2023-12-31",
+        "idx_cl_code": "M240000",
+        "idx_cl_nm": "활동성지표",
+        "idx_code": "M451000",
+        "idx_nm": "배당성향(%)",
+        "idx_val": "25.242"
+      }
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "requestUrl": "https://opendart.fss.or.kr/api/company.json?crtfc_key=***MASKED***&corp_code=00104856",
+  "status": "000",
+  "message": "정상",
+  "fetchedAt": "2026-08-12T02:52:30.300Z",
+  "elapsedMs": 71,
+  "bytes": 486,
+  "body": {
+    "status": "000",
+    "message": "정상",
+    "corp_code": "00104856",
+    "corp_name": "삼성증권(주)",
+    "corp_name_eng": "SAMSUNG SECURITIES CO.,LTD",
+    "stock_name": "삼성증권",
+    "stock_code": "016360",
+    "ceo_nm": "박종문",
+    "corp_cls": "Y",
+    "jurir_no": "1101110335649",
+    "bizr_no": "2028148588",
+    "adres": "서울특별시 서초구 서초대로74길 11 (서초동)",
+    "hm_url": "www.samsungpop.com",
+    "ir_url": "",
+    "phn_no": "02-2020-8000",
+    "fax_no": "02)2020-8077",
+    "induty_code": "66121",
+    "est_dt": "19821019",
+    "acc_mt": "12"
+  }
+}

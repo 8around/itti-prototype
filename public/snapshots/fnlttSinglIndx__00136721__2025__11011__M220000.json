@@ -1,0 +1,74 @@
+{
+  "requestUrl": "https://opendart.fss.or.kr/api/fnlttSinglIndx.json?crtfc_key=***MASKED***&corp_code=00136721&bsns_year=2025&reprt_code=11011&idx_cl_code=M220000",
+  "status": "000",
+  "message": "정상",
+  "fetchedAt": "2026-08-12T03:10:31.167Z",
+  "elapsedMs": 99,
+  "bytes": 1214,
+  "body": {
+    "status": "000",
+    "message": "정상",
+    "list": [
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2025",
+        "corp_code": "00136721",
+        "stock_code": "001720",
+        "stlm_dt": "2025-03-31",
+        "idx_cl_code": "M220000",
+        "idx_cl_nm": "안정성지표",
+        "idx_code": "M221000",
+        "idx_nm": "자기자본비율",
+        "idx_val": "17.657"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2025",
+        "corp_code": "00136721",
+        "stock_code": "001720",
+        "stlm_dt": "2025-03-31",
+        "idx_cl_code": "M220000",
+        "idx_cl_nm": "안정성지표",
+        "idx_code": "M221100",
+        "idx_nm": "부채비율",
+        "idx_val": "466.356"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2025",
+        "corp_code": "00136721",
+        "stock_code": "001720",
+        "stlm_dt": "2025-03-31",
+        "idx_cl_code": "M220000",
+        "idx_cl_nm": "안정성지표",
+        "idx_code": "M223000",
+        "idx_nm": "자본유보율",
+        "idx_val": "2007.178"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2025",
+        "corp_code": "00136721",
+        "stock_code": "001720",
+        "stlm_dt": "2025-03-31",
+        "idx_cl_code": "M220000",
+        "idx_cl_nm": "안정성지표",
+        "idx_code": "M223200",
+        "idx_nm": "재무레버리지",
+        "idx_val": "566.356"
+      },
+      {
+        "reprt_code": "11011",
+        "bsns_year": "2025",
+        "corp_code": "00136721",
+        "stock_code": "001720",
+        "stlm_dt": "2025-03-31",
+        "idx_cl_code": "M220000",
+        "idx_cl_nm": "안정성지표",
+        "idx_code": "M224100",
+        "idx_nm": "유형자산구성비율",
+        "idx_val": "0.851"
+      }
+    ]
+  }
+}
