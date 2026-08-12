@@ -20,11 +20,9 @@ pnpm dev
 
 | 순서 | 화면 | 보여줄 것 |
 |---|---|---|
-| 1 | `/universe` | 20종목 + **손익구조 컬럼** — "모든 종목 공통이 아니라 비금융 공통" |
-| 2 | `/compare/pnl` ★ | 삼성전자(워터폴) vs KB금융(스택+차감 구획) — 우측에 매출 막대가 **없는 게 정상** |
-| 3 | 아무 수치의 `원문 보기 ›` | collapse 5탭 → **"지금 다시 호출"** → 라이브 DART 대조 「일치」 배지 |
-| 4 | `/` → 종목 클릭 | 20종목 상세. 특히 **LG화학**(지배주주 적자 −6,909억) · **헬릭스미스**(EPS 폴백·무배당 0%·적자 N/A) |
-| 5 | `/kitchen-sink` | 차트 프리미티브 8종 + 6가지 데이터 상태 표기 |
+| 1 | `/` → 종목 클릭 | 20종목 상세. 특히 **LG화학**(지배주주 적자 −6,909억) · **헬릭스미스**(EPS 폴백·무배당 0%·적자 N/A) |
+| 2 | 종목 상세의 아무 수치 `원문 보기 ›` | collapse 5탭 → **"지금 다시 호출"** → 라이브 DART 대조 「일치」 배지 |
+| 3 | `/kitchen-sink` | 차트 프리미티브 8종 + 6가지 데이터 상태 표기 |
 
 프로덕션 모드로 보려면: `pnpm build && pnpm start` (동일 포트).
 
@@ -54,7 +52,7 @@ pnpm dev
 
 | 명령 | 하는 일 | DART 호출 |
 |---|---|---|
-| `pnpm dev` / `pnpm build` / `pnpm start` | 개발 / 빌드(SSG 29라우트) / 프로덕션 서빙 | 0 |
+| `pnpm dev` / `pnpm build` / `pnpm start` | 개발 / 빌드(SSG 25라우트) / 프로덕션 서빙 | 0 |
 | `pnpm vitest run` | 테스트 81개 (실제 스냅샷 픽스처 기반) | 0 |
 | `pnpm snapshot:build` | 스냅샷 → `data/derived.json` 재정규화 | **0 (오프라인)** |
 | `pnpm snapshot:fetch --dry-run` | 수집 계획만 출력 | 0 |
@@ -103,7 +101,7 @@ pnpm dlx vercel deploy --prod       # 빌드·업로드 (이후 재배포는 이
 ## 5. 구조 한 장
 
 ```
-app/            화면 (전부 서버 컴포넌트, 차트 JS 번들 0KB)
+app/            화면 — `/`(종목 리스트) · `/stock/[code]`(종목 상세) · `/kitchen-sink`(차트 프리미티브 데모) 3종 + `/api/dart/probe`(라이브 대조 API). 전부 서버 컴포넌트, 차트 JS 번들 0KB
 lib/dart/       DART 클라이언트 (status 판정·키 마스킹·허용목록 프록시)
 lib/normalize/  정규화 엔진 — 원본→Resolution(폴백 이력·displayState 6종)
 lib/profiles.ts 프로필 카탈로그 — 이 파일만 고치면 표시 지표가 바뀜
