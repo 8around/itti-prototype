@@ -172,3 +172,41 @@
   padding-top: 8px;
   margin-top: -2px;
 }
+
+/* 화면 모드 탭 — /stock/[code] 헤더와 같은 세그먼트 컨트롤. 두 화면의 모드가 링크로 이어지므로
+   생김새도 같아야 "같은 스위치"로 읽힌다. */
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.viewTabs {
+  display: flex;
+  background: var(--wash);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.viewTab {
+  font-size: 11.5px;
+  font-weight: 800;
+  color: var(--gray);
+  border-radius: 6px;
+  padding: 4px 12px;
+}
+
+.viewTab:hover {
+  color: var(--green);
+}
+
+.viewTabActive,
+.viewTabActive:hover {
+  color: var(--ink);
+  background: var(--paper);
+  box-shadow: var(--shadow);
+}

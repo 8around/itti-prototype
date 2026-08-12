@@ -5,13 +5,14 @@ import MetricValue from "@/components/MetricValue";
 import { toEok } from "@/lib/format";
 import { findProfileMetric, PROFILE_CATALOG, resolveDisplay, summarizeCoverage } from "@/lib/profiles";
 import { loadStockYearView, profileIdOf, UNIVERSE } from "@/lib/stockView";
+import type { ViewMode } from "./stock/[code]/page";
 import type { ProfileId } from "@/lib/normalize/types";
 import type { ProfileMetric } from "@/lib/profiles";
 
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
-  title: "20종목 유니버스 — 이띠 DART 프로토타입",
+  title: "관심종목 20 — 이띠 DART 프로토타입",
 };
 
 /**
@@ -50,7 +51,11 @@ function representativeMetric(profile: ProfileId): ProfileMetric | undefined {
   return stacked ?? PROFILE_CATALOG[profile].pnl[0];
 }
 
-export default function HomePage() {
+export default async function HomePage({ searchParams }: { searchParams: Promise<{ view?: string }> }) {
+  // 상세 화면과 같은 축의 화면 모드 — 리스트에서 켠 모드가 상세로 그대로 이어지도록 링크에 실어 보낸다.
+  const view: ViewMode = (await searchParams).view === "trace" ? "trace" : "data";
+  const isTrace = view === "trace";
+
   const cards = UNIVERSE.map((row) => {
     const profileId = profileIdOf(row);
     const repMetric = representativeMetric(profileId);
@@ -67,20 +72,34 @@ export default function HomePage() {
 
   return (
     <main className={styles.main}>
-      <h1 className={styles.title}>20종목 유니버스 (/)</h1>
-      <p className={styles.lead}>
-        각 카드는 DART 실측값만 표시한다 — 근거 없는 0은 없다. 커버리지 %는 프로필 카탈로그(lib/profiles.ts) 후보 대비 실제
-        HIT 비율이다. 금융 {finCount}종목 평균 {finAvgCoverage}% &lt; 비금융 {nonFinCards.length}종목 평균 {nonFinAvgCoverage}% —
-        원인은 하나가 아니라 둘이 겹친 결과다: ① 금융업 전용 안정성 지표(BIS·NPL·NCR·K-ICS)가 DART 표준 API에 아예 없는
-        구조적 요인(금융 프로필에만 해당), ② 종목별로 특정 계정이 공시 자체에서 빠지는 결측(비금융도 예외가 아니다 —
-        예: 카카오는 매출총이익 행이 없어 83%). 둘 다 정상 동작이다(카탈로그 조작 아님).
-      </p>
+      <div className={styles.head}>
+        <h1 className={styles.title}>{isTrace ? "20종목 유니버스 — 원천 추적" : "관심종목 20"}</h1>
+        <nav className={styles.viewTabs} aria-label="화면 모드 선택">
+          <Link href="/?view=data" className={`${styles.viewTab} ${!isTrace ? styles.viewTabActive : ""}`} aria-current={!isTrace}>
+            데이터
+          </Link>
+          <Link href="/?view=trace" className={`${styles.viewTab} ${isTrace ? styles.viewTabActive : ""}`} aria-current={isTrace}>
+            원천 추적
+          </Link>
+        </nav>
+      </div>
+      {isTrace ? (
+        <p className={styles.lead}>
+          각 카드는 DART 실측값만 표시한다 — 근거 없는 0은 없다. 커버리지 %는 프로필 카탈로그(lib/profiles.ts) 후보 대비 실제
+          HIT 비율이다. 금융 {finCount}종목 평균 {finAvgCoverage}% &lt; 비금융 {nonFinCards.length}종목 평균 {nonFinAvgCoverage}% —
+          원인은 하나가 아니라 둘이 겹친 결과다: ① 금융업 전용 안정성 지표(BIS·NPL·NCR·K-ICS)가 DART 표준 API에 아예 없는
+          구조적 요인(금융 프로필에만 해당), ② 종목별로 특정 계정이 공시 자체에서 빠지는 결측(비금융도 예외가 아니다 —
+          예: 카카오는 매출총이익 행이 없어 83%). 둘 다 정상 동작이다(카탈로그 조작 아님).
+        </p>
+      ) : (
+        <p className={styles.lead}>종목을 선택하면 재무 7셋(손익·재무상태·현금흐름·수익성·안정성·주주환원·밸류에이션)을 연도별로 볼 수 있다.</p>
+      )}
 
       <div className={styles.grid}>
         {cards.map(({ row, profileId, repMetric, yearViews, coverage }) => {
           const coveragePct = Math.round((coverage.hit / coverage.total) * 100);
           return (
-            <Link key={row.stockCode} href={`/stock/${row.stockCode}`} className={styles.card}>
+            <Link key={row.stockCode} href={`/stock/${row.stockCode}?view=${view}`} className={styles.card}>
               <div className={styles.cardHead}>
                 <span className={styles.name}>{row.name}</span>
                 <span className={`${styles.badge} ${PROFILE_BADGE_CLASS[profileId]}`}>{PROFILE_LABEL[profileId]}</span>
@@ -90,14 +109,16 @@ export default function HomePage() {
                 {row.accMt !== "12" && <span className={styles.fyBadge}>결산 {row.accMt}월</span>}
               </div>
 
-              <div className={styles.coverageRow}>
-                <div className={styles.coverageTrack}>
-                  <div className={styles.coverageFill} style={{ width: `${coveragePct}%` }} />
+              {isTrace && (
+                <div className={styles.coverageRow}>
+                  <div className={styles.coverageTrack}>
+                    <div className={styles.coverageFill} style={{ width: `${coveragePct}%` }} />
+                  </div>
+                  <span className={styles.coverageText}>
+                    커버리지 {coveragePct}% ({coverage.hit}/{coverage.total})
+                  </span>
                 </div>
-                <span className={styles.coverageText}>
-                  커버리지 {coveragePct}% ({coverage.hit}/{coverage.total})
-                </span>
-              </div>
+              )}
 
               {repMetric && (
                 <div className={styles.repMetric}>
@@ -118,7 +139,7 @@ export default function HomePage() {
                 </div>
               )}
 
-              {row.note && <p className={styles.note}>{row.note}</p>}
+              {isTrace && row.note && <p className={styles.note}>{row.note}</p>}
             </Link>
           );
         })}

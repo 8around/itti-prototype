@@ -14,8 +14,14 @@ export const metadata: Metadata = {
  * next/link만 사용) — 전역 제약(§2)의 "차트·지표 컴포넌트는 서버 컴포넌트" 원칙과 별개로,
  * 레이아웃 자체도 처음부터 클라이언트 컴포넌트였던 적이 없다.
  */
-const NAV_LINKS = [
-  { href: "/", label: "종목" },
+const NAV_LINKS = [{ href: "/", label: "종목" }] as const;
+
+/**
+ * 개발·검증 전용 화면 — 클라이언트 시연 중 실수로 들어가지 않도록 본 메뉴와 분리해
+ * "개발 검증" 그룹으로 접어 둔다(경로는 그대로라 북마크는 계속 동작한다).
+ * 종목 화면 자체의 데이터/원천추적 구분은 각 화면 헤더의 모드 탭이 담당한다.
+ */
+const DEV_LINKS = [
   { href: "/universe", label: "유니버스" },
   { href: "/compare/pnl", label: "비교(삼성vsKB)" },
   { href: "/kitchen-sink", label: "킷친싱크" },
@@ -38,6 +44,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                 </li>
               ))}
             </ul>
+            <details className="devMenu">
+              <summary>개발 검증</summary>
+              <ul>
+                {DEV_LINKS.map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href}>{link.label}</Link>
+                  </li>
+                ))}
+              </ul>
+            </details>
           </nav>
         </header>
         {children}

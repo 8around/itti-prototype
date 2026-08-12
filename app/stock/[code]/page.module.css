@@ -76,11 +76,61 @@
   border-radius: 5px;
 }
 
+/* 탭 줄 — 왼쪽 기준연도, 오른쪽 화면 모드. 성격이 다른 두 축이라 시각적으로도 갈라 놓는다. */
+.tabBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
 /* 연도 탭 — derived.json이 담은 연도만큼 자동으로 늘어난다(app/stock/[code]/page.tsx 참조). */
 .yearTabs {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+}
+
+/* 화면 모드 탭 — 데이터(클라이언트) / 원천 추적(내부). 연도 탭과 헷갈리지 않도록
+   pill이 아니라 세그먼트 컨트롤 형태로 묶는다. */
+.viewTabs {
+  display: flex;
+  background: var(--wash);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.viewTab {
+  font-size: 11.5px;
+  font-weight: 800;
+  color: var(--gray);
+  border-radius: 6px;
+  padding: 4px 12px;
+  text-decoration: none;
+}
+
+.viewTab:hover {
+  color: var(--green);
+}
+
+.viewTabActive,
+.viewTabActive:hover {
+  color: var(--ink);
+  background: var(--paper);
+  box-shadow: var(--shadow);
+}
+
+.traceBanner {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--orange-dk);
+  background: var(--orange-bg);
+  border-radius: 8px;
+  padding: 7px 12px;
+  line-height: 1.6;
 }
 
 .yearTab {

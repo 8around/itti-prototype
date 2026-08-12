@@ -94,12 +94,33 @@ function defaultNoteFor(state: DisplayState, profile: ProfileId): string | undef
   }
 }
 
+/**
+ * 화면 모드 — 같은 데이터를 두 관점으로 보여준다.
+ *
+ * - `data`  **클라이언트 제공 화면(기본).** 수치와 차트, 그리고 값이 없을 때의 사유 배지만
+ *           남긴다. 어떤 API의 어떤 계정에서 왔는지 같은 내부 추적 정보는 숨긴다.
+ * - `trace` **원천 추적 화면.** 위에 더해 지표마다 출처 collapse(요청 URL·원본 JSON·폴백
+ *           이력·정규화·파생 계산식)와 커버리지·실증 노트를 전부 노출한다. 우리가 데이터를
+ *           제대로 읽고 있는지 검증하는 용도라 클라이언트 시연 화면에는 넣지 않는다.
+ *
+ * 결측 사유 배지(`데이터 없음`/`해당 없음`/`원천 미확보`/`무배당 확인`)는 **두 모드 모두에
+ * 남긴다** — 이건 디버깅 정보가 아니라 "근거 없는 숫자를 만들지 않는다"는 약속의 표현이라,
+ * 클라이언트에게야말로 보여야 하는 것이다.
+ */
+export type ViewMode = "data" | "trace";
+
 type FieldContext = {
   corpCode: string;
   profile: ProfileId;
   /** SourcePanel requestId 조립에 쓰이는 조회 연도 — 연도 탭에 따라 바뀐다. */
   year: string;
+  view: ViewMode;
 };
+
+/** 출처 collapse·커버리지·실증 노트처럼 추적 모드에서만 보이는 요소인지. */
+function isTrace(ctx: FieldContext): boolean {
+  return ctx.view === "trace";
+}
 
 function FieldRow({
   ctx,
@@ -128,7 +149,7 @@ function FieldRow({
     <div className={styles.field}>
       <div className={styles.fieldLabel}>{label}</div>
       <MetricValue state={state} value={value} unit={unit} basis={basis} note={note} />
-      {resolution && <SourcePanel {...buildSourcePanelProps(metricKey, ctx.corpCode, ctx.year, withDisplayState(resolution, state), panelUnit, ctx.profile)} />}
+      {resolution && isTrace(ctx) && <SourcePanel {...buildSourcePanelProps(metricKey, ctx.corpCode, ctx.year, withDisplayState(resolution, state), panelUnit, ctx.profile)} />}
     </div>
   );
 }
@@ -196,7 +217,8 @@ function RawField({
 
 /** 차트가 이미 값을 그린 지표용 — 중복 숫자 표기 없이 출처 collapse만 붙인다. */
 function TraceOnly({ ctx, metric, resolution }: { ctx: FieldContext; metric: ProfileMetric; resolution?: Resolution }) {
-  if (!resolution) return null;
+  // 차트가 이미 값을 그린 지표라 이 블록에는 출처 collapse밖에 없다 — 데이터 모드에선 통째로 뺀다.
+  if (!resolution || !isTrace(ctx)) return null;
   const state = resolveDisplay(ctx.profile, metric.key, resolution);
   return (
     <div className={styles.field}>
@@ -262,9 +284,10 @@ function dividendPayoutConflictNote(indx: Resolution | undefined, fallback: Reso
 /* 섹션                                                                       */
 /* ------------------------------------------------------------------------ */
 
-function OverviewSection({ row, profile }: { row: UniverseRow; profile: ProfileId }) {
+function OverviewSection({ ctx, row }: { ctx: FieldContext; row: UniverseRow }) {
   const envelope = loadCompany(row.stockCode);
   const company = envelope.body;
+  const profile = ctx.profile;
   return (
     <section className={styles.section}>
       <h2>개요</h2>
@@ -283,14 +306,19 @@ function OverviewSection({ row, profile }: { row: UniverseRow; profile: ProfileI
         <dd>{company.corp_cls === "Y" ? "유가증권" : company.corp_cls === "K" ? "코스닥" : company.corp_cls}</dd>
         <dt>손익구조 프로필</dt>
         <dd>
-          {PROFILE_LABEL[profile]} ({row.profileSource === "MANUAL" ? "수동 확정" : "자동(KSIC)"})
+          {PROFILE_LABEL[profile]}
+          {isTrace(ctx) && ` (${row.profileSource === "MANUAL" ? "수동 확정" : "자동(KSIC)"})`}
         </dd>
       </dl>
-      <p className={styles.noteText}>T2 실증 포인트: {row.note}</p>
-      <details className={styles.rawDetails}>
-        <summary>원본 company.json</summary>
-        <pre className={styles.pre}>{JSON.stringify(company, null, 2)}</pre>
-      </details>
+      {isTrace(ctx) && (
+        <>
+          <p className={styles.noteText}>T2 실증 포인트: {row.note}</p>
+          <details className={styles.rawDetails}>
+            <summary>원본 company.json</summary>
+            <pre className={styles.pre}>{JSON.stringify(company, null, 2)}</pre>
+          </details>
+        </>
+      )}
     </section>
   );
 }
@@ -410,10 +438,12 @@ function PnlSection({
         {growthBlock}
         {annualGrowth}
 
-        <div className={styles.coverageBox}>
-          손익 후보 {coverage.total}개 중 {coverage.hit}개 존재
-          {coverage.missing.length > 0 && <span className={styles.coverageMissing}> · 미존재: {coverage.missing.map((m) => `${m.label}(${m.state})`).join(", ")}</span>}
-        </div>
+        {isTrace(ctx) && (
+          <div className={styles.coverageBox}>
+            손익 후보 {coverage.total}개 중 {coverage.hit}개 존재
+            {coverage.missing.length > 0 && <span className={styles.coverageMissing}> · 미존재: {coverage.missing.map((m) => `${m.label}(${m.state})`).join(", ")}</span>}
+          </div>
+        )}
       </section>
     );
   }
@@ -482,10 +512,12 @@ function PnlSection({
 
       <NotInProfileBlock ctx={ctx} title="표준 프로필 전용 지표 (해당 없음)" keys={naKeys} sourceProfile="STANDARD" />
 
-      <div className={styles.coverageBox}>
-        손익 후보 {coverage.total}개 중 {coverage.hit}개 존재
-        {coverage.missing.length > 0 && <span className={styles.coverageMissing}> · 미존재: {coverage.missing.map((m) => `${m.label}(${m.state})`).join(", ")}</span>}
-      </div>
+      {isTrace(ctx) && (
+        <div className={styles.coverageBox}>
+          손익 후보 {coverage.total}개 중 {coverage.hit}개 존재
+          {coverage.missing.length > 0 && <span className={styles.coverageMissing}> · 미존재: {coverage.missing.map((m) => `${m.label}(${m.state})`).join(", ")}</span>}
+        </div>
+      )}
     </section>
   );
 }
@@ -763,26 +795,35 @@ function ValuationSection({ ctx, current }: { ctx: FieldContext; current: StockY
 
 /* ------------------------------------------------------------------------ */
 
+const VIEW_TABS: { id: ViewMode; label: string; hint: string }[] = [
+  { id: "data", label: "데이터", hint: "클라이언트 제공 화면 — 수치와 차트만" },
+  { id: "trace", label: "원천 추적", hint: "지표마다 DART 원문·폴백 이력·계산식까지" },
+];
+
 export default async function StockDetailPage({
   params,
   searchParams,
 }: {
   params: Promise<{ code: string }>;
-  searchParams: Promise<{ year?: string }>;
+  searchParams: Promise<{ year?: string; view?: string }>;
 }) {
   const { code } = await params;
   const row = UNIVERSE.find((r) => r.stockCode === code);
   if (!row) notFound();
 
   const years = availableYears();
-  const requestedYear = (await searchParams).year;
+  const query = await searchParams;
   // 알 수 없는 연도가 오면 404가 아니라 최신 연도로 떨어뜨린다 — 링크 오타로 화면이 죽지 않게.
-  const selectedYear = requestedYear && years.includes(requestedYear) ? requestedYear : years[years.length - 1];
+  const selectedYear = query.year && years.includes(query.year) ? query.year : years[years.length - 1];
+  // 기본은 클라이언트 화면이다 — 시연 중 실수로 내부 추적 정보가 노출되지 않게 하는 쪽이 안전하다.
+  const view: ViewMode = query.view === "trace" ? "trace" : "data";
+  const hrefWith = (next: { year?: string; view?: ViewMode }) =>
+    `/stock/${row.stockCode}?year=${next.year ?? selectedYear}&view=${next.view ?? view}`;
 
   const profile = profileIdOf(row);
   const yearViews = years.map((year) => loadStockYearView(row, year));
   const current = yearViews.find((y) => y.year === selectedYear)!;
-  const ctx: FieldContext = { corpCode: row.corpCode, profile, year: selectedYear };
+  const ctx: FieldContext = { corpCode: row.corpCode, profile, year: selectedYear, view };
 
   const quarterSeries: Record<string, DerivedQuarterSeries["points"]> = {
     revenue: loadQuarterSeries(row, "revenue"),
@@ -806,20 +847,37 @@ export default async function StockDetailPage({
           <span className={`${styles.badge} ${profile === "STANDARD" ? styles.badgeStandard : styles.badgeFin}`}>{PROFILE_LABEL[profile]}</span>
           {row.accMt !== "12" && <span className={styles.fyBadge}>결산월 {row.accMt}월(비12월)</span>}
         </div>
-        <nav className={styles.yearTabs} aria-label="기준 연도 선택">
-          {years.map((y) => (
-            <Link key={y} href={`/stock/${row.stockCode}?year=${y}`} className={`${styles.yearTab} ${y === selectedYear ? styles.yearTabActive : ""}`} aria-current={y === selectedYear}>
-              {y}
-            </Link>
-          ))}
-        </nav>
+        <div className={styles.tabBar}>
+          <nav className={styles.yearTabs} aria-label="기준 연도 선택">
+            {years.map((y) => (
+              <Link key={y} href={hrefWith({ year: y })} className={`${styles.yearTab} ${y === selectedYear ? styles.yearTabActive : ""}`} aria-current={y === selectedYear}>
+                {y}
+              </Link>
+            ))}
+          </nav>
+          <nav className={styles.viewTabs} aria-label="화면 모드 선택">
+            {VIEW_TABS.map((tab) => (
+              <Link
+                key={tab.id}
+                href={hrefWith({ view: tab.id })}
+                title={tab.hint}
+                className={`${styles.viewTab} ${tab.id === view ? styles.viewTabActive : ""}`}
+                aria-current={tab.id === view}
+              >
+                {tab.label}
+              </Link>
+            ))}
+          </nav>
+        </div>
         <p className={styles.headMeta}>
           {row.market === "Y" ? "코스피" : row.market === "K" ? "코스닥" : row.market} · 기준연도 {selectedYear} · 기준 {basisLabel(current.fsDiv)}
-          {current.fsDivFallbackApplied && " (CFS 미작성 → OFS 폴백)"} · 커버리지 {coveragePct}% ({coverage.hit}/{coverage.total})
+          {current.fsDivFallbackApplied && " (연결재무제표 미작성 → 별도 기준)"}
+          {view === "trace" && ` · 커버리지 ${coveragePct}% (${coverage.hit}/${coverage.total})`}
         </p>
+        {view === "trace" && <p className={styles.traceBanner}>원천 추적 모드 — 지표마다 붙은 &ldquo;출처&rdquo;를 펼치면 요청 URL·원본 JSON·폴백 이력·계산식을 볼 수 있다. 클라이언트 시연에는 &ldquo;데이터&rdquo; 탭을 쓴다.</p>}
       </header>
 
-      <OverviewSection row={row} profile={profile} />
+      <OverviewSection ctx={ctx} row={row} />
       <PnlSection ctx={ctx} years={yearViews} current={current} quarterSeries={quarterSeries} />
       <BalanceSection ctx={ctx} years={yearViews} current={current} />
       <CashFlowSection ctx={ctx} current={current} />
