@@ -1,0 +1,12 @@
+{
+  "requestUrl": "https://opendart.fss.or.kr/api/fnlttSinglAcntAll.json?crtfc_key=***MASKED***&corp_code=00266961&bsns_year=2026&reprt_code=11012&fs_div=CFS",
+  "status": "013",
+  "message": "조회된 데이타가 없습니다.",
+  "fetchedAt": "2026-08-12T12:01:15.104Z",
+  "elapsedMs": 87,
+  "bytes": 65,
+  "body": {
+    "status": "013",
+    "message": "조회된 데이타가 없습니다."
+  }
+}
