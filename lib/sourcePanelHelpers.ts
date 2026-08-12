@@ -18,7 +18,7 @@ import { FIN_INSURANCE_EXTRA_CANDIDATES } from "./normalize/fin-insurance-catalo
 import { FIN_SECURITIES_EXTRA_CANDIDATES } from "./normalize/fin-securities-catalog";
 import type { FsDiv } from "./normalize/resolve";
 import { extraCandidatesFor } from "./normalize/resolveProfileExtras";
-import type { MetricCandidate, ProfileId, Resolution } from "./normalize/types";
+import type { MetricCandidate, MetricSource, ProfileId, Resolution } from "./normalize/types";
 import type { SourcePanelProps } from "@/components/SourcePanel";
 
 const SNAPSHOTS_DIR = join(process.cwd(), "public", "snapshots");
@@ -76,17 +76,31 @@ const BASE_CANDIDATES: MetricCandidate[] = [...ACNT_ALL_CANDIDATES, ...SINGL_IND
 /** profile 매치가 실패했을 때만 쓰는 전역 안전망 — 정상 호출 경로에서는 도달하지 않아야 한다. */
 const ALL_EXTRA_CANDIDATES: MetricCandidate[] = [...FIN_HOLDING_EXTRA_CANDIDATES, ...FIN_SECURITIES_EXTRA_CANDIDATES, ...FIN_INSURANCE_EXTRA_CANDIDATES];
 
+/**
+ * 리뷰 픽스(I1b) — q4_역산값·roa·operating_margin·fcf처럼 자체 MetricCandidate가 없는 파생
+ * 지표 대부분은 acntAll 스냅샷 값으로 계산되므로 "acntAll로 간주"가 맞는 기본값이다. 하지만
+ * `dividend_payout_fallback`(배당총액÷지배주주 귀속 순이익)은 alotMatter 스냅샷의 두 행을
+ * 합성한 값이라 acntAll로 간주하면 SourcePanel "원문 보기"에 엉뚱한 acntAll JSON이 뜬다 —
+ * 원천만 alotMatter로 오버라이드한다(카카오 29,857/55,277 등 alotMatter 원본 도달 보장).
+ */
+const DERIVED_SOURCE_OVERRIDES: Partial<Record<string, MetricSource>> = {
+  dividend_payout_fallback: "alotMatter",
+};
+
 function findCandidate(metricKey: string, profile: ProfileId): MetricCandidate | undefined {
-  // q4_역산값·roa·operating_margin·fcf·dividend_payout_fallback처럼 자체 후보가 없는 파생
-  // 지표는 여기서 못 찾는다(derive.ts가 다른 Resolution을 입력으로 계산) — undefined면 호출부가
-  // acntAll로 간주한다.
+  // q4_역산값·roa·operating_margin·fcf처럼 자체 후보가 없는 파생 지표는 여기서 못 찾는다
+  // (derive.ts가 다른 Resolution을 입력으로 계산) — undefined면 호출부가 acntAll로 간주한다.
   const base = BASE_CANDIDATES.find((c) => c.key === metricKey);
   if (base) return base;
   // resolveProfileExtras.ts와 동일한 매핑(EXTRA_CANDIDATES_BY_PROFILE)을 재사용해 화면이 실제로
   // merge해서 쓰는 것과 같은 카탈로그에서만 찾는다.
   const scoped = extraCandidatesFor(profile).find((c) => c.key === metricKey);
   if (scoped) return scoped;
-  return ALL_EXTRA_CANDIDATES.find((c) => c.key === metricKey);
+  const extra = ALL_EXTRA_CANDIDATES.find((c) => c.key === metricKey);
+  if (extra) return extra;
+  const overrideSource = DERIVED_SOURCE_OVERRIDES[metricKey];
+  if (!overrideSource) return undefined;
+  return { key: metricKey, label: metricKey, accountIds: [], sjDivPriority: [], unit: "PCT", sourceAvailable: true, source: overrideSource };
 }
 
 /**

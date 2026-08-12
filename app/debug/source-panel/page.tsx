@@ -4,6 +4,7 @@ import { join } from "node:path";
 import SourcePanel from "@/components/SourcePanel";
 import type { FsDiv } from "@/lib/normalize/resolve";
 import type { Resolution } from "@/lib/normalize/types";
+import { acntAllProbeParams, acntAllRequestId, basisLabel, reportDateFromSnapshot } from "@/lib/sourcePanelHelpers";
 
 import styles from "./page.module.css";
 
@@ -48,31 +49,6 @@ function pickResolution(derived: DerivedFile, name: string, year: string, metric
   const resolution = yearData.resolutions[metricKey];
   if (!resolution) throw new Error(`데모 데이터에 지표가 없습니다: ${name} ${year} ${metricKey}`);
   return { stock, yearData, resolution };
-}
-
-/** rcept_no(접수번호) 앞 8자리가 접수일(YYYYMMDD)이다 — 브리프 목업의 "기준일" 표기용. */
-function reportDateFromSnapshot(requestId: string): string {
-  try {
-    const raw = readFileSync(join(process.cwd(), "public", "snapshots", `${requestId}.json`), "utf-8");
-    const data = JSON.parse(raw) as { body?: { list?: { rcept_no?: string }[] } };
-    const rcept = data.body?.list?.[0]?.rcept_no;
-    if (rcept && rcept.length >= 8) {
-      return `${rcept.slice(0, 4)}.${rcept.slice(4, 6)}.${rcept.slice(6, 8)}`;
-    }
-  } catch {
-    // 스냅샷이 없거나 rcept_no가 없으면 "-"로 대체 — 데모용 방어 코드.
-  }
-  return "-";
-}
-
-const basisLabel = (fsDiv: FsDiv) => (fsDiv === "CFS" ? ("연결" as const) : ("별도" as const));
-
-function acntAllRequestId(corpCode: string, year: string, fsDiv: FsDiv): string {
-  return `fnlttSinglAcntAll__${corpCode}__${year}__11011__${fsDiv}`;
-}
-
-function acntAllProbeParams(corpCode: string, year: string, fsDiv: FsDiv): Record<string, string> {
-  return { endpoint: "fnlttSinglAcntAll", corp_code: corpCode, bsns_year: year, reprt_code: "11011", fs_div: fsDiv };
 }
 
 export default function SourcePanelDebugPage() {

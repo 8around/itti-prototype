@@ -58,21 +58,22 @@ describe("withDisplayState — SourcePanel 폴백 탭 일관성", () => {
 });
 
 describe("summarizePnlCoverage — 하드코딩 없는 후보 N/M 집계", () => {
-  it("STANDARD: 후보 4개(operating_margin 제외) 중 4개 존재", () => {
+  it("STANDARD: 후보 5개(operating_margin 제외, net_income_attributable_to_owners 포함) 중 5개 존재", () => {
     const resolutions: Record<string, Resolution> = {
       revenue: ok("revenue"),
       gross_profit: ok("gross_profit"),
       operating_income: ok("operating_income"),
+      net_income_attributable_to_owners: ok("net_income_attributable_to_owners"),
       net_income: ok("net_income"),
       operating_margin: ok("operating_margin"),
     };
     const coverage = summarizePnlCoverage("STANDARD", resolutions);
-    expect(coverage.total).toBe(4);
-    expect(coverage.hit).toBe(4);
+    expect(coverage.total).toBe(5);
+    expect(coverage.hit).toBe(5);
     expect(coverage.missing).toEqual([]);
   });
 
-  it("FIN_HOLDING: KB금융처럼 8개 후보가 전부 실측 HIT이면 8/8 (하드코딩된 5/3이 아니라 실측대로)", () => {
+  it("FIN_HOLDING: KB금융처럼 9개 후보(net_income_attributable_to_owners 포함)가 전부 실측 HIT이면 9/9 (하드코딩된 5/3이 아니라 실측대로)", () => {
     const resolutions: Record<string, Resolution> = {
       net_interest_income: ok("net_interest_income"),
       net_fee_income: ok("net_fee_income"),
@@ -81,23 +82,25 @@ describe("summarizePnlCoverage — 하드코딩 없는 후보 N/M 집계", () =>
       interest_revenue: ok("interest_revenue"),
       insurance_revenue: ok("insurance_revenue"),
       operating_income: ok("operating_income"),
+      net_income_attributable_to_owners: ok("net_income_attributable_to_owners"),
       net_income: ok("net_income"),
     };
     const coverage = summarizePnlCoverage("FIN_HOLDING", resolutions);
-    expect(coverage.total).toBe(8);
-    expect(coverage.hit).toBe(8);
+    expect(coverage.total).toBe(9);
+    expect(coverage.hit).toBe(9);
   });
 
   it("일부만 존재하면 missing에 사유(state)와 함께 정확히 담긴다", () => {
     const resolutions: Record<string, Resolution> = {
       net_interest_income: ok("net_interest_income"),
       net_fee_income: missing("net_fee_income"),
-      // insurance_result·credit_loss_allowance·interest_revenue·insurance_revenue·operating_income·net_income 없음
+      // insurance_result·credit_loss_allowance·interest_revenue·insurance_revenue·operating_income·
+      // net_income_attributable_to_owners·net_income 없음
     };
     const coverage = summarizePnlCoverage("FIN_HOLDING", resolutions);
-    expect(coverage.total).toBe(8);
+    expect(coverage.total).toBe(9);
     expect(coverage.hit).toBe(1);
-    expect(coverage.missing).toHaveLength(7);
+    expect(coverage.missing).toHaveLength(8);
     expect(coverage.missing.find((m) => m.key === "net_fee_income")?.state).toBe("MISSING");
   });
 });
@@ -129,7 +132,7 @@ describe("리뷰 픽스 1 — credit_loss_allowance는 stacked가 아니라 dedu
     expect(new Set(stackedKeys)).toEqual(new Set(["net_interest_income", "net_fee_income", "insurance_result"]));
   });
 
-  it("커버리지 집계(후보 8개)는 chart 재분류와 무관하게 그대로 유지된다", () => {
+  it("커버리지 집계(후보 9개)는 chart 재분류와 무관하게 그대로 유지된다", () => {
     const resolutions: Record<string, Resolution> = {
       net_interest_income: ok("net_interest_income"),
       net_fee_income: ok("net_fee_income"),
@@ -138,29 +141,31 @@ describe("리뷰 픽스 1 — credit_loss_allowance는 stacked가 아니라 dedu
       interest_revenue: ok("interest_revenue"),
       insurance_revenue: ok("insurance_revenue"),
       operating_income: ok("operating_income"),
+      net_income_attributable_to_owners: ok("net_income_attributable_to_owners"),
       net_income: ok("net_income"),
     };
     const coverage = summarizePnlCoverage("FIN_HOLDING", resolutions);
-    expect(coverage.total).toBe(8);
-    expect(coverage.hit).toBe(8);
+    expect(coverage.total).toBe(9);
+    expect(coverage.hit).toBe(9);
   });
 });
 
 describe("summarizeCoverage — T10 카드/상세 배지용 (pnl + stability 합산)", () => {
-  it("STANDARD: debt_ratio(stability, sourceAvailable:true)까지 합쳐 5개 후보 중 5개 HIT", () => {
+  it("STANDARD: debt_ratio(stability, sourceAvailable:true)까지 합쳐 6개 후보 중 6개 HIT", () => {
     const resolutions: Record<string, Resolution> = {
       revenue: ok("revenue"),
       gross_profit: ok("gross_profit"),
       operating_income: ok("operating_income"),
+      net_income_attributable_to_owners: ok("net_income_attributable_to_owners"),
       net_income: ok("net_income"),
       debt_ratio: ok("debt_ratio"),
     };
     const coverage = summarizeCoverage("STANDARD", resolutions);
-    expect(coverage.total).toBe(5);
-    expect(coverage.hit).toBe(5);
+    expect(coverage.total).toBe(6);
+    expect(coverage.hit).toBe(6);
   });
 
-  it("FIN_HOLDING: bis_ratio/npl_ratio는 sourceAvailable:false라 항상 미존재 처리 — 8개 pnl이 전부 HIT여도 10개 중 8개", () => {
+  it("FIN_HOLDING: bis_ratio/npl_ratio는 sourceAvailable:false라 항상 미존재 처리 — 9개 pnl이 전부 HIT여도 11개 중 9개", () => {
     const resolutions: Record<string, Resolution> = {
       net_interest_income: ok("net_interest_income"),
       net_fee_income: ok("net_fee_income"),
@@ -169,17 +174,19 @@ describe("summarizeCoverage — T10 카드/상세 배지용 (pnl + stability 합
       interest_revenue: ok("interest_revenue"),
       insurance_revenue: ok("insurance_revenue"),
       operating_income: ok("operating_income"),
+      net_income_attributable_to_owners: ok("net_income_attributable_to_owners"),
       net_income: ok("net_income"),
     };
     const coverage = summarizeCoverage("FIN_HOLDING", resolutions);
-    expect(coverage.total).toBe(10);
-    expect(coverage.hit).toBe(8);
+    expect(coverage.total).toBe(11);
+    expect(coverage.hit).toBe(9);
     expect(coverage.missing.map((m) => m.key)).toEqual(["bis_ratio", "npl_ratio"]);
-    // 금융(FIN_HOLDING) 8/10=80% < 비금융(STANDARD) 5/5=100% — 완료판정 "금융 < 비금융"의 근거.
+    // 금융(FIN_HOLDING) 9/11≈81.8% < 비금융(STANDARD) 6/6=100% — 완료판정 "금융 < 비금융"의 근거.
     const standardCoverage = summarizeCoverage("STANDARD", {
       revenue: ok("revenue"),
       gross_profit: ok("gross_profit"),
       operating_income: ok("operating_income"),
+      net_income_attributable_to_owners: ok("net_income_attributable_to_owners"),
       net_income: ok("net_income"),
       debt_ratio: ok("debt_ratio"),
     });

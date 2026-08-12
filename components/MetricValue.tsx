@@ -55,8 +55,10 @@ function renderText(state: DisplayState, value: number | null | undefined, unit:
     case "OK":
       return typeof value === "number" ? formatValue(value, unit) : "데이터 없음";
     case "ZERO_BY_FACT":
-      // 단위와 무관하게 "0원" 고정 — 무배당처럼 확인된 사실이지 결측이 아니다.
-      return "0원";
+      // 리뷰 픽스: 단위 무관 "0원" 고정은 배당수익률(PCT) 같은 지표에서 "0원"이라는 오표기를
+      // 냈다(헬릭스미스 등 무배당 종목의 현금배당수익률) — PCT는 "0%", 그 외(WON/KRW 등 금액
+      // 단위)는 종전대로 "0원"으로 표기한다. 무배당처럼 확인된 사실이지 결측(MISSING)이 아니다.
+      return unit === "PCT" ? "0%" : "0원";
     case "MISSING":
       return "데이터 없음";
     case "NA_NEGATIVE_BASE":

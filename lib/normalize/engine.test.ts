@@ -49,4 +49,23 @@ describe("engine — 종목×연도 오케스트레이션 (실제 스냅샷 전�
     const samsung = resolveStock(SNAPSHOTS_DIR, { stockCode: "005930", corpCode: CORP.삼성전자, name: "삼성전자" });
     expect(kb.coverage.hit / kb.coverage.candidates).toBeLessThan(samsung.coverage.hit / samsung.coverage.candidates);
   });
+
+  // 최종 리뷰 픽스(C1) — net_income(ifrs-full_ProfitLoss, 총액)과 net_income_attributable_to_owners
+  // (ifrs-full_ProfitLossAttributableToOwnersOfParent, 지배주주 귀속분)는 별개 계정이라 부호까지
+  // 갈릴 수 있다. 두 실측 케이스를 회귀 테스트로 고정한다.
+  it("LG화학 FY2024 — 총액은 흑자(+5,150.11억)인데 지배주주 귀속분은 적자(−6,908.54억)", () => {
+    const y = resolveStockYear(SNAPSHOTS_DIR, { stockCode: "051910", corpCode: CORP.LG화학, name: "LG화학" }, "2024");
+    expect(y.resolutions.net_income.displayState).toBe("OK");
+    expect(y.resolutions.net_income.normalized).toBe(515011000000);
+    expect(y.resolutions.net_income_attributable_to_owners.displayState).toBe("OK");
+    expect(y.resolutions.net_income_attributable_to_owners.normalized).toBe(-690854000000);
+  });
+
+  it("카카오 FY2024 — 총액은 적자(−1,618.71억)인데 지배주주 귀속분은 흑자(+552.77억) — 부호 반전 케이스", () => {
+    const y = resolveStockYear(SNAPSHOTS_DIR, { stockCode: "035720", corpCode: CORP.카카오, name: "카카오" }, "2024");
+    expect(y.resolutions.net_income.normalized).toBe(-161870567171);
+    expect(y.resolutions.net_income_attributable_to_owners.normalized).toBe(55277416537);
+    expect(y.resolutions.net_income.normalized).toBeLessThan(0);
+    expect(y.resolutions.net_income_attributable_to_owners.normalized).toBeGreaterThan(0);
+  });
 });

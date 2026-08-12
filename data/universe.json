@@ -237,6 +237,6 @@
     "accMt": "03",
     "profile": "FIN_SECURITIES",
     "profileSource": "MANUAL",
-    "note": "결산월 ≠ 12 (acc_mt=03) — 비12월 결산 시계열 실증용으로 선정"
+    "note": "결산월 ≠ 12 (acc_mt=03) — 비12월 결산 시계열 실증용으로 선정. 증권업(금융 프로필) 편입 + FY2023 DART 데이터 없음(CFS/OFS 둘 다 013) — 커버리지가 낮게 보이는 원인(카탈로그 결함 아님)"
   }
 ]

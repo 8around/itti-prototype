@@ -67,6 +67,20 @@ export const ACNT_ALL_CANDIDATES: MetricCandidate[] = [
     sourceAvailable: true,
     source: "acntAll",
   },
+  // 최종 리뷰 픽스(C1): net_income(ifrs-full_ProfitLoss)은 지배주주+비지배주주 "총액"이라
+  // 지주사 순이익(연결 대상 자회사 소액주주 몫 포함)과 혼동되기 쉽다 — 실제로 부호까지 갈릴 수
+  // 있다(LG화학 2024: 총액 +5,150.11억 흑자인데 지배주주 귀속분은 −6,908.54억 적자, 카카오
+  // 2024: 총액 −1,618.71억 적자인데 지배주주 귀속분은 +552.77억 흑자). 기존 net_income 엔트리는
+  // 수정하지 않고 이 후보를 append해 두 값을 병기한다.
+  {
+    key: "net_income_attributable_to_owners",
+    label: "당기순이익(지배주주)",
+    accountIds: ["ifrs-full_ProfitLossAttributableToOwnersOfParent"],
+    sjDivPriority: ["IS", "CIS"],
+    unit: "KRW",
+    sourceAvailable: true,
+    source: "acntAll",
+  },
 ];
 
 export const SINGL_INDX_CANDIDATES: MetricCandidate[] = [

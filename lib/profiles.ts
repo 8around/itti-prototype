@@ -45,7 +45,10 @@ export const PROFILE_CATALOG: ProfileCatalog = {
       { key: "revenue", label: "매출액", sourceAvailable: true, chart: "waterfall", unit: "KRW" },
       { key: "gross_profit", label: "매출총이익", sourceAvailable: true, chart: "waterfall", unit: "KRW" },
       { key: "operating_income", label: "영업이익", sourceAvailable: true, chart: "waterfall", unit: "KRW" },
-      { key: "net_income", label: "당기순이익", sourceAvailable: true, chart: "waterfall", unit: "KRW" },
+      // 최종 리뷰 픽스(C1): 워터폴의 마지막 단계는 "지배주주" 귀속분을 주 지표로 삼는다 — 총액
+      // (아래 net_income)과 부호가 갈릴 수 있다(LG화학 2024: 총액 흑자, 지배주주 적자 −6,909억).
+      { key: "net_income_attributable_to_owners", label: "당기순이익(지배주주)", sourceAvailable: true, chart: "waterfall", unit: "KRW" },
+      { key: "net_income", label: "당기순이익(총액)", sourceAvailable: true, chart: "none", unit: "KRW" },
       { key: "operating_margin", label: "영업이익률", sourceAvailable: true, chart: "none", unit: "PCT" },
     ],
     stability: [{ key: "debt_ratio", label: "부채비율", sourceAvailable: true, chart: "none", unit: "PCT" }],
@@ -61,7 +64,9 @@ export const PROFILE_CATALOG: ProfileCatalog = {
       { key: "interest_revenue", label: "이자수익(총)", sourceAvailable: true, chart: "none", unit: "KRW" },
       { key: "insurance_revenue", label: "보험수익(총)", sourceAvailable: true, chart: "none", unit: "KRW" },
       { key: "operating_income", label: "영업이익", sourceAvailable: true, chart: "none", unit: "KRW" },
-      { key: "net_income", label: "당기순이익", sourceAvailable: true, chart: "none", unit: "KRW" },
+      // 최종 리뷰 픽스(C1): 총액(아래 net_income)과 나란히 병기 — /compare/pnl 라벨 일관성.
+      { key: "net_income_attributable_to_owners", label: "당기순이익(지배주주)", sourceAvailable: true, chart: "none", unit: "KRW" },
+      { key: "net_income", label: "당기순이익(총액)", sourceAvailable: true, chart: "none", unit: "KRW" },
     ],
     stability: [
       { key: "bis_ratio", label: "BIS비율", sourceAvailable: false, chart: "none", unit: "PCT" },
@@ -77,7 +82,8 @@ export const PROFILE_CATALOG: ProfileCatalog = {
       { key: "credit_loss_allowance", label: "신용손실충당금 전입액", sourceAvailable: true, chart: "deduction", unit: "KRW" },
       { key: "interest_revenue", label: "이자수익(총)", sourceAvailable: true, chart: "none", unit: "KRW" },
       { key: "operating_income", label: "영업이익", sourceAvailable: true, chart: "none", unit: "KRW" },
-      { key: "net_income", label: "당기순이익", sourceAvailable: true, chart: "none", unit: "KRW" },
+      { key: "net_income_attributable_to_owners", label: "당기순이익(지배주주)", sourceAvailable: true, chart: "none", unit: "KRW" },
+      { key: "net_income", label: "당기순이익(총액)", sourceAvailable: true, chart: "none", unit: "KRW" },
     ],
     stability: [
       { key: "bis_ratio", label: "BIS비율", sourceAvailable: false, chart: "none", unit: "PCT" },
@@ -99,7 +105,8 @@ export const PROFILE_CATALOG: ProfileCatalog = {
       { key: "interest_revenue", label: "이자수익(총)", sourceAvailable: true, chart: "none", unit: "KRW" },
       { key: "fee_income_gross", label: "수수료수익(총)", sourceAvailable: true, chart: "none", unit: "KRW" },
       { key: "operating_income", label: "영업이익", sourceAvailable: true, chart: "none", unit: "KRW" },
-      { key: "net_income", label: "당기순이익", sourceAvailable: true, chart: "none", unit: "KRW" },
+      { key: "net_income_attributable_to_owners", label: "당기순이익(지배주주)", sourceAvailable: true, chart: "none", unit: "KRW" },
+      { key: "net_income", label: "당기순이익(총액)", sourceAvailable: true, chart: "none", unit: "KRW" },
     ],
     stability: [{ key: "ncr", label: "순자본비율(NCR)", sourceAvailable: false, chart: "none", unit: "PCT" }],
   },
@@ -111,7 +118,8 @@ export const PROFILE_CATALOG: ProfileCatalog = {
       { key: "insurance_expense_gross", label: "보험서비스비용(총)", sourceAvailable: true, chart: "none", unit: "KRW" },
       { key: "investment_income_gross", label: "투자서비스수익(총)", sourceAvailable: true, chart: "none", unit: "KRW" },
       { key: "operating_income", label: "영업이익", sourceAvailable: true, chart: "none", unit: "KRW" },
-      { key: "net_income", label: "당기순이익", sourceAvailable: true, chart: "none", unit: "KRW" },
+      { key: "net_income_attributable_to_owners", label: "당기순이익(지배주주)", sourceAvailable: true, chart: "none", unit: "KRW" },
+      { key: "net_income", label: "당기순이익(총액)", sourceAvailable: true, chart: "none", unit: "KRW" },
     ],
     stability: [{ key: "kics", label: "K-ICS비율", sourceAvailable: false, chart: "none", unit: "PCT" }],
   },

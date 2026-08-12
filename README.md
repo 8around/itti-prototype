@@ -1,4 +1,7 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+이띠 DART 프로토타입 — DART 공시 원본 값을 그대로 추적할 수 있는 20종목 재무 프로토타입이다.
+정규화 엔진(`data/derived.json`)·출처(SourcePanel) collapse·프로필별(표준/금융) 손익 화면을
+[Next.js](https://nextjs.org) App Router 위에 실증한다. 전체 계획·완료판정 기준은
+[`docs/prototype-plan.md`](docs/prototype-plan.md)를 참고한다.
 
 ## Getting Started
 
@@ -17,8 +20,6 @@ bun dev
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
 ## Learn More
 

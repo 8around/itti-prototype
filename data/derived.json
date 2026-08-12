@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-12T05:59:19.539Z",
+  "generatedAt": "2026-08-12T07:10:36.923Z",
   "parserVersion": "t4.1",
   "years": [
     "2023",
@@ -300,6 +300,28 @@
               "fsDiv": "CFS",
               "fsDivFallbackApplied": false,
               "normalized": 2131,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업의 소유주에게 귀속되는 당기순이익(손실)",
+                "sjDiv": "IS",
+                "rawValue": "14473401000000",
+                "ord": 21
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 14473401000000,
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
@@ -854,6 +876,28 @@
               "fsDiv": "CFS",
               "fsDivFallbackApplied": false,
               "normalized": 4950,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업 소유지분",
+                "sjDiv": "IS",
+                "rawValue": "33621363000000",
+                "ord": 21
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 33621363000000,
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
@@ -1418,6 +1462,28 @@
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업 소유주지분",
+                "sjDiv": "IS",
+                "rawValue": "44260956000000",
+                "ord": 21
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 44260956000000,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
             "q4_revenue": {
               "metricKey": "q4_revenue",
               "attempts": [],
@@ -1690,8 +1756,8 @@
         }
       ],
       "coverage": {
-        "candidates": 87,
-        "hit": 86
+        "candidates": 90,
+        "hit": 89
       }
     },
     {
@@ -2012,6 +2078,33 @@
               "fsDiv": "CFS",
               "fsDivFallbackApplied": false,
               "normalized": -13244,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업의 소유주지분",
+                "sjDiv": "CIS",
+                "rawValue": "-9112428000000",
+                "ord": 32
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": -9112428000000,
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
@@ -2586,6 +2679,33 @@
               "fsDiv": "CFS",
               "fsDivFallbackApplied": false,
               "normalized": 28732,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업의 소유주지분",
+                "sjDiv": "CIS",
+                "rawValue": "19788681000000",
+                "ord": 32
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 19788681000000,
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
@@ -3175,6 +3295,33 @@
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업의 소유주지분",
+                "sjDiv": "CIS",
+                "rawValue": "42919287000000",
+                "ord": 32
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 42919287000000,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
             "q4_revenue": {
               "metricKey": "q4_revenue",
               "attempts": [],
@@ -3447,8 +3594,8 @@
         }
       ],
       "coverage": {
-        "candidates": 87,
-        "hit": 85
+        "candidates": 90,
+        "hit": 88
       }
     },
     {
@@ -3753,6 +3900,28 @@
               "fsDivFallbackApplied": false,
               "normalized": null,
               "displayState": "MISSING",
+              "parserVersion": "t4.1"
+            },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업소유주지분",
+                "sjDiv": "IS",
+                "rawValue": "11961717000000",
+                "ord": 30
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 11961717000000,
+              "displayState": "OK",
               "parserVersion": "t4.1"
             },
             "q4_revenue": {
@@ -4312,6 +4481,28 @@
               "fsDiv": "CFS",
               "fsDivFallbackApplied": false,
               "normalized": 47615,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업소유주지분",
+                "sjDiv": "IS",
+                "rawValue": "12526691000000",
+                "ord": 28
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 12526691000000,
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
@@ -4876,6 +5067,28 @@
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업소유주지분",
+                "sjDiv": "IS",
+                "rawValue": "9445987000000",
+                "ord": 28
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 9445987000000,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
             "q4_revenue": {
               "metricKey": "q4_revenue",
               "attempts": [],
@@ -5148,8 +5361,8 @@
         }
       ],
       "coverage": {
-        "candidates": 87,
-        "hit": 85
+        "candidates": 90,
+        "hit": 88
       }
     },
     {
@@ -5470,6 +5683,33 @@
               "fsDiv": "CFS",
               "fsDivFallbackApplied": false,
               "normalized": 22382,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업의 소유주지분",
+                "sjDiv": "CIS",
+                "rawValue": "1698092001648",
+                "ord": 42
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 1698092001648,
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
@@ -6055,6 +6295,33 @@
               "fsDiv": "CFS",
               "fsDivFallbackApplied": false,
               "normalized": 14451,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업의 소유주지분",
+                "sjDiv": "CIS",
+                "rawValue": "1094917125078",
+                "ord": 39
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 1094917125078,
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
@@ -6644,6 +6911,33 @@
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업의 소유주지분",
+                "sjDiv": "CIS",
+                "rawValue": "657654060164",
+                "ord": 39
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 657654060164,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
             "q4_revenue": {
               "metricKey": "q4_revenue",
               "attempts": [],
@@ -6916,8 +7210,8 @@
         }
       ],
       "coverage": {
-        "candidates": 87,
-        "hit": 86
+        "candidates": 90,
+        "hit": 89
       }
     },
     {
@@ -7213,6 +7507,28 @@
               "fsDiv": "CFS",
               "fsDivFallbackApplied": false,
               "normalized": 17086,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배주주에 귀속되는 순이익",
+                "sjDiv": "IS",
+                "rawValue": "1337812000000",
+                "ord": 28
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 1337812000000,
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
@@ -7776,6 +8092,28 @@
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배주주에 귀속되는 순이익",
+                "sjDiv": "IS",
+                "rawValue": "-690854000000",
+                "ord": 28
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": -690854000000,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
             "q4_revenue": {
               "metricKey": "q4_revenue",
               "attempts": [],
@@ -8325,6 +8663,28 @@
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업의 소유주에게 귀속되는 당기순이익(손실)",
+                "sjDiv": "IS",
+                "rawValue": "-1819449000000",
+                "ord": 25
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": -1819449000000,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
             "q4_revenue": {
               "metricKey": "q4_revenue",
               "attempts": [],
@@ -8578,8 +8938,8 @@
         }
       ],
       "coverage": {
-        "candidates": 87,
-        "hit": 81
+        "candidates": 90,
+        "hit": 84
       }
     },
     {
@@ -8893,6 +9253,33 @@
               "fsDiv": "CFS",
               "fsDivFallbackApplied": false,
               "normalized": -2315,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업 소유주지분",
+                "sjDiv": "CIS",
+                "rawValue": "-1012550566010",
+                "ord": 36
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": -1012550566010,
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
@@ -9452,6 +9839,33 @@
               "fsDiv": "CFS",
               "fsDivFallbackApplied": false,
               "normalized": 126,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업 소유주지분",
+                "sjDiv": "CIS",
+                "rawValue": "55277416537",
+                "ord": 34
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 55277416537,
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
@@ -10044,6 +10458,33 @@
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업 소유주지분",
+                "sjDiv": "CIS",
+                "rawValue": "491491558183",
+                "ord": 40
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 491491558183,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
             "q4_revenue": {
               "metricKey": "q4_revenue",
               "attempts": [],
@@ -10316,8 +10757,8 @@
         }
       ],
       "coverage": {
-        "candidates": 87,
-        "hit": 80
+        "candidates": 90,
+        "hit": 83
       }
     },
     {
@@ -10641,6 +11082,33 @@
               "fsDiv": "CFS",
               "fsDivFallbackApplied": false,
               "normalized": 6661,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업 소유주지분",
+                "sjDiv": "CIS",
+                "rawValue": "1012321527624",
+                "ord": 40
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 1012321527624,
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
@@ -11223,6 +11691,33 @@
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업 소유주지분",
+                "sjDiv": "CIS",
+                "rawValue": "1923237257015",
+                "ord": 34
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 1923237257015,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
             "q4_revenue": {
               "metricKey": "q4_revenue",
               "attempts": [],
@@ -11802,6 +12297,33 @@
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업 소유주지분",
+                "sjDiv": "CIS",
+                "rawValue": "1953214734956",
+                "ord": 35
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 1953214734956,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
             "q4_revenue": {
               "metricKey": "q4_revenue",
               "attempts": [],
@@ -12074,8 +12596,8 @@
         }
       ],
       "coverage": {
-        "candidates": 87,
-        "hit": 84
+        "candidates": 90,
+        "hit": 87
       }
     },
     {
@@ -12371,6 +12893,28 @@
               "fsDiv": "CFS",
               "fsDivFallbackApplied": false,
               "normalized": 3759,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업소유주지분",
+                "sjDiv": "IS",
+                "rawValue": "535647963959",
+                "ord": 26
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 535647963959,
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
@@ -12935,6 +13479,28 @@
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업소유주지분",
+                "sjDiv": "IS",
+                "rawValue": "422691724154",
+                "ord": 27
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 422691724154,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
             "q4_revenue": {
               "metricKey": "q4_revenue",
               "attempts": [],
@@ -13489,6 +14055,28 @@
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업소유주지분",
+                "sjDiv": "IS",
+                "rawValue": "1029613370428",
+                "ord": 22
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 1029613370428,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
             "q4_revenue": {
               "metricKey": "q4_revenue",
               "attempts": [],
@@ -13754,8 +14342,8 @@
         }
       ],
       "coverage": {
-        "candidates": 87,
-        "hit": 85
+        "candidates": 90,
+        "hit": 88
       }
     },
     {
@@ -14065,6 +14653,33 @@
               "fsDiv": "CFS",
               "fsDivFallbackApplied": false,
               "normalized": -1544,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업의 소유주에게 귀속되는 당기순이익(손실)",
+                "sjDiv": "CIS",
+                "rawValue": "-64088431010",
+                "ord": 34
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": -64088431010,
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
@@ -14606,6 +15221,33 @@
               "fsDiv": "CFS",
               "fsDivFallbackApplied": false,
               "normalized": -329,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업의 소유주에게 귀속되는 당기순이익(손실)",
+                "sjDiv": "CIS",
+                "rawValue": "-15471280148",
+                "ord": 31
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": -15471280148,
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
@@ -15171,6 +15813,33 @@
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업의 소유주에게 귀속되는 당기순이익(손실)",
+                "sjDiv": "CIS",
+                "rawValue": "-434924370",
+                "ord": 30
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": -434924370,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
             "q4_revenue": {
               "metricKey": "q4_revenue",
               "attempts": [],
@@ -15410,8 +16079,8 @@
         }
       ],
       "coverage": {
-        "candidates": 87,
-        "hit": 64
+        "candidates": 90,
+        "hit": 67
       }
     },
     {
@@ -15726,6 +16395,26 @@
               "fsDivFallbackApplied": false,
               "normalized": -198,
               "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "NO_ROW"
+                }
+              ],
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": null,
+              "displayState": "MISSING",
               "parserVersion": "t4.1"
             },
             "q4_revenue": {
@@ -16274,6 +16963,26 @@
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "NO_ROW"
+                }
+              ],
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": null,
+              "displayState": "MISSING",
+              "parserVersion": "t4.1"
+            },
             "q4_revenue": {
               "metricKey": "q4_revenue",
               "attempts": [],
@@ -16813,6 +17522,26 @@
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "NO_ROW"
+                }
+              ],
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": null,
+              "displayState": "MISSING",
+              "parserVersion": "t4.1"
+            },
             "q4_revenue": {
               "metricKey": "q4_revenue",
               "attempts": [],
@@ -17045,7 +17774,7 @@
         }
       ],
       "coverage": {
-        "candidates": 87,
+        "candidates": 90,
         "hit": 67
       }
     },
@@ -17342,6 +18071,28 @@
               "fsDiv": "CFS",
               "fsDivFallbackApplied": false,
               "normalized": 87,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업 소유주지분",
+                "sjDiv": "IS",
+                "rawValue": "55597965382",
+                "ord": 27
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 55597965382,
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
@@ -17877,6 +18628,28 @@
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업 소유주지분",
+                "sjDiv": "IS",
+                "rawValue": "111365000000",
+                "ord": 27
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 111365000000,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
             "q4_revenue": {
               "metricKey": "q4_revenue",
               "attempts": [],
@@ -18409,6 +19182,28 @@
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업 소유주지분",
+                "sjDiv": "IS",
+                "rawValue": "84762000000",
+                "ord": 23
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 84762000000,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
             "q4_revenue": {
               "metricKey": "q4_revenue",
               "attempts": [],
@@ -18652,8 +19447,8 @@
         }
       ],
       "coverage": {
-        "candidates": 87,
-        "hit": 72
+        "candidates": 90,
+        "hit": 75
       }
     },
     {
@@ -18974,6 +19769,33 @@
               "fsDiv": "CFS",
               "fsDivFallbackApplied": false,
               "normalized": 278,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업의 소유주지분",
+                "sjDiv": "CIS",
+                "rawValue": "24686073000",
+                "ord": 32
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 24686073000,
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
@@ -19523,6 +20345,33 @@
               "fsDiv": "CFS",
               "fsDivFallbackApplied": false,
               "normalized": 7001,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업의 소유주지분",
+                "sjDiv": "CIS",
+                "rawValue": "621509050000",
+                "ord": 32
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 621509050000,
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
@@ -20098,6 +20947,33 @@
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업의 소유주지분",
+                "sjDiv": "CIS",
+                "rawValue": "1415484774000",
+                "ord": 33
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 1415484774000,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
             "q4_revenue": {
               "metricKey": "q4_revenue",
               "attempts": [],
@@ -20370,8 +21246,8 @@
         }
       ],
       "coverage": {
-        "candidates": 87,
-        "hit": 78
+        "candidates": 90,
+        "hit": 81
       }
     },
     {
@@ -20686,6 +21562,26 @@
               "fsDivFallbackApplied": true,
               "normalized": -850,
               "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "NO_ROW"
+                }
+              ],
+              "fsDiv": "OFS",
+              "fsDivFallbackApplied": true,
+              "normalized": null,
+              "displayState": "MISSING",
               "parserVersion": "t4.1"
             },
             "q4_revenue": {
@@ -21220,6 +22116,26 @@
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "NO_ROW"
+                }
+              ],
+              "fsDiv": "OFS",
+              "fsDivFallbackApplied": true,
+              "normalized": null,
+              "displayState": "MISSING",
+              "parserVersion": "t4.1"
+            },
             "q4_revenue": {
               "metricKey": "q4_revenue",
               "attempts": [],
@@ -21752,6 +22668,26 @@
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "NO_ROW"
+                }
+              ],
+              "fsDiv": "OFS",
+              "fsDivFallbackApplied": true,
+              "normalized": null,
+              "displayState": "MISSING",
+              "parserVersion": "t4.1"
+            },
             "q4_revenue": {
               "metricKey": "q4_revenue",
               "attempts": [],
@@ -21977,7 +22913,7 @@
         }
       ],
       "coverage": {
-        "candidates": 87,
+        "candidates": 90,
         "hit": 63
       }
     },
@@ -22285,6 +23221,33 @@
               "fsDiv": "CFS",
               "fsDivFallbackApplied": false,
               "normalized": 11580,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업주주지분순이익",
+                "sjDiv": "CIS",
+                "rawValue": "4631932000000",
+                "ord": 59
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 4631932000000,
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
@@ -22868,6 +23831,33 @@
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업주주지분순이익",
+                "sjDiv": "CIS",
+                "rawValue": "5078221000000",
+                "ord": 56
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 5078221000000,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
             "q4_revenue": {
               "metricKey": "q4_revenue",
               "attempts": [],
@@ -23448,6 +24438,33 @@
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업주주지분순이익",
+                "sjDiv": "CIS",
+                "rawValue": "5833162000000",
+                "ord": 56
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 5833162000000,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
             "q4_revenue": {
               "metricKey": "q4_revenue",
               "attempts": [],
@@ -23718,8 +24735,8 @@
         }
       ],
       "coverage": {
-        "candidates": 87,
-        "hit": 75
+        "candidates": 90,
+        "hit": 78
       }
     },
     {
@@ -24036,6 +25053,33 @@
               "fsDiv": "CFS",
               "fsDivFallbackApplied": false,
               "normalized": 8048,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업 소유주지분",
+                "sjDiv": "CIS",
+                "rawValue": "4368035000000",
+                "ord": 60
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 4368035000000,
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
@@ -24619,6 +25663,33 @@
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업 소유주지분",
+                "sjDiv": "CIS",
+                "rawValue": "4450177000000",
+                "ord": 56
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 4450177000000,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
             "q4_revenue": {
               "metricKey": "q4_revenue",
               "attempts": [],
@@ -25199,6 +26270,33 @@
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업 소유주지분",
+                "sjDiv": "CIS",
+                "rawValue": "4971561000000",
+                "ord": 55
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 4971561000000,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
             "q4_revenue": {
               "metricKey": "q4_revenue",
               "attempts": [],
@@ -25469,8 +26567,8 @@
         }
       ],
       "coverage": {
-        "candidates": 87,
-        "hit": 75
+        "candidates": 90,
+        "hit": 78
       }
     },
     {
@@ -25787,6 +26885,33 @@
               "fsDiv": "CFS",
               "fsDivFallbackApplied": false,
               "normalized": 6130,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업소유주지분순이익",
+                "sjDiv": "CIS",
+                "rawValue": "547405708396",
+                "ord": 52
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 547405708396,
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
@@ -26356,6 +27481,33 @@
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업소유주지분순이익",
+                "sjDiv": "CIS",
+                "rawValue": "899037889864",
+                "ord": 52
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 899037889864,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
             "q4_revenue": {
               "metricKey": "q4_revenue",
               "attempts": [],
@@ -26922,6 +28074,33 @@
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업소유주지분순이익",
+                "sjDiv": "CIS",
+                "rawValue": "1007226734146",
+                "ord": 52
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 1007226734146,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
             "q4_revenue": {
               "metricKey": "q4_revenue",
               "attempts": [],
@@ -27178,8 +28357,8 @@
         }
       ],
       "coverage": {
-        "candidates": 87,
-        "hit": 69
+        "candidates": 90,
+        "hit": 72
       }
     },
     {
@@ -27496,6 +28675,33 @@
               "fsDiv": "CFS",
               "fsDivFallbackApplied": false,
               "normalized": 1588,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배주주지분순이익",
+                "sjDiv": "CIS",
+                "rawValue": "556440000000",
+                "ord": 43
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 556440000000,
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
@@ -28072,6 +29278,33 @@
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배주주지분순이익",
+                "sjDiv": "CIS",
+                "rawValue": "686659000000",
+                "ord": 44
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 686659000000,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
             "q4_revenue": {
               "metricKey": "q4_revenue",
               "attempts": [],
@@ -28645,6 +29878,33 @@
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배주주지분순이익",
+                "sjDiv": "CIS",
+                "rawValue": "1031599000000",
+                "ord": 43
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 1031599000000,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
             "q4_revenue": {
               "metricKey": "q4_revenue",
               "attempts": [],
@@ -28908,8 +30168,8 @@
         }
       ],
       "coverage": {
-        "candidates": 87,
-        "hit": 72
+        "candidates": 90,
+        "hit": 75
       }
     },
     {
@@ -29226,6 +30486,33 @@
               "fsDiv": "CFS",
               "fsDivFallbackApplied": false,
               "normalized": 10554,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업의 소유주에게 귀속되는 당기순이익(손실)",
+                "sjDiv": "CIS",
+                "rawValue": "1895312000000",
+                "ord": 100
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 1895312000000,
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
@@ -29802,6 +31089,33 @@
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업의 소유주에게 귀속되는 당기순이익(손실)",
+                "sjDiv": "CIS",
+                "rawValue": "2106839000000",
+                "ord": 84
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 2106839000000,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
             "q4_revenue": {
               "metricKey": "q4_revenue",
               "attempts": [],
@@ -30375,6 +31689,33 @@
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업의 소유주에게 귀속되는 당기순이익(손실)",
+                "sjDiv": "CIS",
+                "rawValue": "2302837000000",
+                "ord": 68
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 2302837000000,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
             "q4_revenue": {
               "metricKey": "q4_revenue",
               "attempts": [],
@@ -30638,8 +31979,8 @@
         }
       ],
       "coverage": {
-        "candidates": 87,
-        "hit": 72
+        "candidates": 90,
+        "hit": 75
       }
     },
     {
@@ -30956,6 +32297,33 @@
               "fsDiv": "CFS",
               "fsDivFallbackApplied": false,
               "normalized": 28955,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업의 소유주에게 귀속되는 당기순이익(손실)",
+                "sjDiv": "CIS",
+                "rawValue": "1738568940483",
+                "ord": 91
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 1738568940483,
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
@@ -31532,6 +32900,33 @@
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업의 소유주에게 귀속되는 당기순이익(손실)",
+                "sjDiv": "CIS",
+                "rawValue": "1851593897644",
+                "ord": 80
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 1851593897644,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
             "q4_revenue": {
               "metricKey": "q4_revenue",
               "attempts": [],
@@ -32105,6 +33500,33 @@
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "지배기업의 소유주에게 귀속되는 당기순이익(손실)",
+                "sjDiv": "CIS",
+                "rawValue": "1788026000000",
+                "ord": 67
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 1788026000000,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
             "q4_revenue": {
               "metricKey": "q4_revenue",
               "attempts": [],
@@ -32368,8 +33790,8 @@
         }
       ],
       "coverage": {
-        "candidates": 87,
-        "hit": 72
+        "candidates": 90,
+        "hit": 75
       }
     },
     {
@@ -32617,6 +34039,26 @@
                 },
                 {
                   "accountId": "ifrs-full_BasicEarningsLossPerShareFromContinuingOperations",
+                  "sjDiv": "CIS",
+                  "result": "NO_ROW"
+                }
+              ],
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": null,
+              "displayState": "MISSING",
+              "parserVersion": "t4.1"
+            },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
                   "sjDiv": "CIS",
                   "result": "NO_ROW"
                 }
@@ -33186,6 +34628,33 @@
               "fsDiv": "CFS",
               "fsDivFallbackApplied": false,
               "normalized": 17818,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "1. 지배기업소유지분",
+                "sjDiv": "CIS",
+                "rawValue": "142649513102",
+                "ord": 37
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 142649513102,
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
@@ -33771,6 +35240,33 @@
               "displayState": "OK",
               "parserVersion": "t4.1"
             },
+            "net_income_attributable_to_owners": {
+              "metricKey": "net_income_attributable_to_owners",
+              "attempts": [
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "IS",
+                  "result": "NO_ROW"
+                },
+                {
+                  "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                  "sjDiv": "CIS",
+                  "result": "HIT"
+                }
+              ],
+              "hit": {
+                "accountId": "ifrs-full_ProfitLossAttributableToOwnersOfParent",
+                "accountNm": "1. 지배기업소유지분",
+                "sjDiv": "CIS",
+                "rawValue": "108625211917",
+                "ord": 38
+              },
+              "fsDiv": "CFS",
+              "fsDivFallbackApplied": false,
+              "normalized": 108625211917,
+              "displayState": "OK",
+              "parserVersion": "t4.1"
+            },
             "q4_revenue": {
               "metricKey": "q4_revenue",
               "attempts": [],
@@ -34036,8 +35532,8 @@
         }
       ],
       "coverage": {
-        "candidates": 87,
-        "hit": 61
+        "candidates": 90,
+        "hit": 63
       }
     }
   ]

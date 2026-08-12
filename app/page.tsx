@@ -71,7 +71,9 @@ export default function HomePage() {
       <p className={styles.lead}>
         각 카드는 DART 실측값만 표시한다 — 근거 없는 0은 없다. 커버리지 %는 프로필 카탈로그(lib/profiles.ts) 후보 대비 실제
         HIT 비율이다. 금융 {finCount}종목 평균 {finAvgCoverage}% &lt; 비금융 {nonFinCards.length}종목 평균 {nonFinAvgCoverage}% —
-        금융업 전용 안정성 지표(BIS·NPL·NCR·K-ICS)가 DART 표준 API에 없기 때문이다(정상 동작).
+        원인은 하나가 아니라 둘이 겹친 결과다: ① 금융업 전용 안정성 지표(BIS·NPL·NCR·K-ICS)가 DART 표준 API에 아예 없는
+        구조적 요인(금융 프로필에만 해당), ② 종목별로 특정 계정이 공시 자체에서 빠지는 결측(비금융도 예외가 아니다 —
+        예: 카카오는 매출총이익 행이 없어 83%). 둘 다 정상 동작이다(카탈로그 조작 아님).
       </p>
 
       <div className={styles.grid}>

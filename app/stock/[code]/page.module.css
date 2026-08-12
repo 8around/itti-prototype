@@ -16,6 +16,17 @@
   gap: 6px;
 }
 
+.backLink {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gray);
+  align-self: flex-start;
+}
+
+.backLink:hover {
+  color: var(--green);
+}
+
 .headTop {
   display: flex;
   align-items: center;

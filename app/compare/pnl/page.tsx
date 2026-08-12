@@ -1,4 +1,3 @@
-import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 import type { Metadata } from "next";
@@ -9,11 +8,11 @@ import StackedBar100 from "@/components/charts/StackedBar100";
 import SourcePanel from "@/components/SourcePanel";
 import { findStockByCode, findYear, loadDerived } from "@/lib/derived";
 import { toEok } from "@/lib/format";
-import type { FsDiv } from "@/lib/normalize/resolve";
 import { resolveFinHoldingExtras } from "@/lib/normalize/resolveFinHoldingExtras";
 import type { ProfileId, Resolution } from "@/lib/normalize/types";
 import { findProfileMetric, pnlKeysOnlyIn, PROFILE_CATALOG, resolveDisplay, summarizePnlCoverage, withDisplayState } from "@/lib/profiles";
 import type { ProfileMetric } from "@/lib/profiles";
+import { basisLabel, buildSourcePanelProps } from "@/lib/sourcePanelHelpers";
 
 import styles from "./page.module.css";
 
@@ -39,47 +38,6 @@ export const metadata: Metadata = {
 
 const YEAR = "2024";
 const SNAPSHOTS_DIR = join(process.cwd(), "public", "snapshots");
-
-const basisLabel = (fsDiv: FsDiv) => (fsDiv === "CFS" ? ("연결" as const) : ("별도" as const));
-
-function acntAllRequestId(corpCode: string, year: string, fsDiv: FsDiv): string {
-  return `fnlttSinglAcntAll__${corpCode}__${year}__11011__${fsDiv}`;
-}
-
-function acntAllProbeParams(corpCode: string, year: string, fsDiv: FsDiv): Record<string, string> {
-  return { endpoint: "fnlttSinglAcntAll", corp_code: corpCode, bsns_year: year, reprt_code: "11011", fs_div: fsDiv };
-}
-
-/** rcept_no(접수번호) 앞 8자리가 접수일(YYYYMMDD)이다 — T5 debug/source-panel과 동일한 패턴. */
-function reportDateFromSnapshot(requestId: string): string {
-  try {
-    const raw = readFileSync(join(SNAPSHOTS_DIR, `${requestId}.json`), "utf-8");
-    const data = JSON.parse(raw) as { body?: { list?: { rcept_no?: string }[] } };
-    const rcept = data.body?.list?.[0]?.rcept_no;
-    if (rcept && rcept.length >= 8) {
-      return `${rcept.slice(0, 4)}.${rcept.slice(4, 6)}.${rcept.slice(6, 8)}`;
-    }
-  } catch {
-    // 스냅샷이 없거나 rcept_no가 없으면 "-"로 대체 — 방어 코드.
-  }
-  return "-";
-}
-
-function buildSourcePanelProps(corpCode: string, year: string, metric: ProfileMetric, resolution: Resolution) {
-  const requestId = acntAllRequestId(corpCode, year, resolution.fsDiv);
-  return {
-    resolution,
-    requestId,
-    probeParams: acntAllProbeParams(corpCode, year, resolution.fsDiv),
-    summaryMeta: {
-      source: "DART 사업보고서",
-      basis: basisLabel(resolution.fsDiv),
-      asOf: reportDateFromSnapshot(requestId),
-      parserVersion: resolution.parserVersion,
-      unit: metric.unit,
-    },
-  };
-}
 
 function chartTagClass(chart: ProfileMetric["chart"]): string {
   if (chart === "waterfall") return `${styles.chartTag} ${styles.waterfall}`;
@@ -110,18 +68,30 @@ function MetricSlot({
     <div className={styles.metric}>
       <div className={styles.metricLabel}>{metric.label}</div>
       <MetricValue state={state} value={value} unit={metric.unit} basis={resolution ? basisLabel(resolution.fsDiv) : undefined} note={note} />
-      {resolution && <SourcePanel {...buildSourcePanelProps(corpCode, year, metric, withDisplayState(resolution, state))} />}
+      {resolution && <SourcePanel {...buildSourcePanelProps(metric.key, corpCode, year, withDisplayState(resolution, state), metric.unit, profile)} />}
     </div>
   );
 }
 
 /** 차트(워터폴/스택)에 이미 숫자가 그려진 항목용 — 중복 표기 없이 출처 collapse만 붙인다. */
-function TraceRow({ corpCode, year, metric, resolution }: { corpCode: string; year: string; metric: ProfileMetric; resolution?: Resolution }) {
+function TraceRow({
+  profile,
+  corpCode,
+  year,
+  metric,
+  resolution,
+}: {
+  profile: ProfileId;
+  corpCode: string;
+  year: string;
+  metric: ProfileMetric;
+  resolution?: Resolution;
+}) {
   if (!resolution) return null;
   return (
     <div className={styles.metric}>
       <div className={styles.metricLabel}>{metric.label}</div>
-      <SourcePanel {...buildSourcePanelProps(corpCode, year, metric, resolution)} />
+      <SourcePanel {...buildSourcePanelProps(metric.key, corpCode, year, resolution, metric.unit, profile)} />
     </div>
   );
 }
@@ -282,7 +252,7 @@ export default function ComparePnlPage() {
 
           <div className={styles.metricList}>
             {waterfallRows.map(({ metric, resolution }) => (
-              <TraceRow key={metric.key} corpCode={samsung.corpCode} year={YEAR} metric={metric} resolution={resolution} />
+              <TraceRow key={metric.key} profile="STANDARD" corpCode={samsung.corpCode} year={YEAR} metric={metric} resolution={resolution} />
             ))}
             {ratioMetrics.map((metric) => (
               <MetricSlot key={metric.key} profile="STANDARD" corpCode={samsung.corpCode} year={YEAR} metric={metric} resolution={samsungYear.resolutions[metric.key]} />
@@ -323,7 +293,7 @@ export default function ComparePnlPage() {
 
           <div className={styles.metricList}>
             {stackedMetrics.map((metric) => (
-              <TraceRow key={metric.key} corpCode={kb.corpCode} year={YEAR} metric={metric} resolution={kbResolutions[metric.key]} />
+              <TraceRow key={metric.key} profile="FIN_HOLDING" corpCode={kb.corpCode} year={YEAR} metric={metric} resolution={kbResolutions[metric.key]} />
             ))}
           </div>
 

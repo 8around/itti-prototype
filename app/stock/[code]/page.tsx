@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import CashFlowDiverging from "@/components/charts/CashFlowDiverging";
@@ -153,6 +154,7 @@ function RawField({
   panelUnit,
   resolution,
   zeroByFactNote,
+  conflictNote,
 }: {
   corpCode: string;
   profile: ProfileId;
@@ -163,10 +165,13 @@ function RawField({
   resolution?: Resolution;
   /** ZERO_BY_FACT일 때 보여줄 문구 — 배당 계열 지표에서 "무배당 확인"으로 쓰인다. */
   zeroByFactNote?: string;
+  /** 리뷰 픽스(I2) — 상태와 무관하게 최우선으로 노출되는 주석(두 배당성향 값의 산출 기준이
+   *  달라 상충할 때). 다른 note 로직보다 우선한다. */
+  conflictNote?: string;
 }) {
   const state = resolution?.displayState ?? "MISSING";
   const value = state === "OK" && resolution?.normalized != null ? toDisplayValue(resolution.normalized, unit) : undefined;
-  const note = state === "ZERO_BY_FACT" ? zeroByFactNote : state === "NA_NEGATIVE_BASE" ? "분모 음수" : undefined;
+  const note = conflictNote ?? (state === "ZERO_BY_FACT" ? zeroByFactNote : state === "NA_NEGATIVE_BASE" ? "분모 음수" : undefined);
   return (
     <FieldRow
       label={label}
@@ -198,6 +203,26 @@ function TraceOnly({ profile, corpCode, metric, resolution }: { profile: Profile
 
 function eok(resolution: Resolution | undefined): number | null {
   return resolution?.normalized != null ? toEok(resolution.normalized) : null;
+}
+
+/**
+ * 리뷰 픽스(I2) — 배당성향 두 원천(dividend_payout_indx: DART 자체 산출 M451000 vs
+ * dividend_payout_fallback: 배당총액÷지배주주 귀속 순이익)의 부호가 다르거나 10%p 이상
+ * 벌어지면 두 값 모두 "산출 기준이 다르다"는 배지를 붙인다. 카카오처럼 특정 종목을 하드코딩해
+ * 분기하지 않고 실측 Resolution 값만으로 판정한다 — 조건에 해당하지 않는 종목은 배지가 뜨지
+ * 않는다.
+ */
+const DIVIDEND_PAYOUT_CONFLICT_NOTE = "산출 기준 상이 — 지표는 DART 자체 산출(총액 기준 추정), fallback은 배당총액÷지배주주 귀속 순이익";
+const DIVIDEND_PAYOUT_CONFLICT_GAP_PP = 10;
+
+function dividendPayoutConflictNote(indx: Resolution | undefined, fallback: Resolution | undefined): string | undefined {
+  if (indx?.displayState !== "OK" || fallback?.displayState !== "OK") return undefined;
+  const a = indx.normalized;
+  const b = fallback.normalized;
+  if (a == null || b == null) return undefined;
+  const signDiffers = a < 0 !== b < 0;
+  const gapOverThreshold = Math.abs(a - b) >= DIVIDEND_PAYOUT_CONFLICT_GAP_PP;
+  return signDiffers || gapOverThreshold ? DIVIDEND_PAYOUT_CONFLICT_NOTE : undefined;
 }
 
 /* ------------------------------------------------------------------------ */
@@ -265,7 +290,9 @@ function PnlSection({ profile, corpCode, years }: { profile: ProfileId; corpCode
       ...years.map((y) => ({ label: `${y.year.slice(2)}년`, value: eok(y.resolutions.operating_income) })),
       { label: "24 Q4(역산)", value: eok(y2024.resolutions.q4_operating_income), provisional: true },
     ];
-    const netIncomeBars = years.map((y) => ({ label: `${y.year.slice(2)}년`, value: eok(y.resolutions.net_income) }));
+    // 최종 리뷰 픽스(C1): 0 기준 발산 막대는 지배주주 귀속분을 주 지표로 그린다 — 총액과
+    // 부호가 갈리는 종목(LG화학 등)에서 적자가 실제로 아래(청색)로 표현되어야 한다.
+    const netIncomeBars = years.map((y) => ({ label: `${y.year.slice(2)}년`, value: eok(y.resolutions.net_income_attributable_to_owners) }));
 
     return (
       <section className={styles.section}>
@@ -289,7 +316,7 @@ function PnlSection({ profile, corpCode, years }: { profile: ProfileId; corpCode
         <div className={styles.sectionTitle}>영업이익 추이 — 연간 3개년 + 24년 4분기(역산, 잠정) · 억원</div>
         <QuarterBars bars={operatingIncomeBars} unit="억원" />
 
-        <div className={styles.sectionTitle}>당기순이익 추이 — 0 기준 발산 막대(적자 구간 자동 표현) · 억원</div>
+        <div className={styles.sectionTitle}>당기순이익(지배주주) 추이 — 0 기준 발산 막대(적자 구간 자동 표현) · 억원</div>
         <ZeroAxisBars bars={netIncomeBars} />
 
         <div className={styles.coverageBox}>
@@ -423,12 +450,28 @@ function CashFlowSection({ profile, corpCode, y2024 }: { profile: ProfileId; cor
 
 function ProfitabilitySection({ profile, corpCode, y2024 }: { profile: ProfileId; corpCode: string; y2024: StockYearView }) {
   const marginMetric = findProfileMetric("STANDARD", "operating_margin")!;
+  // 최종 리뷰 픽스(C1): 수익성 섹션도 지배주주 귀속분을 주 지표로 병기한다 — 두 키 전부 모든
+  // 프로필 카탈로그에 있어 findProfileMetric이 항상 값을 반환하지만, 방어적으로 optional 처리.
+  const netIncomeAttrMetric = findProfileMetric(profile, "net_income_attributable_to_owners");
+  const netIncomeTotalMetric = findProfileMetric(profile, "net_income");
   return (
     <section className={styles.section}>
       <h2>⑤ 수익성</h2>
       <div className={styles.fieldList}>
+        {netIncomeAttrMetric && (
+          <GatedField profile={profile} corpCode={corpCode} metric={netIncomeAttrMetric} resolution={y2024.resolutions.net_income_attributable_to_owners} />
+        )}
+        {netIncomeTotalMetric && <GatedField profile={profile} corpCode={corpCode} metric={netIncomeTotalMetric} resolution={y2024.resolutions.net_income} />}
         <RawField corpCode={corpCode} profile={profile} metricKey="roe" label="ROE(자기자본이익률, DART 산출)" unit="PCT" panelUnit="PCT" resolution={y2024.resolutions.roe} />
-        <RawField corpCode={corpCode} profile={profile} metricKey="roa" label="ROA(총자산이익률, 계산: 순이익÷자산총계)" unit="PCT" panelUnit="PCT" resolution={y2024.resolutions.roa} />
+        <RawField
+          corpCode={corpCode}
+          profile={profile}
+          metricKey="roa"
+          label="ROA(총자산이익률(총액 기준), 계산: 당기순이익(총액)÷자산총계)"
+          unit="PCT"
+          panelUnit="PCT"
+          resolution={y2024.resolutions.roa}
+        />
         <GatedField profile={profile} corpCode={corpCode} metric={marginMetric} resolution={y2024.resolutions.operating_margin} />
       </div>
     </section>
@@ -450,6 +493,7 @@ function StabilitySection({ profile, corpCode, y2024 }: { profile: ProfileId; co
 
 function ShareholderReturnSection({ profile, corpCode, y2024 }: { profile: ProfileId; corpCode: string; y2024: StockYearView }) {
   const r = y2024.resolutions;
+  const payoutConflictNote = dividendPayoutConflictNote(r.dividend_payout_indx, r.dividend_payout_fallback);
   return (
     <section className={styles.section}>
       <h2>⑦ 주주환원</h2>
@@ -458,8 +502,28 @@ function ShareholderReturnSection({ profile, corpCode, y2024 }: { profile: Profi
         <RawField corpCode={corpCode} profile={profile} metricKey="eps_alotmatter" label="주당순이익(배당공시)" unit="WON" panelUnit="KRW" resolution={r.eps_alotmatter} />
         <RawField corpCode={corpCode} profile={profile} metricKey="dps_common" label="주당현금배당금(DPS, 보통주)" unit="WON" panelUnit="KRW" resolution={r.dps_common} zeroByFactNote="무배당 확인" />
         <RawField corpCode={corpCode} profile={profile} metricKey="dividend_yield_common" label="현금배당수익률(보통주)" unit="PCT" panelUnit="PCT" resolution={r.dividend_yield_common} zeroByFactNote="무배당 확인" />
-        <RawField corpCode={corpCode} profile={profile} metricKey="dividend_payout_indx" label="배당성향(DART 산출지표)" unit="PCT" panelUnit="PCT" resolution={r.dividend_payout_indx} zeroByFactNote="무배당 확인" />
-        <RawField corpCode={corpCode} profile={profile} metricKey="dividend_payout_fallback" label="배당성향(fallback: 배당총액÷순이익)" unit="PCT" panelUnit="PCT" resolution={r.dividend_payout_fallback} zeroByFactNote="무배당 확인" />
+        <RawField
+          corpCode={corpCode}
+          profile={profile}
+          metricKey="dividend_payout_indx"
+          label="배당성향(DART 산출지표)"
+          unit="PCT"
+          panelUnit="PCT"
+          resolution={r.dividend_payout_indx}
+          zeroByFactNote="무배당 확인"
+          conflictNote={payoutConflictNote}
+        />
+        <RawField
+          corpCode={corpCode}
+          profile={profile}
+          metricKey="dividend_payout_fallback"
+          label="배당성향(fallback: 배당총액÷순이익)"
+          unit="PCT"
+          panelUnit="PCT"
+          resolution={r.dividend_payout_fallback}
+          zeroByFactNote="무배당 확인"
+          conflictNote={payoutConflictNote}
+        />
         <RawField corpCode={corpCode} profile={profile} metricKey="shares_outstanding" label="발행주식총수" unit="SHARES" panelUnit="X" resolution={r.shares_outstanding} />
         <RawField corpCode={corpCode} profile={profile} metricKey="treasury_shares" label="자기주식수" unit="SHARES" panelUnit="X" resolution={r.treasury_shares} />
       </div>
@@ -497,6 +561,9 @@ export default async function StockDetailPage({ params }: { params: Promise<{ co
   return (
     <main className={styles.main}>
       <header className={styles.header}>
+        <Link href="/" className={styles.backLink}>
+          ← 종목 목록
+        </Link>
         <div className={styles.headTop}>
           <h1>
             {row.name} <span className="mono">({row.stockCode})</span>
