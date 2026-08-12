@@ -5,17 +5,22 @@
  * public/snapshots/<requestId>.json에 가공 없이 저장하고, data/manifest.json에
  * 호출별 메타데이터 + 집계(폴백/IS 0행 종목 등)를 남긴다.
  *
- * 실행: pnpm snapshot:fetch [--dry-run] [--force]
- *   --dry-run  호출 없이 계획(엔드포인트별 건수)만 출력
- *   --force    이미 존재하는 스냅샷도 다시 호출(기본은 idempotent — 존재하면 스킵)
+ * 실행: pnpm snapshot:fetch [--dry-run] [--force] [--refetch-nodata]
+ *   --dry-run          호출 없이 계획(엔드포인트별 건수)만 출력
+ *   --force            이미 존재하는 스냅샷도 무조건 다시 호출(기본은 idempotent — 존재하면 스킵)
+ *   --refetch-nodata   캐시된 스냅샷 중 status가 "013"(데이터 없음)인 job만 재호출.
+ *                       "000"(정상 데이터)은 절대 재호출하지 않는다. --force와는 독립적인 플래그이며
+ *                       분기 마감 이후(예: 반기 8/14) 재수집하거나 낡은 013을 갱신할 때 쓴다.
  *
- * 수집 매트릭스 (플랜 §5 예산 근거, 연도/reprt_code는 상수 배열 — 나중에 11012/11013
- * 등을 추가해도 아래 루프 코드는 손대지 않는다):
+ * 수집 매트릭스 (플랜 §5 예산 근거, 연도/reprt_code는 상수 배열 — 나중에 원소를 추가해도
+ * 아래 루프 코드는 손대지 않는다. T1: acntAll만 분기 3종(11013/11012/11014) + 2026을
+ * 추가하고, indx/stockTotqy/alotMatter는 연간(ANNUAL_YEARS, 2023~2025) 그대로 유지):
  * - company                — T2가 이미 수집한 원본 20건을 그대로 재사용(호출 0회, source: "t2-reuse")
- * - fnlttSinglAcntAll      — 20종목 × 연도 3 × reprt_code 2 × CFS 시도, 013이면 OFS 폴백 (#37)
- * - fnlttSinglIndx         — 20종목 × 연도 3 × idx_cl_code 4 (콤마 다중지정 불가 → 개별 호출, #42)
+ * - fnlttSinglAcntAll      — 20종목 × 연도 4(2023~2026) × reprt_code 4(11011/11012/11013/11014) ×
+ *                            CFS 시도, 013이면 OFS 폴백 (#37)
+ * - fnlttSinglIndx         — 20종목 × 연도 3(연간) × idx_cl_code 4 (콤마 다중지정 불가 → 개별 호출, #42)
  * - alotMatter             — 20종목 × (bsns_year=2025, reprt_code=11011) 1회로 2023~2025 커버
- * - stockTotqySttus        — 20종목 × 연도 3 × reprt_code=11011
+ * - stockTotqySttus        — 20종목 × 연도 3(연간) × reprt_code=11011
  *
  * 함정 대응:
  * - `020`(요청 제한 초과) 감지 시 이 스크립트가 즉시 전체 중단한다. client.ts는 판정만 하고
@@ -64,12 +69,17 @@ loadEnvLocal();
 const args = process.argv.slice(2);
 const DRY_RUN = args.includes("--dry-run");
 const FORCE = args.includes("--force");
+const REFETCH_NODATA = args.includes("--refetch-nodata");
 
 // ---------------------------------------------------------------------------
 // 수집 매트릭스 상수 — 배열이 곧 계획. 원소를 추가/제거하면 루프 수정 없이 계획이 바뀐다.
+//
+// YEARS는 fnlttSinglAcntAll 전용(T1: 분기 시계열 확보를 위해 2026까지 확장).
+// ANNUAL_YEARS는 indx/alotMatter/stockTotqySttus 전용 — 연간 매트릭스는 T1에서 불변.
 // ---------------------------------------------------------------------------
-const YEARS = ["2023", "2024", "2025"] as const;
-const ACNT_ALL_REPRT_CODES = ["11011", "11014"] as const;
+const YEARS = ["2023", "2024", "2025", "2026"] as const;
+const ANNUAL_YEARS = ["2023", "2024", "2025"] as const;
+const ACNT_ALL_REPRT_CODES = ["11013", "11012", "11014", "11011"] as const;
 const INDX_REPRT_CODES = ["11011"] as const;
 const INDX_CATEGORIES = ["M210000", "M220000", "M230000", "M240000"] as const;
 const ALOT_MATTER_YEARS = ["2025"] as const; // 1회로 2023~2025 3개년 커버
@@ -195,7 +205,7 @@ function buildBaseJobs(universe: UniverseRow[]): Job[] {
         );
       }
     }
-    for (const year of YEARS) {
+    for (const year of ANNUAL_YEARS) {
       for (const reprt of INDX_REPRT_CODES) {
         for (const idx of INDX_CATEGORIES) {
           jobs.push(
@@ -213,7 +223,7 @@ function buildBaseJobs(universe: UniverseRow[]): Job[] {
         jobs.push(makeJob("alotMatter", stock, { bsns_year: year, reprt_code: reprt }, ["bsns_year", "reprt_code"]));
       }
     }
-    for (const year of YEARS) {
+    for (const year of ANNUAL_YEARS) {
       for (const reprt of STOCKTOTQY_REPRT_CODES) {
         jobs.push(
           makeJob("stockTotqySttus", stock, { bsns_year: year, reprt_code: reprt }, ["bsns_year", "reprt_code"]),
@@ -277,9 +287,14 @@ async function executeJob(job: Job): Promise<CallLogEntry> {
   const filePath = join(SNAPSHOTS_DIR, `${job.requestId}.json`);
 
   // idempotent: 이미 있으면 재호출하지 않고 기존 스냅샷을 읽어 manifest에만 반영한다.
+  // --refetch-nodata 예외: 캐시된 status가 "013"(데이터 없음)인 job만 재호출을 허용한다.
+  // "000"(정상 데이터)은 이 플래그가 있어도 절대 재호출하지 않는다.
   if (existsSync(filePath) && !FORCE) {
     const cached = JSON.parse(readFileSync(filePath, "utf-8")) as DartEnvelope;
-    return toEntry(job, cached, "cache");
+    const shouldRefetch = REFETCH_NODATA && cached.status === "013";
+    if (!shouldRefetch) {
+      return toEntry(job, cached, "cache");
+    }
   }
 
   const validation = validateEndpointParams(job.endpoint, job.params);
@@ -390,6 +405,24 @@ function computeIsZeroRowStocks(universe: UniverseRow[], acntAllEntries: CallLog
 // ---------------------------------------------------------------------------
 // 출력
 // ---------------------------------------------------------------------------
+/** 캐시 상태 기준으로 baseJobs를 분류한다: 신규(파일 없음) / 캐시 013(재호출 대상 후보) / 캐시 000(재호출 금지). */
+function classifyByCache(baseJobs: Job[]): { newCount: number; cached013: number; cached000: number } {
+  let newCount = 0;
+  let cached013 = 0;
+  let cached000 = 0;
+  for (const job of baseJobs) {
+    const filePath = join(SNAPSHOTS_DIR, `${job.requestId}.json`);
+    if (!existsSync(filePath)) {
+      newCount++;
+      continue;
+    }
+    const cached = JSON.parse(readFileSync(filePath, "utf-8")) as DartEnvelope;
+    if (cached.status === "013") cached013++;
+    else cached000++;
+  }
+  return { newCount, cached013, cached000 };
+}
+
 function printDryRunPlan(companyEntries: CallLogEntry[], baseJobs: Job[]): void {
   const counts = new Map<DartEndpoint, number>();
   for (const j of baseJobs) counts.set(j.endpoint, (counts.get(j.endpoint) ?? 0) + 1);
@@ -403,6 +436,15 @@ function printDryRunPlan(companyEntries: CallLogEntry[], baseJobs: Job[]): void 
   const liveTotal = baseJobs.length;
   console.log(`\n실 API 호출 계획 합계(CFS→OFS 폴백 제외)   ${liveTotal}건`);
   console.log(`스냅샷 파일 합계(company 포함, 폴백 제외)   ${liveTotal + companyEntries.length}건`);
+
+  const { newCount, cached013, cached000 } = classifyByCache(baseJobs);
+  console.log(
+    `\n캐시 상태 분류 — 신규(파일 없음) ${newCount}건 · 캐시 013(재호출 후보) ${cached013}건 · 캐시 000(재호출 금지) ${cached000}건`,
+  );
+  const liveNeeded = REFETCH_NODATA ? newCount + cached013 : newCount;
+  console.log(
+    `${REFETCH_NODATA ? "--refetch-nodata 활성" : "기본 모드(신규만)"} — 이번 실행에서 실제 호출될 건수 ${liveNeeded}건`,
+  );
 
   const expectedSec = (Math.ceil(liveTotal / CONCURRENCY) * REQUEST_GAP_MS) / 1000;
   console.log(`동시성 ${CONCURRENCY} · 요청 간 ${REQUEST_GAP_MS}ms · 예상 소요 약 ${expectedSec.toFixed(1)}초 (폴백 제외)`);
@@ -519,7 +561,9 @@ async function main(): Promise<void> {
     return;
   }
 
-  console.log(`=== T3 스냅샷 수집 시작 (동시성 ${CONCURRENCY} · 요청 간 ${REQUEST_GAP_MS}ms) ===`);
+  console.log(
+    `=== T3 스냅샷 수집 시작 (동시성 ${CONCURRENCY} · 요청 간 ${REQUEST_GAP_MS}ms${REFETCH_NODATA ? " · --refetch-nodata 활성(캐시 013만 재호출)" : ""}${FORCE ? " · --force 활성(전체 재호출)" : ""}) ===`,
+  );
   console.log(`계획: company 재사용 ${companyEntries.length}건 + 실 API 호출 최대 ${baseJobs.length}건(+CFS→OFS 폴백)`);
 
   const t0 = Date.now();
