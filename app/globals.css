@@ -352,6 +352,11 @@ a {
 .sbstack {
   width: 78%;
   position: relative;
+}
+/* 세그먼트만 클리핑한다 — .sbstack에 overflow:hidden을 걸면 막대 위로 뜨는
+   총계 라벨(.qbv, top:-14px)까지 잘린다. */
+.sbsegs {
+  height: 100%;
   display: flex;
   flex-direction: column;
   border-radius: 5px 5px 0 0;

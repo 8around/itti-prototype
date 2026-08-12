@@ -58,9 +58,12 @@ export default function StackedBars({ periods, unit }: StackedBarsProps) {
             <div className="qbcol" key={p.label}>
               <div className="qbtrack">
                 <div className="sbstack" style={{ height: `${totalPct}%` }}>
+                  {/* 총계 라벨은 막대 위로 삐져나오므로 클리핑되는 .sbsegs 밖에 둔다. */}
                   <span className="qbv">{formatComma(total)}</span>
-                  <div className="sbseg sbliab" style={{ height: `${100 - equityShare}%` }} />
-                  <div className="sbseg sbequity" style={{ height: `${equityShare}%` }} />
+                  <div className="sbsegs">
+                    <div className="sbseg sbliab" style={{ height: `${100 - equityShare}%` }} />
+                    <div className="sbseg sbequity" style={{ height: `${equityShare}%` }} />
+                  </div>
                 </div>
               </div>
               <div className="qbx">{p.label}</div>
