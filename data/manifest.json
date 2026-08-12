@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-12T03:11:39.380Z",
+  "generatedAt": "2026-08-12T12:01:31.066Z",
   "calls": [
     {
       "requestId": "company__00126380",
@@ -422,6 +422,86 @@
       "fsDivFallback": false
     },
     {
+      "requestId": "fnlttSinglAcntAll__00126380__2024__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00126380",
+      "stockCode": "005930",
+      "name": "삼성전자",
+      "params": {
+        "corp_code": "00126380",
+        "bsns_year": "2024",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 95001,
+      "elapsedMs": 319,
+      "fetchedAt": "2026-08-12T12:01:08.889Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00126380__2023__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00126380",
+      "stockCode": "005930",
+      "name": "삼성전자",
+      "params": {
+        "corp_code": "00126380",
+        "bsns_year": "2023",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 74018,
+      "elapsedMs": 373,
+      "fetchedAt": "2026-08-12T12:01:08.859Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00126380__2023__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00126380",
+      "stockCode": "005930",
+      "name": "삼성전자",
+      "params": {
+        "corp_code": "00126380",
+        "bsns_year": "2023",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 72988,
+      "elapsedMs": 348,
+      "fetchedAt": "2026-08-12T12:01:08.887Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00126380__2024__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00126380",
+      "stockCode": "005930",
+      "name": "삼성전자",
+      "params": {
+        "corp_code": "00126380",
+        "bsns_year": "2024",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 94438,
+      "elapsedMs": 381,
+      "fetchedAt": "2026-08-12T12:01:08.889Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
       "requestId": "fnlttSinglAcntAll__00126380__2025__11011__CFS",
       "endpoint": "fnlttSinglAcntAll",
       "corpCode": "00126380",
@@ -459,6 +539,126 @@
       "elapsedMs": 185,
       "fetchedAt": "2026-08-12T03:09:59.853Z",
       "source": "cache",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00126380__2026__11011__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00126380",
+      "stockCode": "005930",
+      "name": "삼성전자",
+      "params": {
+        "corp_code": "00126380",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 153,
+      "fetchedAt": "2026-08-12T12:01:09.390Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00126380__2026__11014__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00126380",
+      "stockCode": "005930",
+      "name": "삼성전자",
+      "params": {
+        "corp_code": "00126380",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 177,
+      "fetchedAt": "2026-08-12T12:01:09.425Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00126380__2026__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00126380",
+      "stockCode": "005930",
+      "name": "삼성전자",
+      "params": {
+        "corp_code": "00126380",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 176,
+      "fetchedAt": "2026-08-12T12:01:09.755Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00126380__2026__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00126380",
+      "stockCode": "005930",
+      "name": "삼성전자",
+      "params": {
+        "corp_code": "00126380",
+        "bsns_year": "2026",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 95449,
+      "elapsedMs": 274,
+      "fetchedAt": "2026-08-12T12:01:09.696Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00126380__2025__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00126380",
+      "stockCode": "005930",
+      "name": "삼성전자",
+      "params": {
+        "corp_code": "00126380",
+        "bsns_year": "2025",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 103575,
+      "elapsedMs": 617,
+      "fetchedAt": "2026-08-12T12:01:09.370Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00126380__2025__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00126380",
+      "stockCode": "005930",
+      "name": "삼성전자",
+      "params": {
+        "corp_code": "00126380",
+        "bsns_year": "2025",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 103959,
+      "elapsedMs": 689,
+      "fetchedAt": "2026-08-12T12:01:09.386Z",
+      "source": "live",
       "fsDivFallback": false
     },
     {
@@ -858,6 +1058,86 @@
       "fsDivFallback": false
     },
     {
+      "requestId": "fnlttSinglAcntAll__00164779__2024__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00164779",
+      "stockCode": "000660",
+      "name": "SK하이닉스",
+      "params": {
+        "corp_code": "00164779",
+        "bsns_year": "2024",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 77142,
+      "elapsedMs": 118,
+      "fetchedAt": "2026-08-12T12:01:10.142Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00164779__2023__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00164779",
+      "stockCode": "000660",
+      "name": "SK하이닉스",
+      "params": {
+        "corp_code": "00164779",
+        "bsns_year": "2023",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 70860,
+      "elapsedMs": 204,
+      "fetchedAt": "2026-08-12T12:01:10.122Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00164779__2023__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00164779",
+      "stockCode": "000660",
+      "name": "SK하이닉스",
+      "params": {
+        "corp_code": "00164779",
+        "bsns_year": "2023",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 67034,
+      "elapsedMs": 240,
+      "fetchedAt": "2026-08-12T12:01:10.089Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00164779__2024__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00164779",
+      "stockCode": "000660",
+      "name": "SK하이닉스",
+      "params": {
+        "corp_code": "00164779",
+        "bsns_year": "2024",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 108427,
+      "elapsedMs": 161,
+      "fetchedAt": "2026-08-12T12:01:10.228Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
       "requestId": "fnlttSinglAcntAll__00164779__2025__11011__CFS",
       "endpoint": "fnlttSinglAcntAll",
       "corpCode": "00164779",
@@ -895,6 +1175,86 @@
       "elapsedMs": 306,
       "fetchedAt": "2026-08-12T03:10:01.785Z",
       "source": "cache",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00164779__2026__11011__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00164779",
+      "stockCode": "000660",
+      "name": "SK하이닉스",
+      "params": {
+        "corp_code": "00164779",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 72,
+      "fetchedAt": "2026-08-12T12:01:10.481Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00164779__2025__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00164779",
+      "stockCode": "000660",
+      "name": "SK하이닉스",
+      "params": {
+        "corp_code": "00164779",
+        "bsns_year": "2025",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 101069,
+      "elapsedMs": 175,
+      "fetchedAt": "2026-08-12T12:01:10.419Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00164779__2026__11014__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00164779",
+      "stockCode": "000660",
+      "name": "SK하이닉스",
+      "params": {
+        "corp_code": "00164779",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 68,
+      "fetchedAt": "2026-08-12T12:01:10.545Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00164779__2025__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00164779",
+      "stockCode": "000660",
+      "name": "SK하이닉스",
+      "params": {
+        "corp_code": "00164779",
+        "bsns_year": "2025",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 111128,
+      "elapsedMs": 154,
+      "fetchedAt": "2026-08-12T12:01:10.480Z",
+      "source": "live",
       "fsDivFallback": false
     },
     {
@@ -1254,6 +1614,86 @@
       "fsDivFallback": false
     },
     {
+      "requestId": "fnlttSinglAcntAll__00164779__2026__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00164779",
+      "stockCode": "000660",
+      "name": "SK하이닉스",
+      "params": {
+        "corp_code": "00164779",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 70,
+      "fetchedAt": "2026-08-12T12:01:10.749Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00164742__2023__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00164742",
+      "stockCode": "005380",
+      "name": "현대자동차",
+      "params": {
+        "corp_code": "00164742",
+        "bsns_year": "2023",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 91373,
+      "elapsedMs": 99,
+      "fetchedAt": "2026-08-12T12:01:10.776Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00164742__2023__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00164742",
+      "stockCode": "005380",
+      "name": "현대자동차",
+      "params": {
+        "corp_code": "00164742",
+        "bsns_year": "2023",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 92455,
+      "elapsedMs": 127,
+      "fetchedAt": "2026-08-12T12:01:10.792Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00164779__2026__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00164779",
+      "stockCode": "000660",
+      "name": "SK하이닉스",
+      "params": {
+        "corp_code": "00164779",
+        "bsns_year": "2026",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 105708,
+      "elapsedMs": 226,
+      "fetchedAt": "2026-08-12T12:01:10.706Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
       "requestId": "fnlttSinglAcntAll__00164742__2024__11011__CFS",
       "endpoint": "fnlttSinglAcntAll",
       "corpCode": "00164742",
@@ -1331,6 +1771,146 @@
       "elapsedMs": 302,
       "fetchedAt": "2026-08-12T03:10:04.218Z",
       "source": "cache",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00164742__2024__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00164742",
+      "stockCode": "005380",
+      "name": "현대자동차",
+      "params": {
+        "corp_code": "00164742",
+        "bsns_year": "2024",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 127027,
+      "elapsedMs": 194,
+      "fetchedAt": "2026-08-12T12:01:10.974Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00164742__2024__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00164742",
+      "stockCode": "005380",
+      "name": "현대자동차",
+      "params": {
+        "corp_code": "00164742",
+        "bsns_year": "2024",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 130777,
+      "elapsedMs": 174,
+      "fetchedAt": "2026-08-12T12:01:11.030Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00164742__2025__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00164742",
+      "stockCode": "005380",
+      "name": "현대자동차",
+      "params": {
+        "corp_code": "00164742",
+        "bsns_year": "2025",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 135268,
+      "elapsedMs": 123,
+      "fetchedAt": "2026-08-12T12:01:11.086Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00164742__2026__11011__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00164742",
+      "stockCode": "005380",
+      "name": "현대자동차",
+      "params": {
+        "corp_code": "00164742",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 167,
+      "fetchedAt": "2026-08-12T12:01:11.320Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00164742__2026__11014__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00164742",
+      "stockCode": "005380",
+      "name": "현대자동차",
+      "params": {
+        "corp_code": "00164742",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 150,
+      "fetchedAt": "2026-08-12T12:01:11.355Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00164742__2026__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00164742",
+      "stockCode": "005380",
+      "name": "현대자동차",
+      "params": {
+        "corp_code": "00164742",
+        "bsns_year": "2026",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 120673,
+      "elapsedMs": 210,
+      "fetchedAt": "2026-08-12T12:01:11.361Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00164742__2025__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00164742",
+      "stockCode": "005380",
+      "name": "현대자동차",
+      "params": {
+        "corp_code": "00164742",
+        "bsns_year": "2025",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 131547,
+      "elapsedMs": 576,
+      "fetchedAt": "2026-08-12T12:01:11.077Z",
+      "source": "live",
       "fsDivFallback": false
     },
     {
@@ -1730,6 +2310,86 @@
       "fsDivFallback": false
     },
     {
+      "requestId": "fnlttSinglAcntAll__00164742__2026__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00164742",
+      "stockCode": "005380",
+      "name": "현대자동차",
+      "params": {
+        "corp_code": "00164742",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 182,
+      "fetchedAt": "2026-08-12T12:01:11.639Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00155319__2023__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00155319",
+      "stockCode": "005490",
+      "name": "POSCO홀딩스",
+      "params": {
+        "corp_code": "00155319",
+        "bsns_year": "2023",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 91231,
+      "elapsedMs": 198,
+      "fetchedAt": "2026-08-12T12:01:11.667Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00155319__2024__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00155319",
+      "stockCode": "005490",
+      "name": "POSCO홀딩스",
+      "params": {
+        "corp_code": "00155319",
+        "bsns_year": "2024",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 120351,
+      "elapsedMs": 143,
+      "fetchedAt": "2026-08-12T12:01:11.818Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00155319__2023__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00155319",
+      "stockCode": "005490",
+      "name": "POSCO홀딩스",
+      "params": {
+        "corp_code": "00155319",
+        "bsns_year": "2023",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 95553,
+      "elapsedMs": 249,
+      "fetchedAt": "2026-08-12T12:01:11.726Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
       "requestId": "fnlttSinglAcntAll__00155319__2025__11011__CFS",
       "endpoint": "fnlttSinglAcntAll",
       "corpCode": "00155319",
@@ -1767,6 +2427,146 @@
       "elapsedMs": 251,
       "fetchedAt": "2026-08-12T03:10:05.988Z",
       "source": "cache",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00155319__2024__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00155319",
+      "stockCode": "005490",
+      "name": "POSCO홀딩스",
+      "params": {
+        "corp_code": "00155319",
+        "bsns_year": "2024",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 128537,
+      "elapsedMs": 196,
+      "fetchedAt": "2026-08-12T12:01:11.973Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00155319__2025__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00155319",
+      "stockCode": "005490",
+      "name": "POSCO홀딩스",
+      "params": {
+        "corp_code": "00155319",
+        "bsns_year": "2025",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 115218,
+      "elapsedMs": 152,
+      "fetchedAt": "2026-08-12T12:01:12.024Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00155319__2026__11011__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00155319",
+      "stockCode": "005490",
+      "name": "POSCO홀딩스",
+      "params": {
+        "corp_code": "00155319",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 97,
+      "fetchedAt": "2026-08-12T12:01:12.130Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00155319__2025__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00155319",
+      "stockCode": "005490",
+      "name": "POSCO홀딩스",
+      "params": {
+        "corp_code": "00155319",
+        "bsns_year": "2025",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 123505,
+      "elapsedMs": 233,
+      "fetchedAt": "2026-08-12T12:01:12.118Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00155319__2026__11014__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00155319",
+      "stockCode": "005490",
+      "name": "POSCO홀딩스",
+      "params": {
+        "corp_code": "00155319",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 72,
+      "fetchedAt": "2026-08-12T12:01:12.326Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00155319__2026__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00155319",
+      "stockCode": "005490",
+      "name": "POSCO홀딩스",
+      "params": {
+        "corp_code": "00155319",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 70,
+      "fetchedAt": "2026-08-12T12:01:12.380Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00155319__2026__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00155319",
+      "stockCode": "005490",
+      "name": "POSCO홀딩스",
+      "params": {
+        "corp_code": "00155319",
+        "bsns_year": "2026",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 113811,
+      "elapsedMs": 138,
+      "fetchedAt": "2026-08-12T12:01:12.330Z",
+      "source": "live",
       "fsDivFallback": false
     },
     {
@@ -2166,6 +2966,46 @@
       "fsDivFallback": false
     },
     {
+      "requestId": "fnlttSinglAcntAll__00356361__2023__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00356361",
+      "stockCode": "051910",
+      "name": "LG화학",
+      "params": {
+        "corp_code": "00356361",
+        "bsns_year": "2023",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 79789,
+      "elapsedMs": 111,
+      "fetchedAt": "2026-08-12T12:01:12.514Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00356361__2023__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00356361",
+      "stockCode": "051910",
+      "name": "LG화학",
+      "params": {
+        "corp_code": "00356361",
+        "bsns_year": "2023",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 81850,
+      "elapsedMs": 137,
+      "fetchedAt": "2026-08-12T12:01:12.551Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
       "requestId": "fnlttSinglAcntAll__00356361__2025__11011__CFS",
       "endpoint": "fnlttSinglAcntAll",
       "corpCode": "00356361",
@@ -2204,6 +3044,146 @@
       "fetchedAt": "2026-08-12T03:10:07.766Z",
       "source": "cache",
       "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00356361__2024__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00356361",
+      "stockCode": "051910",
+      "name": "LG화학",
+      "params": {
+        "corp_code": "00356361",
+        "bsns_year": "2024",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 108935,
+      "elapsedMs": 247,
+      "fetchedAt": "2026-08-12T12:01:12.621Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00356361__2024__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00356361",
+      "stockCode": "051910",
+      "name": "LG화학",
+      "params": {
+        "corp_code": "00356361",
+        "bsns_year": "2024",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 106986,
+      "elapsedMs": 264,
+      "fetchedAt": "2026-08-12T12:01:12.609Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00356361__2025__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00356361",
+      "stockCode": "051910",
+      "name": "LG화학",
+      "params": {
+        "corp_code": "00356361",
+        "bsns_year": "2025",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 87678,
+      "elapsedMs": 120,
+      "fetchedAt": "2026-08-12T12:01:12.844Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00356361__2025__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00356361",
+      "stockCode": "051910",
+      "name": "LG화학",
+      "params": {
+        "corp_code": "00356361",
+        "bsns_year": "2025",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 87457,
+      "elapsedMs": 193,
+      "fetchedAt": "2026-08-12T12:01:12.785Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00356361__2026__11011__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00356361",
+      "stockCode": "051910",
+      "name": "LG화학",
+      "params": {
+        "corp_code": "00356361",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 85,
+      "fetchedAt": "2026-08-12T12:01:13.023Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00356361__2026__11014__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00356361",
+      "stockCode": "051910",
+      "name": "LG화학",
+      "params": {
+        "corp_code": "00356361",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 114,
+      "fetchedAt": "2026-08-12T12:01:13.027Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00356361__2026__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00356361",
+      "stockCode": "051910",
+      "name": "LG화학",
+      "params": {
+        "corp_code": "00356361",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 80,
+      "fetchedAt": "2026-08-12T12:01:13.133Z",
+      "source": "live",
+      "fsDivFallback": true
     },
     {
       "requestId": "fnlttSinglIndx__00356361__2023__11011__M210000",
@@ -2562,6 +3542,26 @@
       "fsDivFallback": false
     },
     {
+      "requestId": "fnlttSinglAcntAll__00356361__2026__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00356361",
+      "stockCode": "051910",
+      "name": "LG화학",
+      "params": {
+        "corp_code": "00356361",
+        "bsns_year": "2026",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 111403,
+      "elapsedMs": 188,
+      "fetchedAt": "2026-08-12T12:01:13.118Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
       "requestId": "fnlttSinglAcntAll__00258801__2024__11011__CFS",
       "endpoint": "fnlttSinglAcntAll",
       "corpCode": "00258801",
@@ -2599,6 +3599,66 @@
       "elapsedMs": 179,
       "fetchedAt": "2026-08-12T03:10:09.160Z",
       "source": "cache",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00258801__2023__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00258801",
+      "stockCode": "035720",
+      "name": "카카오",
+      "params": {
+        "corp_code": "00258801",
+        "bsns_year": "2023",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 99132,
+      "elapsedMs": 229,
+      "fetchedAt": "2026-08-12T12:01:13.274Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00258801__2024__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00258801",
+      "stockCode": "035720",
+      "name": "카카오",
+      "params": {
+        "corp_code": "00258801",
+        "bsns_year": "2024",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 98044,
+      "elapsedMs": 167,
+      "fetchedAt": "2026-08-12T12:01:13.370Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00258801__2023__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00258801",
+      "stockCode": "035720",
+      "name": "카카오",
+      "params": {
+        "corp_code": "00258801",
+        "bsns_year": "2023",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 111789,
+      "elapsedMs": 251,
+      "fetchedAt": "2026-08-12T12:01:13.293Z",
+      "source": "live",
       "fsDivFallback": false
     },
     {
@@ -2640,6 +3700,106 @@
       "fetchedAt": "2026-08-12T03:10:09.494Z",
       "source": "cache",
       "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00258801__2026__11011__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00258801",
+      "stockCode": "035720",
+      "name": "카카오",
+      "params": {
+        "corp_code": "00258801",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 207,
+      "fetchedAt": "2026-08-12T12:01:13.700Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00258801__2025__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00258801",
+      "stockCode": "035720",
+      "name": "카카오",
+      "params": {
+        "corp_code": "00258801",
+        "bsns_year": "2025",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 130579,
+      "elapsedMs": 321,
+      "fetchedAt": "2026-08-12T12:01:13.667Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00258801__2024__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00258801",
+      "stockCode": "035720",
+      "name": "카카오",
+      "params": {
+        "corp_code": "00258801",
+        "bsns_year": "2024",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 103834,
+      "elapsedMs": 554,
+      "fetchedAt": "2026-08-12T12:01:13.459Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00258801__2025__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00258801",
+      "stockCode": "035720",
+      "name": "카카오",
+      "params": {
+        "corp_code": "00258801",
+        "bsns_year": "2025",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 134381,
+      "elapsedMs": 357,
+      "fetchedAt": "2026-08-12T12:01:13.691Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00258801__2026__11014__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00258801",
+      "stockCode": "035720",
+      "name": "카카오",
+      "params": {
+        "corp_code": "00258801",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 75,
+      "fetchedAt": "2026-08-12T12:01:14.058Z",
+      "source": "live",
+      "fsDivFallback": true
     },
     {
       "requestId": "fnlttSinglIndx__00258801__2023__11011__M210000",
@@ -2998,6 +4158,66 @@
       "fsDivFallback": false
     },
     {
+      "requestId": "fnlttSinglAcntAll__00258801__2026__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00258801",
+      "stockCode": "035720",
+      "name": "카카오",
+      "params": {
+        "corp_code": "00258801",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 66,
+      "fetchedAt": "2026-08-12T12:01:14.170Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00258801__2026__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00258801",
+      "stockCode": "035720",
+      "name": "카카오",
+      "params": {
+        "corp_code": "00258801",
+        "bsns_year": "2026",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 103342,
+      "elapsedMs": 186,
+      "fetchedAt": "2026-08-12T12:01:14.141Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00266961__2023__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00266961",
+      "stockCode": "035420",
+      "name": "NAVER",
+      "params": {
+        "corp_code": "00266961",
+        "bsns_year": "2023",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 69962,
+      "elapsedMs": 149,
+      "fetchedAt": "2026-08-12T12:01:14.214Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
       "requestId": "fnlttSinglAcntAll__00266961__2024__11011__CFS",
       "endpoint": "fnlttSinglAcntAll",
       "corpCode": "00266961",
@@ -3075,6 +4295,166 @@
       "elapsedMs": 165,
       "fetchedAt": "2026-08-12T03:10:11.049Z",
       "source": "cache",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00266961__2023__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00266961",
+      "stockCode": "035420",
+      "name": "NAVER",
+      "params": {
+        "corp_code": "00266961",
+        "bsns_year": "2023",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 73322,
+      "elapsedMs": 248,
+      "fetchedAt": "2026-08-12T12:01:14.286Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00266961__2024__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00266961",
+      "stockCode": "035420",
+      "name": "NAVER",
+      "params": {
+        "corp_code": "00266961",
+        "bsns_year": "2024",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 79053,
+      "elapsedMs": 249,
+      "fetchedAt": "2026-08-12T12:01:14.395Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00266961__2025__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00266961",
+      "stockCode": "035420",
+      "name": "NAVER",
+      "params": {
+        "corp_code": "00266961",
+        "bsns_year": "2025",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 93877,
+      "elapsedMs": 228,
+      "fetchedAt": "2026-08-12T12:01:14.518Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00266961__2024__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00266961",
+      "stockCode": "035420",
+      "name": "NAVER",
+      "params": {
+        "corp_code": "00266961",
+        "bsns_year": "2024",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 94544,
+      "elapsedMs": 278,
+      "fetchedAt": "2026-08-12T12:01:14.482Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00266961__2026__11011__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00266961",
+      "stockCode": "035420",
+      "name": "NAVER",
+      "params": {
+        "corp_code": "00266961",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 157,
+      "fetchedAt": "2026-08-12T12:01:14.794Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00266961__2026__11014__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00266961",
+      "stockCode": "035420",
+      "name": "NAVER",
+      "params": {
+        "corp_code": "00266961",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 117,
+      "fetchedAt": "2026-08-12T12:01:14.898Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00266961__2025__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00266961",
+      "stockCode": "035420",
+      "name": "NAVER",
+      "params": {
+        "corp_code": "00266961",
+        "bsns_year": "2025",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 98385,
+      "elapsedMs": 361,
+      "fetchedAt": "2026-08-12T12:01:14.685Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00266961__2026__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00266961",
+      "stockCode": "035420",
+      "name": "NAVER",
+      "params": {
+        "corp_code": "00266961",
+        "bsns_year": "2026",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 93626,
+      "elapsedMs": 210,
+      "fetchedAt": "2026-08-12T12:01:14.913Z",
+      "source": "live",
       "fsDivFallback": false
     },
     {
@@ -3434,6 +4814,26 @@
       "fsDivFallback": false
     },
     {
+      "requestId": "fnlttSinglAcntAll__00266961__2026__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00266961",
+      "stockCode": "035420",
+      "name": "NAVER",
+      "params": {
+        "corp_code": "00266961",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 87,
+      "fetchedAt": "2026-08-12T12:01:15.104Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
       "requestId": "fnlttSinglAcntAll__00413046__2024__11011__CFS",
       "endpoint": "fnlttSinglAcntAll",
       "corpCode": "00413046",
@@ -3474,6 +4874,66 @@
       "fsDivFallback": false
     },
     {
+      "requestId": "fnlttSinglAcntAll__00413046__2023__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00413046",
+      "stockCode": "068270",
+      "name": "셀트리온",
+      "params": {
+        "corp_code": "00413046",
+        "bsns_year": "2023",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 73186,
+      "elapsedMs": 273,
+      "fetchedAt": "2026-08-12T12:01:15.180Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00413046__2023__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00413046",
+      "stockCode": "068270",
+      "name": "셀트리온",
+      "params": {
+        "corp_code": "00413046",
+        "bsns_year": "2023",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 76957,
+      "elapsedMs": 337,
+      "fetchedAt": "2026-08-12T12:01:15.200Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00413046__2024__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00413046",
+      "stockCode": "068270",
+      "name": "셀트리온",
+      "params": {
+        "corp_code": "00413046",
+        "bsns_year": "2024",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 108435,
+      "elapsedMs": 306,
+      "fetchedAt": "2026-08-12T12:01:15.285Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
       "requestId": "fnlttSinglAcntAll__00413046__2025__11011__CFS",
       "endpoint": "fnlttSinglAcntAll",
       "corpCode": "00413046",
@@ -3511,6 +4971,106 @@
       "elapsedMs": 188,
       "fetchedAt": "2026-08-12T03:10:12.639Z",
       "source": "cache",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00413046__2024__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00413046",
+      "stockCode": "068270",
+      "name": "셀트리온",
+      "params": {
+        "corp_code": "00413046",
+        "bsns_year": "2024",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 114460,
+      "elapsedMs": 270,
+      "fetchedAt": "2026-08-12T12:01:15.343Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00413046__2026__11011__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00413046",
+      "stockCode": "068270",
+      "name": "셀트리온",
+      "params": {
+        "corp_code": "00413046",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 75,
+      "fetchedAt": "2026-08-12T12:01:15.742Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00413046__2026__11014__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00413046",
+      "stockCode": "068270",
+      "name": "셀트리온",
+      "params": {
+        "corp_code": "00413046",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 82,
+      "fetchedAt": "2026-08-12T12:01:15.763Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00413046__2025__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00413046",
+      "stockCode": "068270",
+      "name": "셀트리온",
+      "params": {
+        "corp_code": "00413046",
+        "bsns_year": "2025",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 119783,
+      "elapsedMs": 189,
+      "fetchedAt": "2026-08-12T12:01:15.690Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00413046__2025__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00413046",
+      "stockCode": "068270",
+      "name": "셀트리온",
+      "params": {
+        "corp_code": "00413046",
+        "bsns_year": "2025",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 110515,
+      "elapsedMs": 295,
+      "fetchedAt": "2026-08-12T12:01:15.610Z",
+      "source": "live",
       "fsDivFallback": false
     },
     {
@@ -3870,6 +5430,86 @@
       "fsDivFallback": false
     },
     {
+      "requestId": "fnlttSinglAcntAll__00413046__2026__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00413046",
+      "stockCode": "068270",
+      "name": "셀트리온",
+      "params": {
+        "corp_code": "00413046",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 78,
+      "fetchedAt": "2026-08-12T12:01:15.997Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00359395__2023__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00359395",
+      "stockCode": "084990",
+      "name": "헬릭스미스",
+      "params": {
+        "corp_code": "00359395",
+        "bsns_year": "2023",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 63831,
+      "elapsedMs": 131,
+      "fetchedAt": "2026-08-12T12:01:16.038Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00359395__2023__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00359395",
+      "stockCode": "084990",
+      "name": "헬릭스미스",
+      "params": {
+        "corp_code": "00359395",
+        "bsns_year": "2023",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 65322,
+      "elapsedMs": 150,
+      "fetchedAt": "2026-08-12T12:01:16.057Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00413046__2026__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00413046",
+      "stockCode": "068270",
+      "name": "셀트리온",
+      "params": {
+        "corp_code": "00413046",
+        "bsns_year": "2026",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 111688,
+      "elapsedMs": 240,
+      "fetchedAt": "2026-08-12T12:01:15.968Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
       "requestId": "fnlttSinglAcntAll__00359395__2024__11011__CFS",
       "endpoint": "fnlttSinglAcntAll",
       "corpCode": "00359395",
@@ -3907,6 +5547,26 @@
       "elapsedMs": 145,
       "fetchedAt": "2026-08-12T03:10:14.125Z",
       "source": "cache",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00359395__2024__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00359395",
+      "stockCode": "084990",
+      "name": "헬릭스미스",
+      "params": {
+        "corp_code": "00359395",
+        "bsns_year": "2024",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 47601,
+      "elapsedMs": 111,
+      "fetchedAt": "2026-08-12T12:01:16.229Z",
+      "source": "live",
       "fsDivFallback": false
     },
     {
@@ -3948,6 +5608,106 @@
       "fetchedAt": "2026-08-12T03:10:14.234Z",
       "source": "cache",
       "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00359395__2024__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00359395",
+      "stockCode": "084990",
+      "name": "헬릭스미스",
+      "params": {
+        "corp_code": "00359395",
+        "bsns_year": "2024",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 48833,
+      "elapsedMs": 145,
+      "fetchedAt": "2026-08-12T12:01:16.321Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00359395__2025__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00359395",
+      "stockCode": "084990",
+      "name": "헬릭스미스",
+      "params": {
+        "corp_code": "00359395",
+        "bsns_year": "2025",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 49446,
+      "elapsedMs": 109,
+      "fetchedAt": "2026-08-12T12:01:16.362Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00359395__2025__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00359395",
+      "stockCode": "084990",
+      "name": "헬릭스미스",
+      "params": {
+        "corp_code": "00359395",
+        "bsns_year": "2025",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 46560,
+      "elapsedMs": 130,
+      "fetchedAt": "2026-08-12T12:01:16.362Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00359395__2026__11011__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00359395",
+      "stockCode": "084990",
+      "name": "헬릭스미스",
+      "params": {
+        "corp_code": "00359395",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 64,
+      "fetchedAt": "2026-08-12T12:01:16.496Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00359395__2026__11014__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00359395",
+      "stockCode": "084990",
+      "name": "헬릭스미스",
+      "params": {
+        "corp_code": "00359395",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 85,
+      "fetchedAt": "2026-08-12T12:01:16.620Z",
+      "source": "live",
+      "fsDivFallback": true
     },
     {
       "requestId": "fnlttSinglIndx__00359395__2023__11011__M210000",
@@ -4306,6 +6066,46 @@
       "fsDivFallback": false
     },
     {
+      "requestId": "fnlttSinglAcntAll__00359395__2026__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00359395",
+      "stockCode": "084990",
+      "name": "헬릭스미스",
+      "params": {
+        "corp_code": "00359395",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 74,
+      "fetchedAt": "2026-08-12T12:01:16.647Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00359395__2026__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00359395",
+      "stockCode": "084990",
+      "name": "헬릭스미스",
+      "params": {
+        "corp_code": "00359395",
+        "bsns_year": "2026",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 44630,
+      "elapsedMs": 121,
+      "fetchedAt": "2026-08-12T12:01:16.624Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
       "requestId": "fnlttSinglAcntAll__00919966__2024__11011__CFS",
       "endpoint": "fnlttSinglAcntAll",
       "corpCode": "00919966",
@@ -4343,6 +6143,26 @@
       "elapsedMs": 118,
       "fetchedAt": "2026-08-12T03:10:15.594Z",
       "source": "cache",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00919966__2023__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00919966",
+      "stockCode": "215600",
+      "name": "신라젠",
+      "params": {
+        "corp_code": "00919966",
+        "bsns_year": "2023",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 51551,
+      "elapsedMs": 159,
+      "fetchedAt": "2026-08-12T12:01:16.720Z",
+      "source": "live",
       "fsDivFallback": false
     },
     {
@@ -4384,6 +6204,146 @@
       "fetchedAt": "2026-08-12T03:10:15.686Z",
       "source": "cache",
       "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00919966__2023__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00919966",
+      "stockCode": "215600",
+      "name": "신라젠",
+      "params": {
+        "corp_code": "00919966",
+        "bsns_year": "2023",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 53465,
+      "elapsedMs": 213,
+      "fetchedAt": "2026-08-12T12:01:16.857Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00919966__2024__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00919966",
+      "stockCode": "215600",
+      "name": "신라젠",
+      "params": {
+        "corp_code": "00919966",
+        "bsns_year": "2024",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 49374,
+      "elapsedMs": 196,
+      "fetchedAt": "2026-08-12T12:01:16.877Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00919966__2024__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00919966",
+      "stockCode": "215600",
+      "name": "신라젠",
+      "params": {
+        "corp_code": "00919966",
+        "bsns_year": "2024",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 54458,
+      "elapsedMs": 221,
+      "fetchedAt": "2026-08-12T12:01:16.898Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00919966__2025__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00919966",
+      "stockCode": "215600",
+      "name": "신라젠",
+      "params": {
+        "corp_code": "00919966",
+        "bsns_year": "2025",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 51857,
+      "elapsedMs": 118,
+      "fetchedAt": "2026-08-12T12:01:17.035Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00919966__2026__11011__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00919966",
+      "stockCode": "215600",
+      "name": "신라젠",
+      "params": {
+        "corp_code": "00919966",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 65,
+      "fetchedAt": "2026-08-12T12:01:17.225Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00919966__2026__11014__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00919966",
+      "stockCode": "215600",
+      "name": "신라젠",
+      "params": {
+        "corp_code": "00919966",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 103,
+      "fetchedAt": "2026-08-12T12:01:17.271Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00919966__2026__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00919966",
+      "stockCode": "215600",
+      "name": "신라젠",
+      "params": {
+        "corp_code": "00919966",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 72,
+      "fetchedAt": "2026-08-12T12:01:17.443Z",
+      "source": "live",
+      "fsDivFallback": true
     },
     {
       "requestId": "fnlttSinglIndx__00919966__2023__11011__M210000",
@@ -4742,6 +6702,46 @@
       "fsDivFallback": false
     },
     {
+      "requestId": "fnlttSinglAcntAll__00919966__2026__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00919966",
+      "stockCode": "215600",
+      "name": "신라젠",
+      "params": {
+        "corp_code": "00919966",
+        "bsns_year": "2026",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 59488,
+      "elapsedMs": 235,
+      "fetchedAt": "2026-08-12T12:01:17.306Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00919966__2025__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00919966",
+      "stockCode": "215600",
+      "name": "신라젠",
+      "params": {
+        "corp_code": "00919966",
+        "bsns_year": "2025",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 77604,
+      "elapsedMs": 323,
+      "fetchedAt": "2026-08-12T12:01:17.223Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
       "requestId": "fnlttSinglAcntAll__00159616__2024__11011__CFS",
       "endpoint": "fnlttSinglAcntAll",
       "corpCode": "00159616",
@@ -4782,6 +6782,26 @@
       "fsDivFallback": false
     },
     {
+      "requestId": "fnlttSinglAcntAll__00159616__2023__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00159616",
+      "stockCode": "034020",
+      "name": "두산에너빌리티",
+      "params": {
+        "corp_code": "00159616",
+        "bsns_year": "2023",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 100913,
+      "elapsedMs": 166,
+      "fetchedAt": "2026-08-12T12:01:17.540Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
       "requestId": "fnlttSinglAcntAll__00159616__2025__11011__CFS",
       "endpoint": "fnlttSinglAcntAll",
       "corpCode": "00159616",
@@ -4819,6 +6839,166 @@
       "elapsedMs": 188,
       "fetchedAt": "2026-08-12T03:10:17.222Z",
       "source": "cache",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00159616__2024__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00159616",
+      "stockCode": "034020",
+      "name": "두산에너빌리티",
+      "params": {
+        "corp_code": "00159616",
+        "bsns_year": "2024",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 100155,
+      "elapsedMs": 164,
+      "fetchedAt": "2026-08-12T12:01:17.704Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00159616__2023__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00159616",
+      "stockCode": "034020",
+      "name": "두산에너빌리티",
+      "params": {
+        "corp_code": "00159616",
+        "bsns_year": "2023",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 108379,
+      "elapsedMs": 220,
+      "fetchedAt": "2026-08-12T12:01:17.666Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00159616__2024__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00159616",
+      "stockCode": "034020",
+      "name": "두산에너빌리티",
+      "params": {
+        "corp_code": "00159616",
+        "bsns_year": "2024",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 102911,
+      "elapsedMs": 209,
+      "fetchedAt": "2026-08-12T12:01:17.709Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00159616__2025__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00159616",
+      "stockCode": "034020",
+      "name": "두산에너빌리티",
+      "params": {
+        "corp_code": "00159616",
+        "bsns_year": "2025",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 144739,
+      "elapsedMs": 138,
+      "fetchedAt": "2026-08-12T12:01:17.866Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00159616__2026__11011__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00159616",
+      "stockCode": "034020",
+      "name": "두산에너빌리티",
+      "params": {
+        "corp_code": "00159616",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 141,
+      "fetchedAt": "2026-08-12T12:01:18.039Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00159616__2026__11014__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00159616",
+      "stockCode": "034020",
+      "name": "두산에너빌리티",
+      "params": {
+        "corp_code": "00159616",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 113,
+      "fetchedAt": "2026-08-12T12:01:18.071Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00159616__2026__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00159616",
+      "stockCode": "034020",
+      "name": "두산에너빌리티",
+      "params": {
+        "corp_code": "00159616",
+        "bsns_year": "2026",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 97036,
+      "elapsedMs": 141,
+      "fetchedAt": "2026-08-12T12:01:18.157Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00159616__2025__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00159616",
+      "stockCode": "034020",
+      "name": "두산에너빌리티",
+      "params": {
+        "corp_code": "00159616",
+        "bsns_year": "2025",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 134270,
+      "elapsedMs": 289,
+      "fetchedAt": "2026-08-12T12:01:18.022Z",
+      "source": "live",
       "fsDivFallback": false
     },
     {
@@ -5178,6 +7358,46 @@
       "fsDivFallback": false
     },
     {
+      "requestId": "fnlttSinglAcntAll__00159616__2026__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00159616",
+      "stockCode": "034020",
+      "name": "두산에너빌리티",
+      "params": {
+        "corp_code": "00159616",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 95,
+      "fetchedAt": "2026-08-12T12:01:18.332Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__01390344__2023__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "01390344",
+      "stockCode": "329180",
+      "name": "HD현대중공업",
+      "params": {
+        "corp_code": "01390344",
+        "bsns_year": "2023",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 55576,
+      "elapsedMs": 123,
+      "fetchedAt": "2026-08-12T12:01:18.338Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
       "requestId": "fnlttSinglAcntAll__01390344__2024__11011__CFS",
       "endpoint": "fnlttSinglAcntAll",
       "corpCode": "01390344",
@@ -5215,6 +7435,46 @@
       "elapsedMs": 226,
       "fetchedAt": "2026-08-12T03:10:18.464Z",
       "source": "cache",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__01390344__2024__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "01390344",
+      "stockCode": "329180",
+      "name": "HD현대중공업",
+      "params": {
+        "corp_code": "01390344",
+        "bsns_year": "2024",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 57431,
+      "elapsedMs": 85,
+      "fetchedAt": "2026-08-12T12:01:18.464Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__01390344__2023__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "01390344",
+      "stockCode": "329180",
+      "name": "HD현대중공업",
+      "params": {
+        "corp_code": "01390344",
+        "bsns_year": "2023",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 60642,
+      "elapsedMs": 138,
+      "fetchedAt": "2026-08-12T12:01:18.449Z",
+      "source": "live",
       "fsDivFallback": false
     },
     {
@@ -5256,6 +7516,106 @@
       "fetchedAt": "2026-08-12T03:10:18.694Z",
       "source": "cache",
       "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__01390344__2024__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "01390344",
+      "stockCode": "329180",
+      "name": "HD현대중공업",
+      "params": {
+        "corp_code": "01390344",
+        "bsns_year": "2024",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 78574,
+      "elapsedMs": 132,
+      "fetchedAt": "2026-08-12T12:01:18.577Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__01390344__2025__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "01390344",
+      "stockCode": "329180",
+      "name": "HD현대중공업",
+      "params": {
+        "corp_code": "01390344",
+        "bsns_year": "2025",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 76384,
+      "elapsedMs": 162,
+      "fetchedAt": "2026-08-12T12:01:18.615Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__01390344__2026__11011__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "01390344",
+      "stockCode": "329180",
+      "name": "HD현대중공업",
+      "params": {
+        "corp_code": "01390344",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 85,
+      "fetchedAt": "2026-08-12T12:01:18.740Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__01390344__2025__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "01390344",
+      "stockCode": "329180",
+      "name": "HD현대중공업",
+      "params": {
+        "corp_code": "01390344",
+        "bsns_year": "2025",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 82404,
+      "elapsedMs": 152,
+      "fetchedAt": "2026-08-12T12:01:18.700Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__01390344__2026__11014__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "01390344",
+      "stockCode": "329180",
+      "name": "HD현대중공업",
+      "params": {
+        "corp_code": "01390344",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 103,
+      "fetchedAt": "2026-08-12T12:01:18.862Z",
+      "source": "live",
+      "fsDivFallback": true
     },
     {
       "requestId": "fnlttSinglIndx__01390344__2023__11011__M210000",
@@ -5614,6 +7974,66 @@
       "fsDivFallback": true
     },
     {
+      "requestId": "fnlttSinglAcntAll__01390344__2026__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "01390344",
+      "stockCode": "329180",
+      "name": "HD현대중공업",
+      "params": {
+        "corp_code": "01390344",
+        "bsns_year": "2026",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 78079,
+      "elapsedMs": 119,
+      "fetchedAt": "2026-08-12T12:01:18.930Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__01390344__2026__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "01390344",
+      "stockCode": "329180",
+      "name": "HD현대중공업",
+      "params": {
+        "corp_code": "01390344",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 74,
+      "fetchedAt": "2026-08-12T12:01:18.978Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00991191__2023__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00991191",
+      "stockCode": "174900",
+      "name": "앱클론",
+      "params": {
+        "corp_code": "00991191",
+        "bsns_year": "2023",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 132,
+      "fetchedAt": "2026-08-12T12:01:19.010Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
       "requestId": "fnlttSinglAcntAll__00991191__2024__11011__CFS",
       "endpoint": "fnlttSinglAcntAll",
       "corpCode": "00991191",
@@ -5654,6 +8074,66 @@
       "fsDivFallback": true
     },
     {
+      "requestId": "fnlttSinglAcntAll__00991191__2023__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00991191",
+      "stockCode": "174900",
+      "name": "앱클론",
+      "params": {
+        "corp_code": "00991191",
+        "bsns_year": "2023",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 121,
+      "fetchedAt": "2026-08-12T12:01:19.117Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00991191__2024__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00991191",
+      "stockCode": "174900",
+      "name": "앱클론",
+      "params": {
+        "corp_code": "00991191",
+        "bsns_year": "2024",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 71,
+      "fetchedAt": "2026-08-12T12:01:19.203Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00991191__2024__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00991191",
+      "stockCode": "174900",
+      "name": "앱클론",
+      "params": {
+        "corp_code": "00991191",
+        "bsns_year": "2024",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 88,
+      "fetchedAt": "2026-08-12T12:01:19.202Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
       "requestId": "fnlttSinglAcntAll__00991191__2025__11011__CFS",
       "endpoint": "fnlttSinglAcntAll",
       "corpCode": "00991191",
@@ -5691,6 +8171,106 @@
       "elapsedMs": 75,
       "fetchedAt": "2026-08-12T03:10:20.090Z",
       "source": "cache",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00991191__2025__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00991191",
+      "stockCode": "174900",
+      "name": "앱클론",
+      "params": {
+        "corp_code": "00991191",
+        "bsns_year": "2025",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 146,
+      "fetchedAt": "2026-08-12T12:01:19.293Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00991191__2025__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00991191",
+      "stockCode": "174900",
+      "name": "앱클론",
+      "params": {
+        "corp_code": "00991191",
+        "bsns_year": "2025",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 119,
+      "fetchedAt": "2026-08-12T12:01:19.391Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00991191__2026__11011__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00991191",
+      "stockCode": "174900",
+      "name": "앱클론",
+      "params": {
+        "corp_code": "00991191",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 104,
+      "fetchedAt": "2026-08-12T12:01:19.427Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00991191__2026__11014__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00991191",
+      "stockCode": "174900",
+      "name": "앱클론",
+      "params": {
+        "corp_code": "00991191",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 96,
+      "fetchedAt": "2026-08-12T12:01:19.441Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00991191__2026__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00991191",
+      "stockCode": "174900",
+      "name": "앱클론",
+      "params": {
+        "corp_code": "00991191",
+        "bsns_year": "2026",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 88,
+      "fetchedAt": "2026-08-12T12:01:19.592Z",
+      "source": "live",
       "fsDivFallback": true
     },
     {
@@ -6050,6 +8630,66 @@
       "fsDivFallback": false
     },
     {
+      "requestId": "fnlttSinglAcntAll__00991191__2026__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00991191",
+      "stockCode": "174900",
+      "name": "앱클론",
+      "params": {
+        "corp_code": "00991191",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 84,
+      "fetchedAt": "2026-08-12T12:01:19.664Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00688996__2023__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00688996",
+      "stockCode": "105560",
+      "name": "KB금융",
+      "params": {
+        "corp_code": "00688996",
+        "bsns_year": "2023",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 57,
+      "fetchedAt": "2026-08-12T12:01:19.698Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00688996__2023__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00688996",
+      "stockCode": "105560",
+      "name": "KB금융",
+      "params": {
+        "corp_code": "00688996",
+        "bsns_year": "2023",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 74,
+      "fetchedAt": "2026-08-12T12:01:19.699Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
       "requestId": "fnlttSinglAcntAll__00688996__2024__11011__CFS",
       "endpoint": "fnlttSinglAcntAll",
       "corpCode": "00688996",
@@ -6127,6 +8767,106 @@
       "elapsedMs": 156,
       "fetchedAt": "2026-08-12T03:10:21.469Z",
       "source": "cache",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00688996__2024__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00688996",
+      "stockCode": "105560",
+      "name": "KB금융",
+      "params": {
+        "corp_code": "00688996",
+        "bsns_year": "2024",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 163558,
+      "elapsedMs": 164,
+      "fetchedAt": "2026-08-12T12:01:19.842Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00688996__2024__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00688996",
+      "stockCode": "105560",
+      "name": "KB금융",
+      "params": {
+        "corp_code": "00688996",
+        "bsns_year": "2024",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 175601,
+      "elapsedMs": 329,
+      "fetchedAt": "2026-08-12T12:01:19.901Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00688996__2025__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00688996",
+      "stockCode": "105560",
+      "name": "KB금융",
+      "params": {
+        "corp_code": "00688996",
+        "bsns_year": "2025",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 166899,
+      "elapsedMs": 317,
+      "fetchedAt": "2026-08-12T12:01:19.925Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00688996__2026__11011__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00688996",
+      "stockCode": "105560",
+      "name": "KB금융",
+      "params": {
+        "corp_code": "00688996",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 88,
+      "fetchedAt": "2026-08-12T12:01:20.163Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00688996__2025__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00688996",
+      "stockCode": "105560",
+      "name": "KB금융",
+      "params": {
+        "corp_code": "00688996",
+        "bsns_year": "2025",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 157309,
+      "elapsedMs": 334,
+      "fetchedAt": "2026-08-12T12:01:19.919Z",
+      "source": "live",
       "fsDivFallback": false
     },
     {
@@ -6486,6 +9226,86 @@
       "fsDivFallback": false
     },
     {
+      "requestId": "fnlttSinglAcntAll__00688996__2026__11014__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00688996",
+      "stockCode": "105560",
+      "name": "KB금융",
+      "params": {
+        "corp_code": "00688996",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 99,
+      "fetchedAt": "2026-08-12T12:01:20.389Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00688996__2026__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00688996",
+      "stockCode": "105560",
+      "name": "KB금융",
+      "params": {
+        "corp_code": "00688996",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 94,
+      "fetchedAt": "2026-08-12T12:01:20.402Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00382199__2023__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00382199",
+      "stockCode": "055550",
+      "name": "신한지주",
+      "params": {
+        "corp_code": "00382199",
+        "bsns_year": "2023",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 110,
+      "fetchedAt": "2026-08-12T12:01:20.422Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00688996__2026__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00688996",
+      "stockCode": "105560",
+      "name": "KB금융",
+      "params": {
+        "corp_code": "00688996",
+        "bsns_year": "2026",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 153233,
+      "elapsedMs": 183,
+      "fetchedAt": "2026-08-12T12:01:20.401Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
       "requestId": "fnlttSinglAcntAll__00382199__2024__11011__CFS",
       "endpoint": "fnlttSinglAcntAll",
       "corpCode": "00382199",
@@ -6526,6 +9346,26 @@
       "fsDivFallback": false
     },
     {
+      "requestId": "fnlttSinglAcntAll__00382199__2023__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00382199",
+      "stockCode": "055550",
+      "name": "신한지주",
+      "params": {
+        "corp_code": "00382199",
+        "bsns_year": "2023",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 91,
+      "fetchedAt": "2026-08-12T12:01:20.642Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
       "requestId": "fnlttSinglAcntAll__00382199__2025__11011__CFS",
       "endpoint": "fnlttSinglAcntAll",
       "corpCode": "00382199",
@@ -6564,6 +9404,106 @@
       "fetchedAt": "2026-08-12T03:10:22.883Z",
       "source": "cache",
       "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00382199__2024__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00382199",
+      "stockCode": "055550",
+      "name": "신한지주",
+      "params": {
+        "corp_code": "00382199",
+        "bsns_year": "2024",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 190694,
+      "elapsedMs": 332,
+      "fetchedAt": "2026-08-12T12:01:20.661Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00382199__2024__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00382199",
+      "stockCode": "055550",
+      "name": "신한지주",
+      "params": {
+        "corp_code": "00382199",
+        "bsns_year": "2024",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 211253,
+      "elapsedMs": 345,
+      "fetchedAt": "2026-08-12T12:01:20.684Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00382199__2025__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00382199",
+      "stockCode": "055550",
+      "name": "신한지주",
+      "params": {
+        "corp_code": "00382199",
+        "bsns_year": "2025",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 196547,
+      "elapsedMs": 328,
+      "fetchedAt": "2026-08-12T12:01:20.750Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00382199__2026__11011__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00382199",
+      "stockCode": "055550",
+      "name": "신한지주",
+      "params": {
+        "corp_code": "00382199",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 206,
+      "fetchedAt": "2026-08-12T12:01:21.150Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00382199__2026__11014__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00382199",
+      "stockCode": "055550",
+      "name": "신한지주",
+      "params": {
+        "corp_code": "00382199",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 172,
+      "fetchedAt": "2026-08-12T12:01:21.186Z",
+      "source": "live",
+      "fsDivFallback": true
     },
     {
       "requestId": "fnlttSinglIndx__00382199__2023__11011__M210000",
@@ -6922,6 +9862,86 @@
       "fsDivFallback": false
     },
     {
+      "requestId": "fnlttSinglAcntAll__00382199__2025__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00382199",
+      "stockCode": "055550",
+      "name": "신한지주",
+      "params": {
+        "corp_code": "00382199",
+        "bsns_year": "2025",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 201711,
+      "elapsedMs": 696,
+      "fetchedAt": "2026-08-12T12:01:20.885Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00382199__2026__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00382199",
+      "stockCode": "055550",
+      "name": "신한지주",
+      "params": {
+        "corp_code": "00382199",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 123,
+      "fetchedAt": "2026-08-12T12:01:21.508Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00104856__2023__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00104856",
+      "stockCode": "016360",
+      "name": "삼성증권",
+      "params": {
+        "corp_code": "00104856",
+        "bsns_year": "2023",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 112,
+      "fetchedAt": "2026-08-12T12:01:21.522Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00382199__2026__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00382199",
+      "stockCode": "055550",
+      "name": "신한지주",
+      "params": {
+        "corp_code": "00382199",
+        "bsns_year": "2026",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 198248,
+      "elapsedMs": 427,
+      "fetchedAt": "2026-08-12T12:01:21.235Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
       "requestId": "fnlttSinglAcntAll__00104856__2024__11011__CFS",
       "endpoint": "fnlttSinglAcntAll",
       "corpCode": "00104856",
@@ -6962,6 +9982,26 @@
       "fsDivFallback": false
     },
     {
+      "requestId": "fnlttSinglAcntAll__00104856__2023__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00104856",
+      "stockCode": "016360",
+      "name": "삼성증권",
+      "params": {
+        "corp_code": "00104856",
+        "bsns_year": "2023",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 60,
+      "fetchedAt": "2026-08-12T12:01:21.738Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
       "requestId": "fnlttSinglAcntAll__00104856__2025__11011__CFS",
       "endpoint": "fnlttSinglAcntAll",
       "corpCode": "00104856",
@@ -7000,6 +10040,126 @@
       "fetchedAt": "2026-08-12T03:10:24.409Z",
       "source": "cache",
       "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00104856__2024__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00104856",
+      "stockCode": "016360",
+      "name": "삼성증권",
+      "params": {
+        "corp_code": "00104856",
+        "bsns_year": "2024",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 92229,
+      "elapsedMs": 198,
+      "fetchedAt": "2026-08-12T12:01:21.787Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00104856__2024__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00104856",
+      "stockCode": "016360",
+      "name": "삼성증권",
+      "params": {
+        "corp_code": "00104856",
+        "bsns_year": "2024",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 92815,
+      "elapsedMs": 319,
+      "fetchedAt": "2026-08-12T12:01:21.787Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00104856__2025__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00104856",
+      "stockCode": "016360",
+      "name": "삼성증권",
+      "params": {
+        "corp_code": "00104856",
+        "bsns_year": "2025",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 93414,
+      "elapsedMs": 358,
+      "fetchedAt": "2026-08-12T12:01:21.951Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00104856__2025__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00104856",
+      "stockCode": "016360",
+      "name": "삼성증권",
+      "params": {
+        "corp_code": "00104856",
+        "bsns_year": "2025",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 92243,
+      "elapsedMs": 491,
+      "fetchedAt": "2026-08-12T12:01:21.822Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00104856__2026__11014__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00104856",
+      "stockCode": "016360",
+      "name": "삼성증권",
+      "params": {
+        "corp_code": "00104856",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 121,
+      "fetchedAt": "2026-08-12T12:01:22.259Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00104856__2026__11011__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00104856",
+      "stockCode": "016360",
+      "name": "삼성증권",
+      "params": {
+        "corp_code": "00104856",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 264,
+      "fetchedAt": "2026-08-12T12:01:22.139Z",
+      "source": "live",
+      "fsDivFallback": true
     },
     {
       "requestId": "fnlttSinglIndx__00104856__2023__11011__M210000",
@@ -7358,6 +10518,86 @@
       "fsDivFallback": false
     },
     {
+      "requestId": "fnlttSinglAcntAll__00104856__2026__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00104856",
+      "stockCode": "016360",
+      "name": "삼성증권",
+      "params": {
+        "corp_code": "00104856",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 78,
+      "fetchedAt": "2026-08-12T12:01:22.466Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00120182__2023__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00120182",
+      "stockCode": "005940",
+      "name": "NH투자증권",
+      "params": {
+        "corp_code": "00120182",
+        "bsns_year": "2023",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 58,
+      "fetchedAt": "2026-08-12T12:01:22.542Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00104856__2026__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00104856",
+      "stockCode": "016360",
+      "name": "삼성증권",
+      "params": {
+        "corp_code": "00104856",
+        "bsns_year": "2026",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 91277,
+      "elapsedMs": 147,
+      "fetchedAt": "2026-08-12T12:01:22.463Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00120182__2023__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00120182",
+      "stockCode": "005940",
+      "name": "NH투자증권",
+      "params": {
+        "corp_code": "00120182",
+        "bsns_year": "2023",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 65,
+      "fetchedAt": "2026-08-12T12:01:22.556Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
       "requestId": "fnlttSinglAcntAll__00120182__2024__11011__CFS",
       "endpoint": "fnlttSinglAcntAll",
       "corpCode": "00120182",
@@ -7436,6 +10676,146 @@
       "fetchedAt": "2026-08-12T03:10:25.999Z",
       "source": "cache",
       "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00120182__2024__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00120182",
+      "stockCode": "005940",
+      "name": "NH투자증권",
+      "params": {
+        "corp_code": "00120182",
+        "bsns_year": "2024",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 66091,
+      "elapsedMs": 151,
+      "fetchedAt": "2026-08-12T12:01:22.700Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00120182__2024__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00120182",
+      "stockCode": "005940",
+      "name": "NH투자증권",
+      "params": {
+        "corp_code": "00120182",
+        "bsns_year": "2024",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 66636,
+      "elapsedMs": 136,
+      "fetchedAt": "2026-08-12T12:01:22.756Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00120182__2025__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00120182",
+      "stockCode": "005940",
+      "name": "NH투자증권",
+      "params": {
+        "corp_code": "00120182",
+        "bsns_year": "2025",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 84035,
+      "elapsedMs": 149,
+      "fetchedAt": "2026-08-12T12:01:22.772Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00120182__2025__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00120182",
+      "stockCode": "005940",
+      "name": "NH투자증권",
+      "params": {
+        "corp_code": "00120182",
+        "bsns_year": "2025",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 64808,
+      "elapsedMs": 152,
+      "fetchedAt": "2026-08-12T12:01:22.772Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00120182__2026__11011__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00120182",
+      "stockCode": "005940",
+      "name": "NH투자증권",
+      "params": {
+        "corp_code": "00120182",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 72,
+      "fetchedAt": "2026-08-12T12:01:23.006Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00120182__2026__11014__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00120182",
+      "stockCode": "005940",
+      "name": "NH투자증권",
+      "params": {
+        "corp_code": "00120182",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 65,
+      "fetchedAt": "2026-08-12T12:01:23.046Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00120182__2026__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00120182",
+      "stockCode": "005940",
+      "name": "NH투자증권",
+      "params": {
+        "corp_code": "00120182",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 104,
+      "fetchedAt": "2026-08-12T12:01:23.080Z",
+      "source": "live",
+      "fsDivFallback": true
     },
     {
       "requestId": "fnlttSinglIndx__00120182__2023__11011__M210000",
@@ -7834,6 +11214,66 @@
       "fsDivFallback": false
     },
     {
+      "requestId": "fnlttSinglAcntAll__00120182__2026__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00120182",
+      "stockCode": "005940",
+      "name": "NH투자증권",
+      "params": {
+        "corp_code": "00120182",
+        "bsns_year": "2026",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 91480,
+      "elapsedMs": 319,
+      "fetchedAt": "2026-08-12T12:01:23.076Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00126256__2023__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00126256",
+      "stockCode": "032830",
+      "name": "삼성생명",
+      "params": {
+        "corp_code": "00126256",
+        "bsns_year": "2023",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 200,
+      "fetchedAt": "2026-08-12T12:01:23.244Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00126256__2023__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00126256",
+      "stockCode": "032830",
+      "name": "삼성생명",
+      "params": {
+        "corp_code": "00126256",
+        "bsns_year": "2023",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 183,
+      "fetchedAt": "2026-08-12T12:01:23.263Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
       "requestId": "fnlttSinglAcntAll__00126256__2025__11011__CFS",
       "endpoint": "fnlttSinglAcntAll",
       "corpCode": "00126256",
@@ -7872,6 +11312,106 @@
       "fetchedAt": "2026-08-12T03:10:27.561Z",
       "source": "cache",
       "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00126256__2024__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00126256",
+      "stockCode": "032830",
+      "name": "삼성생명",
+      "params": {
+        "corp_code": "00126256",
+        "bsns_year": "2024",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 151823,
+      "elapsedMs": 276,
+      "fetchedAt": "2026-08-12T12:01:23.343Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00126256__2024__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00126256",
+      "stockCode": "032830",
+      "name": "삼성생명",
+      "params": {
+        "corp_code": "00126256",
+        "bsns_year": "2024",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 145325,
+      "elapsedMs": 219,
+      "fetchedAt": "2026-08-12T12:01:23.550Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00126256__2025__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00126256",
+      "stockCode": "032830",
+      "name": "삼성생명",
+      "params": {
+        "corp_code": "00126256",
+        "bsns_year": "2025",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 97371,
+      "elapsedMs": 169,
+      "fetchedAt": "2026-08-12T12:01:23.604Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00126256__2025__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00126256",
+      "stockCode": "032830",
+      "name": "삼성생명",
+      "params": {
+        "corp_code": "00126256",
+        "bsns_year": "2025",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 116874,
+      "elapsedMs": 211,
+      "fetchedAt": "2026-08-12T12:01:23.606Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00126256__2026__11011__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00126256",
+      "stockCode": "032830",
+      "name": "삼성생명",
+      "params": {
+        "corp_code": "00126256",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 61,
+      "fetchedAt": "2026-08-12T12:01:23.777Z",
+      "source": "live",
+      "fsDivFallback": true
     },
     {
       "requestId": "fnlttSinglIndx__00126256__2023__11011__M210000",
@@ -8230,6 +11770,86 @@
       "fsDivFallback": false
     },
     {
+      "requestId": "fnlttSinglAcntAll__00126256__2026__11014__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00126256",
+      "stockCode": "032830",
+      "name": "삼성생명",
+      "params": {
+        "corp_code": "00126256",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 82,
+      "fetchedAt": "2026-08-12T12:01:23.924Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00126256__2026__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00126256",
+      "stockCode": "032830",
+      "name": "삼성생명",
+      "params": {
+        "corp_code": "00126256",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 87,
+      "fetchedAt": "2026-08-12T12:01:23.973Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00159102__2023__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00159102",
+      "stockCode": "005830",
+      "name": "DB손해보험",
+      "params": {
+        "corp_code": "00159102",
+        "bsns_year": "2023",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 69,
+      "fetchedAt": "2026-08-12T12:01:24.004Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00126256__2026__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00126256",
+      "stockCode": "032830",
+      "name": "삼성생명",
+      "params": {
+        "corp_code": "00126256",
+        "bsns_year": "2026",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 95831,
+      "elapsedMs": 185,
+      "fetchedAt": "2026-08-12T12:01:23.927Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
       "requestId": "fnlttSinglAcntAll__00159102__2024__11011__CFS",
       "endpoint": "fnlttSinglAcntAll",
       "corpCode": "00159102",
@@ -8270,6 +11890,26 @@
       "fsDivFallback": false
     },
     {
+      "requestId": "fnlttSinglAcntAll__00159102__2023__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00159102",
+      "stockCode": "005830",
+      "name": "DB손해보험",
+      "params": {
+        "corp_code": "00159102",
+        "bsns_year": "2023",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 67,
+      "fetchedAt": "2026-08-12T12:01:24.158Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
       "requestId": "fnlttSinglAcntAll__00159102__2025__11011__CFS",
       "endpoint": "fnlttSinglAcntAll",
       "corpCode": "00159102",
@@ -8308,6 +11948,146 @@
       "fetchedAt": "2026-08-12T03:10:29.033Z",
       "source": "cache",
       "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00159102__2024__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00159102",
+      "stockCode": "005830",
+      "name": "DB손해보험",
+      "params": {
+        "corp_code": "00159102",
+        "bsns_year": "2024",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 138397,
+      "elapsedMs": 256,
+      "fetchedAt": "2026-08-12T12:01:24.223Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00159102__2024__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00159102",
+      "stockCode": "005830",
+      "name": "DB손해보험",
+      "params": {
+        "corp_code": "00159102",
+        "bsns_year": "2024",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 147849,
+      "elapsedMs": 268,
+      "fetchedAt": "2026-08-12T12:01:24.226Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00159102__2025__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00159102",
+      "stockCode": "005830",
+      "name": "DB손해보험",
+      "params": {
+        "corp_code": "00159102",
+        "bsns_year": "2025",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 134831,
+      "elapsedMs": 229,
+      "fetchedAt": "2026-08-12T12:01:24.274Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00159102__2025__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00159102",
+      "stockCode": "005830",
+      "name": "DB손해보험",
+      "params": {
+        "corp_code": "00159102",
+        "bsns_year": "2025",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 143812,
+      "elapsedMs": 228,
+      "fetchedAt": "2026-08-12T12:01:24.378Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00159102__2026__11011__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00159102",
+      "stockCode": "005830",
+      "name": "DB손해보험",
+      "params": {
+        "corp_code": "00159102",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 90,
+      "fetchedAt": "2026-08-12T12:01:24.635Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00159102__2026__11014__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00159102",
+      "stockCode": "005830",
+      "name": "DB손해보험",
+      "params": {
+        "corp_code": "00159102",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 123,
+      "fetchedAt": "2026-08-12T12:01:24.649Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00159102__2026__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00159102",
+      "stockCode": "005830",
+      "name": "DB손해보험",
+      "params": {
+        "corp_code": "00159102",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 87,
+      "fetchedAt": "2026-08-12T12:01:24.763Z",
+      "source": "live",
+      "fsDivFallback": true
     },
     {
       "requestId": "fnlttSinglIndx__00159102__2023__11011__M210000",
@@ -8666,6 +12446,46 @@
       "fsDivFallback": false
     },
     {
+      "requestId": "fnlttSinglAcntAll__00159102__2026__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00159102",
+      "stockCode": "005830",
+      "name": "DB손해보험",
+      "params": {
+        "corp_code": "00159102",
+        "bsns_year": "2026",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 155099,
+      "elapsedMs": 280,
+      "fetchedAt": "2026-08-12T12:01:24.659Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00136721__2023__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00136721",
+      "stockCode": "001720",
+      "name": "신영증권",
+      "params": {
+        "corp_code": "00136721",
+        "bsns_year": "2023",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 98,
+      "fetchedAt": "2026-08-12T12:01:24.887Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
       "requestId": "fnlttSinglAcntAll__00136721__2024__11011__CFS",
       "endpoint": "fnlttSinglAcntAll",
       "corpCode": "00136721",
@@ -8706,6 +12526,26 @@
       "fsDivFallback": false
     },
     {
+      "requestId": "fnlttSinglAcntAll__00136721__2023__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00136721",
+      "stockCode": "001720",
+      "name": "신영증권",
+      "params": {
+        "corp_code": "00136721",
+        "bsns_year": "2023",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 118857,
+      "elapsedMs": 138,
+      "fetchedAt": "2026-08-12T12:01:24.924Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
       "requestId": "fnlttSinglAcntAll__00136721__2025__11011__CFS",
       "endpoint": "fnlttSinglAcntAll",
       "corpCode": "00136721",
@@ -8743,6 +12583,126 @@
       "elapsedMs": 140,
       "fetchedAt": "2026-08-12T03:10:30.389Z",
       "source": "cache",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00136721__2024__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00136721",
+      "stockCode": "001720",
+      "name": "신영증권",
+      "params": {
+        "corp_code": "00136721",
+        "bsns_year": "2024",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 89776,
+      "elapsedMs": 144,
+      "fetchedAt": "2026-08-12T12:01:25.006Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00136721__2024__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00136721",
+      "stockCode": "001720",
+      "name": "신영증권",
+      "params": {
+        "corp_code": "00136721",
+        "bsns_year": "2024",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 93977,
+      "elapsedMs": 99,
+      "fetchedAt": "2026-08-12T12:01:25.100Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00136721__2025__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00136721",
+      "stockCode": "001720",
+      "name": "신영증권",
+      "params": {
+        "corp_code": "00136721",
+        "bsns_year": "2025",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 99604,
+      "elapsedMs": 336,
+      "fetchedAt": "2026-08-12T12:01:25.145Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00136721__2026__11014__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00136721",
+      "stockCode": "001720",
+      "name": "신영증권",
+      "params": {
+        "corp_code": "00136721",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 173,
+      "fetchedAt": "2026-08-12T12:01:25.354Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00136721__2026__11011__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00136721",
+      "stockCode": "001720",
+      "name": "신영증권",
+      "params": {
+        "corp_code": "00136721",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 120448,
+      "elapsedMs": 240,
+      "fetchedAt": "2026-08-12T12:01:25.304Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00136721__2025__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00136721",
+      "stockCode": "001720",
+      "name": "신영증권",
+      "params": {
+        "corp_code": "00136721",
+        "bsns_year": "2025",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 98704,
+      "elapsedMs": 471,
+      "fetchedAt": "2026-08-12T12:01:25.218Z",
+      "source": "live",
       "fsDivFallback": false
     },
     {
@@ -9062,6 +13022,726 @@
       "fsDivFallback": false
     },
     {
+      "requestId": "fnlttSinglAcntAll__00136721__2026__11012__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00136721",
+      "stockCode": "001720",
+      "name": "신영증권",
+      "params": {
+        "corp_code": "00136721",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "CFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 68,
+      "fetchedAt": "2026-08-12T12:01:25.680Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00136721__2026__11013__CFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00136721",
+      "stockCode": "001720",
+      "name": "신영증권",
+      "params": {
+        "corp_code": "00136721",
+        "bsns_year": "2026",
+        "reprt_code": "11013",
+        "fs_div": "CFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 87738,
+      "elapsedMs": 124,
+      "fetchedAt": "2026-08-12T12:01:25.637Z",
+      "source": "live",
+      "fsDivFallback": false
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00126380__2026__11014__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00126380",
+      "stockCode": "005930",
+      "name": "삼성전자",
+      "params": {
+        "corp_code": "00126380",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 62,
+      "fetchedAt": "2026-08-12T12:01:25.918Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00164779__2026__11011__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00164779",
+      "stockCode": "000660",
+      "name": "SK하이닉스",
+      "params": {
+        "corp_code": "00164779",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 69,
+      "fetchedAt": "2026-08-12T12:01:25.919Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00126380__2026__11012__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00126380",
+      "stockCode": "005930",
+      "name": "삼성전자",
+      "params": {
+        "corp_code": "00126380",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 110,
+      "fetchedAt": "2026-08-12T12:01:25.919Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00126380__2026__11011__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00126380",
+      "stockCode": "005930",
+      "name": "삼성전자",
+      "params": {
+        "corp_code": "00126380",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 115,
+      "fetchedAt": "2026-08-12T12:01:25.917Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00164779__2026__11014__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00164779",
+      "stockCode": "000660",
+      "name": "SK하이닉스",
+      "params": {
+        "corp_code": "00164779",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 69,
+      "fetchedAt": "2026-08-12T12:01:26.132Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00164779__2026__11012__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00164779",
+      "stockCode": "000660",
+      "name": "SK하이닉스",
+      "params": {
+        "corp_code": "00164779",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 65,
+      "fetchedAt": "2026-08-12T12:01:26.139Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00164742__2026__11014__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00164742",
+      "stockCode": "005380",
+      "name": "현대자동차",
+      "params": {
+        "corp_code": "00164742",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 83,
+      "fetchedAt": "2026-08-12T12:01:26.184Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00164742__2026__11011__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00164742",
+      "stockCode": "005380",
+      "name": "현대자동차",
+      "params": {
+        "corp_code": "00164742",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 87,
+      "fetchedAt": "2026-08-12T12:01:26.182Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00164742__2026__11012__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00164742",
+      "stockCode": "005380",
+      "name": "현대자동차",
+      "params": {
+        "corp_code": "00164742",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 130,
+      "fetchedAt": "2026-08-12T12:01:26.353Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00155319__2026__11011__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00155319",
+      "stockCode": "005490",
+      "name": "POSCO홀딩스",
+      "params": {
+        "corp_code": "00155319",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 131,
+      "fetchedAt": "2026-08-12T12:01:26.355Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00155319__2026__11012__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00155319",
+      "stockCode": "005490",
+      "name": "POSCO홀딩스",
+      "params": {
+        "corp_code": "00155319",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 129,
+      "fetchedAt": "2026-08-12T12:01:26.421Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00155319__2026__11014__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00155319",
+      "stockCode": "005490",
+      "name": "POSCO홀딩스",
+      "params": {
+        "corp_code": "00155319",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 140,
+      "fetchedAt": "2026-08-12T12:01:26.420Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00356361__2026__11014__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00356361",
+      "stockCode": "051910",
+      "name": "LG화학",
+      "params": {
+        "corp_code": "00356361",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 58,
+      "fetchedAt": "2026-08-12T12:01:26.639Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00356361__2026__11011__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00356361",
+      "stockCode": "051910",
+      "name": "LG화학",
+      "params": {
+        "corp_code": "00356361",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 62,
+      "fetchedAt": "2026-08-12T12:01:26.637Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00356361__2026__11012__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00356361",
+      "stockCode": "051910",
+      "name": "LG화학",
+      "params": {
+        "corp_code": "00356361",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 63,
+      "fetchedAt": "2026-08-12T12:01:26.702Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00258801__2026__11011__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00258801",
+      "stockCode": "035720",
+      "name": "카카오",
+      "params": {
+        "corp_code": "00258801",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 75,
+      "fetchedAt": "2026-08-12T12:01:26.713Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00258801__2026__11012__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00258801",
+      "stockCode": "035720",
+      "name": "카카오",
+      "params": {
+        "corp_code": "00258801",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 93,
+      "fetchedAt": "2026-08-12T12:01:26.851Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00258801__2026__11014__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00258801",
+      "stockCode": "035720",
+      "name": "카카오",
+      "params": {
+        "corp_code": "00258801",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 96,
+      "fetchedAt": "2026-08-12T12:01:26.850Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00266961__2026__11014__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00266961",
+      "stockCode": "035420",
+      "name": "NAVER",
+      "params": {
+        "corp_code": "00266961",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 94,
+      "fetchedAt": "2026-08-12T12:01:26.940Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00266961__2026__11011__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00266961",
+      "stockCode": "035420",
+      "name": "NAVER",
+      "params": {
+        "corp_code": "00266961",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 120,
+      "fetchedAt": "2026-08-12T12:01:26.917Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00413046__2026__11011__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00413046",
+      "stockCode": "068270",
+      "name": "셀트리온",
+      "params": {
+        "corp_code": "00413046",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 67,
+      "fetchedAt": "2026-08-12T12:01:27.098Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00266961__2026__11012__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00266961",
+      "stockCode": "035420",
+      "name": "NAVER",
+      "params": {
+        "corp_code": "00266961",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 86,
+      "fetchedAt": "2026-08-12T12:01:27.097Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00413046__2026__11012__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00413046",
+      "stockCode": "068270",
+      "name": "셀트리온",
+      "params": {
+        "corp_code": "00413046",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 98,
+      "fetchedAt": "2026-08-12T12:01:27.187Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00413046__2026__11014__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00413046",
+      "stockCode": "068270",
+      "name": "셀트리온",
+      "params": {
+        "corp_code": "00413046",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 102,
+      "fetchedAt": "2026-08-12T12:01:27.186Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00359395__2026__11011__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00359395",
+      "stockCode": "084990",
+      "name": "헬릭스미스",
+      "params": {
+        "corp_code": "00359395",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 97,
+      "fetchedAt": "2026-08-12T12:01:27.318Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00359395__2026__11014__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00359395",
+      "stockCode": "084990",
+      "name": "헬릭스미스",
+      "params": {
+        "corp_code": "00359395",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 82,
+      "fetchedAt": "2026-08-12T12:01:27.336Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00359395__2026__11012__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00359395",
+      "stockCode": "084990",
+      "name": "헬릭스미스",
+      "params": {
+        "corp_code": "00359395",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 164,
+      "fetchedAt": "2026-08-12T12:01:27.438Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00919966__2026__11011__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00919966",
+      "stockCode": "215600",
+      "name": "신라젠",
+      "params": {
+        "corp_code": "00919966",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 166,
+      "fetchedAt": "2026-08-12T12:01:27.439Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00919966__2026__11012__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00919966",
+      "stockCode": "215600",
+      "name": "신라젠",
+      "params": {
+        "corp_code": "00919966",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 66,
+      "fetchedAt": "2026-08-12T12:01:27.568Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00919966__2026__11014__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00919966",
+      "stockCode": "215600",
+      "name": "신라젠",
+      "params": {
+        "corp_code": "00919966",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 80,
+      "fetchedAt": "2026-08-12T12:01:27.567Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00159616__2026__11014__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00159616",
+      "stockCode": "034020",
+      "name": "두산에너빌리티",
+      "params": {
+        "corp_code": "00159616",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 65,
+      "fetchedAt": "2026-08-12T12:01:27.758Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00159616__2026__11011__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00159616",
+      "stockCode": "034020",
+      "name": "두산에너빌리티",
+      "params": {
+        "corp_code": "00159616",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 77,
+      "fetchedAt": "2026-08-12T12:01:27.756Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00159616__2026__11012__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00159616",
+      "stockCode": "034020",
+      "name": "두산에너빌리티",
+      "params": {
+        "corp_code": "00159616",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 63,
+      "fetchedAt": "2026-08-12T12:01:27.787Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__01390344__2026__11011__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "01390344",
+      "stockCode": "329180",
+      "name": "HD현대중공업",
+      "params": {
+        "corp_code": "01390344",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 74,
+      "fetchedAt": "2026-08-12T12:01:27.800Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
       "requestId": "fnlttSinglAcntAll__00991191__2023__11011__OFS",
       "endpoint": "fnlttSinglAcntAll",
       "corpCode": "00991191",
@@ -9142,6 +13822,86 @@
       "fsDivFallback": true
     },
     {
+      "requestId": "fnlttSinglAcntAll__01390344__2026__11014__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "01390344",
+      "stockCode": "329180",
+      "name": "HD현대중공업",
+      "params": {
+        "corp_code": "01390344",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 55,
+      "fetchedAt": "2026-08-12T12:01:27.976Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__01390344__2026__11012__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "01390344",
+      "stockCode": "329180",
+      "name": "HD현대중공업",
+      "params": {
+        "corp_code": "01390344",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 74,
+      "fetchedAt": "2026-08-12T12:01:27.993Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00991191__2023__11013__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00991191",
+      "stockCode": "174900",
+      "name": "앱클론",
+      "params": {
+        "corp_code": "00991191",
+        "bsns_year": "2023",
+        "reprt_code": "11013",
+        "fs_div": "OFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 70203,
+      "elapsedMs": 141,
+      "fetchedAt": "2026-08-12T12:01:28.003Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00991191__2023__11012__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00991191",
+      "stockCode": "174900",
+      "name": "앱클론",
+      "params": {
+        "corp_code": "00991191",
+        "bsns_year": "2023",
+        "reprt_code": "11012",
+        "fs_div": "OFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 69912,
+      "elapsedMs": 150,
+      "fetchedAt": "2026-08-12T12:01:28.030Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
       "requestId": "fnlttSinglAcntAll__00991191__2025__11011__OFS",
       "endpoint": "fnlttSinglAcntAll",
       "corpCode": "00991191",
@@ -9182,6 +13942,746 @@
       "fsDivFallback": true
     },
     {
+      "requestId": "fnlttSinglAcntAll__00991191__2024__11013__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00991191",
+      "stockCode": "174900",
+      "name": "앱클론",
+      "params": {
+        "corp_code": "00991191",
+        "bsns_year": "2024",
+        "reprt_code": "11013",
+        "fs_div": "OFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 42251,
+      "elapsedMs": 97,
+      "fetchedAt": "2026-08-12T12:01:28.220Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00991191__2024__11012__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00991191",
+      "stockCode": "174900",
+      "name": "앱클론",
+      "params": {
+        "corp_code": "00991191",
+        "bsns_year": "2024",
+        "reprt_code": "11012",
+        "fs_div": "OFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 42540,
+      "elapsedMs": 164,
+      "fetchedAt": "2026-08-12T12:01:28.184Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00991191__2025__11013__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00991191",
+      "stockCode": "174900",
+      "name": "앱클론",
+      "params": {
+        "corp_code": "00991191",
+        "bsns_year": "2025",
+        "reprt_code": "11013",
+        "fs_div": "OFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 39195,
+      "elapsedMs": 104,
+      "fetchedAt": "2026-08-12T12:01:28.306Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00991191__2025__11012__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00991191",
+      "stockCode": "174900",
+      "name": "앱클론",
+      "params": {
+        "corp_code": "00991191",
+        "bsns_year": "2025",
+        "reprt_code": "11012",
+        "fs_div": "OFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 42988,
+      "elapsedMs": 99,
+      "fetchedAt": "2026-08-12T12:01:28.334Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00991191__2026__11011__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00991191",
+      "stockCode": "174900",
+      "name": "앱클론",
+      "params": {
+        "corp_code": "00991191",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 107,
+      "fetchedAt": "2026-08-12T12:01:28.471Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00991191__2026__11014__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00991191",
+      "stockCode": "174900",
+      "name": "앱클론",
+      "params": {
+        "corp_code": "00991191",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 134,
+      "fetchedAt": "2026-08-12T12:01:28.503Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00991191__2026__11012__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00991191",
+      "stockCode": "174900",
+      "name": "앱클론",
+      "params": {
+        "corp_code": "00991191",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 67,
+      "fetchedAt": "2026-08-12T12:01:28.587Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00991191__2026__11013__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00991191",
+      "stockCode": "174900",
+      "name": "앱클론",
+      "params": {
+        "corp_code": "00991191",
+        "bsns_year": "2026",
+        "reprt_code": "11013",
+        "fs_div": "OFS"
+      },
+      "status": "000",
+      "message": "정상",
+      "bytes": 39745,
+      "elapsedMs": 100,
+      "fetchedAt": "2026-08-12T12:01:28.566Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00688996__2023__11013__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00688996",
+      "stockCode": "105560",
+      "name": "KB금융",
+      "params": {
+        "corp_code": "00688996",
+        "bsns_year": "2023",
+        "reprt_code": "11013",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 61,
+      "fetchedAt": "2026-08-12T12:01:28.730Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00688996__2023__11012__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00688996",
+      "stockCode": "105560",
+      "name": "KB금융",
+      "params": {
+        "corp_code": "00688996",
+        "bsns_year": "2023",
+        "reprt_code": "11012",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 73,
+      "fetchedAt": "2026-08-12T12:01:28.793Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00688996__2026__11011__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00688996",
+      "stockCode": "105560",
+      "name": "KB금융",
+      "params": {
+        "corp_code": "00688996",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 88,
+      "fetchedAt": "2026-08-12T12:01:28.807Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00688996__2026__11014__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00688996",
+      "stockCode": "105560",
+      "name": "KB금융",
+      "params": {
+        "corp_code": "00688996",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 79,
+      "fetchedAt": "2026-08-12T12:01:28.819Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00688996__2026__11012__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00688996",
+      "stockCode": "105560",
+      "name": "KB금융",
+      "params": {
+        "corp_code": "00688996",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 83,
+      "fetchedAt": "2026-08-12T12:01:28.943Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00382199__2023__11013__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00382199",
+      "stockCode": "055550",
+      "name": "신한지주",
+      "params": {
+        "corp_code": "00382199",
+        "bsns_year": "2023",
+        "reprt_code": "11013",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 110,
+      "fetchedAt": "2026-08-12T12:01:29.019Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00382199__2026__11011__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00382199",
+      "stockCode": "055550",
+      "name": "신한지주",
+      "params": {
+        "corp_code": "00382199",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 85,
+      "fetchedAt": "2026-08-12T12:01:29.048Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00382199__2023__11012__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00382199",
+      "stockCode": "055550",
+      "name": "신한지주",
+      "params": {
+        "corp_code": "00382199",
+        "bsns_year": "2023",
+        "reprt_code": "11012",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 87,
+      "fetchedAt": "2026-08-12T12:01:29.047Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00382199__2026__11014__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00382199",
+      "stockCode": "055550",
+      "name": "신한지주",
+      "params": {
+        "corp_code": "00382199",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 74,
+      "fetchedAt": "2026-08-12T12:01:29.181Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00104856__2023__11013__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00104856",
+      "stockCode": "016360",
+      "name": "삼성증권",
+      "params": {
+        "corp_code": "00104856",
+        "bsns_year": "2023",
+        "reprt_code": "11013",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 112,
+      "fetchedAt": "2026-08-12T12:01:29.285Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00104856__2023__11012__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00104856",
+      "stockCode": "016360",
+      "name": "삼성증권",
+      "params": {
+        "corp_code": "00104856",
+        "bsns_year": "2023",
+        "reprt_code": "11012",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 112,
+      "fetchedAt": "2026-08-12T12:01:29.287Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00382199__2026__11012__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00382199",
+      "stockCode": "055550",
+      "name": "신한지주",
+      "params": {
+        "corp_code": "00382199",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 118,
+      "fetchedAt": "2026-08-12T12:01:29.283Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00104856__2026__11014__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00104856",
+      "stockCode": "016360",
+      "name": "삼성증권",
+      "params": {
+        "corp_code": "00104856",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 99,
+      "fetchedAt": "2026-08-12T12:01:29.409Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00120182__2023__11013__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00120182",
+      "stockCode": "005940",
+      "name": "NH투자증권",
+      "params": {
+        "corp_code": "00120182",
+        "bsns_year": "2023",
+        "reprt_code": "11013",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 138,
+      "fetchedAt": "2026-08-12T12:01:29.551Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00104856__2026__11012__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00104856",
+      "stockCode": "016360",
+      "name": "삼성증권",
+      "params": {
+        "corp_code": "00104856",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 140,
+      "fetchedAt": "2026-08-12T12:01:29.551Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00104856__2026__11011__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00104856",
+      "stockCode": "016360",
+      "name": "삼성증권",
+      "params": {
+        "corp_code": "00104856",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 147,
+      "fetchedAt": "2026-08-12T12:01:29.550Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00120182__2023__11012__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00120182",
+      "stockCode": "005940",
+      "name": "NH투자증권",
+      "params": {
+        "corp_code": "00120182",
+        "bsns_year": "2023",
+        "reprt_code": "11012",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 59,
+      "fetchedAt": "2026-08-12T12:01:29.662Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00120182__2026__11014__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00120182",
+      "stockCode": "005940",
+      "name": "NH투자증권",
+      "params": {
+        "corp_code": "00120182",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 65,
+      "fetchedAt": "2026-08-12T12:01:29.842Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00120182__2026__11011__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00120182",
+      "stockCode": "005940",
+      "name": "NH투자증권",
+      "params": {
+        "corp_code": "00120182",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 72,
+      "fetchedAt": "2026-08-12T12:01:29.841Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00120182__2026__11012__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00120182",
+      "stockCode": "005940",
+      "name": "NH투자증권",
+      "params": {
+        "corp_code": "00120182",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 66,
+      "fetchedAt": "2026-08-12T12:01:29.848Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00126256__2023__11013__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00126256",
+      "stockCode": "032830",
+      "name": "삼성생명",
+      "params": {
+        "corp_code": "00126256",
+        "bsns_year": "2023",
+        "reprt_code": "11013",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 77,
+      "fetchedAt": "2026-08-12T12:01:29.874Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00126256__2026__11011__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00126256",
+      "stockCode": "032830",
+      "name": "삼성생명",
+      "params": {
+        "corp_code": "00126256",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 63,
+      "fetchedAt": "2026-08-12T12:01:30.064Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00126256__2026__11014__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00126256",
+      "stockCode": "032830",
+      "name": "삼성생명",
+      "params": {
+        "corp_code": "00126256",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 65,
+      "fetchedAt": "2026-08-12T12:01:30.065Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00126256__2023__11012__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00126256",
+      "stockCode": "032830",
+      "name": "삼성생명",
+      "params": {
+        "corp_code": "00126256",
+        "bsns_year": "2023",
+        "reprt_code": "11012",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 72,
+      "fetchedAt": "2026-08-12T12:01:30.060Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00126256__2026__11012__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00126256",
+      "stockCode": "032830",
+      "name": "삼성생명",
+      "params": {
+        "corp_code": "00126256",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 107,
+      "fetchedAt": "2026-08-12T12:01:30.104Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00159102__2023__11013__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00159102",
+      "stockCode": "005830",
+      "name": "DB손해보험",
+      "params": {
+        "corp_code": "00159102",
+        "bsns_year": "2023",
+        "reprt_code": "11013",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 68,
+      "fetchedAt": "2026-08-12T12:01:30.280Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00159102__2023__11012__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00159102",
+      "stockCode": "005830",
+      "name": "DB손해보험",
+      "params": {
+        "corp_code": "00159102",
+        "bsns_year": "2023",
+        "reprt_code": "11012",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 69,
+      "fetchedAt": "2026-08-12T12:01:30.281Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00159102__2026__11011__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00159102",
+      "stockCode": "005830",
+      "name": "DB손해보험",
+      "params": {
+        "corp_code": "00159102",
+        "bsns_year": "2026",
+        "reprt_code": "11011",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 74,
+      "fetchedAt": "2026-08-12T12:01:30.283Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00159102__2026__11014__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00159102",
+      "stockCode": "005830",
+      "name": "DB손해보험",
+      "params": {
+        "corp_code": "00159102",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 79,
+      "fetchedAt": "2026-08-12T12:01:30.362Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
       "requestId": "fnlttSinglAcntAll__00136721__2023__11011__OFS",
       "endpoint": "fnlttSinglAcntAll",
       "corpCode": "00136721",
@@ -9200,22 +14700,192 @@
       "fetchedAt": "2026-08-12T03:10:32.168Z",
       "source": "cache",
       "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00136721__2023__11013__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00136721",
+      "stockCode": "001720",
+      "name": "신영증권",
+      "params": {
+        "corp_code": "00136721",
+        "bsns_year": "2023",
+        "reprt_code": "11013",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 71,
+      "fetchedAt": "2026-08-12T12:01:30.503Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00136721__2026__11014__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00136721",
+      "stockCode": "001720",
+      "name": "신영증권",
+      "params": {
+        "corp_code": "00136721",
+        "bsns_year": "2026",
+        "reprt_code": "11014",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 68,
+      "fetchedAt": "2026-08-12T12:01:30.509Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00159102__2026__11012__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00159102",
+      "stockCode": "005830",
+      "name": "DB손해보험",
+      "params": {
+        "corp_code": "00159102",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 79,
+      "fetchedAt": "2026-08-12T12:01:30.501Z",
+      "source": "live",
+      "fsDivFallback": true
+    },
+    {
+      "requestId": "fnlttSinglAcntAll__00136721__2026__11012__OFS",
+      "endpoint": "fnlttSinglAcntAll",
+      "corpCode": "00136721",
+      "stockCode": "001720",
+      "name": "신영증권",
+      "params": {
+        "corp_code": "00136721",
+        "bsns_year": "2026",
+        "reprt_code": "11012",
+        "fs_div": "OFS"
+      },
+      "status": "013",
+      "message": "조회된 데이타가 없습니다.",
+      "bytes": 65,
+      "elapsedMs": 146,
+      "fetchedAt": "2026-08-12T12:01:30.596Z",
+      "source": "live",
+      "fsDivFallback": true
     }
   ],
   "summary": {
-    "totalEntries": 467,
-    "liveApiCalls": 0,
+    "totalEntries": 746,
+    "liveApiCalls": 279,
     "cachedSkips": 447,
     "companyReused": 20,
     "statusDistribution": {
-      "000": 455,
-      "013": 12
+      "000": 583,
+      "013": 163
     },
     "fsDivFallbackStocks": [
+      {
+        "stockCode": "005930",
+        "corpCode": "00126380",
+        "name": "삼성전자"
+      },
+      {
+        "stockCode": "000660",
+        "corpCode": "00164779",
+        "name": "SK하이닉스"
+      },
+      {
+        "stockCode": "005380",
+        "corpCode": "00164742",
+        "name": "현대자동차"
+      },
+      {
+        "stockCode": "005490",
+        "corpCode": "00155319",
+        "name": "POSCO홀딩스"
+      },
+      {
+        "stockCode": "051910",
+        "corpCode": "00356361",
+        "name": "LG화학"
+      },
+      {
+        "stockCode": "035720",
+        "corpCode": "00258801",
+        "name": "카카오"
+      },
+      {
+        "stockCode": "035420",
+        "corpCode": "00266961",
+        "name": "NAVER"
+      },
+      {
+        "stockCode": "068270",
+        "corpCode": "00413046",
+        "name": "셀트리온"
+      },
+      {
+        "stockCode": "084990",
+        "corpCode": "00359395",
+        "name": "헬릭스미스"
+      },
+      {
+        "stockCode": "215600",
+        "corpCode": "00919966",
+        "name": "신라젠"
+      },
+      {
+        "stockCode": "034020",
+        "corpCode": "00159616",
+        "name": "두산에너빌리티"
+      },
+      {
+        "stockCode": "329180",
+        "corpCode": "01390344",
+        "name": "HD현대중공업"
+      },
       {
         "stockCode": "174900",
         "corpCode": "00991191",
         "name": "앱클론"
+      },
+      {
+        "stockCode": "105560",
+        "corpCode": "00688996",
+        "name": "KB금융"
+      },
+      {
+        "stockCode": "055550",
+        "corpCode": "00382199",
+        "name": "신한지주"
+      },
+      {
+        "stockCode": "016360",
+        "corpCode": "00104856",
+        "name": "삼성증권"
+      },
+      {
+        "stockCode": "005940",
+        "corpCode": "00120182",
+        "name": "NH투자증권"
+      },
+      {
+        "stockCode": "032830",
+        "corpCode": "00126256",
+        "name": "삼성생명"
+      },
+      {
+        "stockCode": "005830",
+        "corpCode": "00159102",
+        "name": "DB손해보험"
       },
       {
         "stockCode": "001720",
@@ -9300,8 +14970,8 @@
         "name": "신영증권"
       }
     ],
-    "totalBytes": 15096199,
-    "elapsedMs": 84,
+    "totalBytes": 27841872,
+    "elapsedMs": 22039,
     "aborted": false,
     "abortReason": null
   }

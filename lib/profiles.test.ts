@@ -150,19 +150,43 @@ describe("리뷰 픽스 1 — credit_loss_allowance는 stacked가 아니라 dedu
   });
 });
 
-describe("summarizeCoverage — T10 카드/상세 배지용 (pnl + stability 합산)", () => {
-  it("STANDARD: debt_ratio(stability, sourceAvailable:true)까지 합쳐 6개 후보 중 6개 HIT", () => {
-    const resolutions: Record<string, Resolution> = {
-      revenue: ok("revenue"),
-      gross_profit: ok("gross_profit"),
-      operating_income: ok("operating_income"),
-      net_income_attributable_to_owners: ok("net_income_attributable_to_owners"),
-      net_income: ok("net_income"),
-      debt_ratio: ok("debt_ratio"),
-    };
-    const coverage = summarizeCoverage("STANDARD", resolutions);
-    expect(coverage.total).toBe(6);
-    expect(coverage.hit).toBe(6);
+/**
+ * 7셋 확장 후 STANDARD 커버리지 후보 = pnl 5(operating_margin은 DERIVED_RATIO_KEYS라 제외)
+ * + stability 4(부채비율·유동비율·순차입금·이자보상배율) + balance 4(유동/비유동 4종) = 13.
+ * 갯수를 상수로 박지 않고 카탈로그에서 계산해, 지표를 추가해도 이 테스트가 의도(전부 HIT면
+ * 100%)를 계속 검증하도록 한다.
+ */
+const STANDARD_ALL_HIT: Record<string, Resolution> = {
+  revenue: ok("revenue"),
+  gross_profit: ok("gross_profit"),
+  operating_income: ok("operating_income"),
+  net_income_attributable_to_owners: ok("net_income_attributable_to_owners"),
+  net_income: ok("net_income"),
+  debt_ratio: ok("debt_ratio"),
+  current_ratio: ok("current_ratio"),
+  net_debt: ok("net_debt"),
+  interest_coverage: ok("interest_coverage"),
+  current_assets: ok("current_assets"),
+  noncurrent_assets: ok("noncurrent_assets"),
+  current_liabilities: ok("current_liabilities"),
+  noncurrent_liabilities: ok("noncurrent_liabilities"),
+};
+
+describe("summarizeCoverage — T10 카드/상세 배지용 (pnl + stability + balance 합산)", () => {
+  it("STANDARD: stability 4종·balance 4종까지 합산하고, 전부 HIT이면 100%", () => {
+    const coverage = summarizeCoverage("STANDARD", STANDARD_ALL_HIT);
+    expect(coverage.total).toBe(13);
+    expect(coverage.hit).toBe(coverage.total);
+    expect(coverage.missing).toEqual([]);
+  });
+
+  it("STANDARD: 유동/비유동(balance)이 결측이면 커버리지에 그대로 반영된다", () => {
+    const withoutBalance = { ...STANDARD_ALL_HIT };
+    delete withoutBalance.current_assets;
+    delete withoutBalance.noncurrent_assets;
+    const coverage = summarizeCoverage("STANDARD", withoutBalance);
+    expect(coverage.hit).toBe(coverage.total - 2);
+    expect(coverage.missing.map((m) => m.key).sort()).toEqual(["current_assets", "noncurrent_assets"]);
   });
 
   it("FIN_HOLDING: bis_ratio/npl_ratio는 sourceAvailable:false라 항상 미존재 처리 — 9개 pnl이 전부 HIT여도 11개 중 9개", () => {
@@ -181,15 +205,8 @@ describe("summarizeCoverage — T10 카드/상세 배지용 (pnl + stability 합
     expect(coverage.total).toBe(11);
     expect(coverage.hit).toBe(9);
     expect(coverage.missing.map((m) => m.key)).toEqual(["bis_ratio", "npl_ratio"]);
-    // 금융(FIN_HOLDING) 9/11≈81.8% < 비금융(STANDARD) 6/6=100% — 완료판정 "금융 < 비금융"의 근거.
-    const standardCoverage = summarizeCoverage("STANDARD", {
-      revenue: ok("revenue"),
-      gross_profit: ok("gross_profit"),
-      operating_income: ok("operating_income"),
-      net_income_attributable_to_owners: ok("net_income_attributable_to_owners"),
-      net_income: ok("net_income"),
-      debt_ratio: ok("debt_ratio"),
-    });
+    // 금융(FIN_HOLDING) 9/11≈81.8% < 비금융(STANDARD) 13/13=100% — 완료판정 "금융 < 비금융"의 근거.
+    const standardCoverage = summarizeCoverage("STANDARD", STANDARD_ALL_HIT);
     expect(coverage.hit / coverage.total).toBeLessThan(standardCoverage.hit / standardCoverage.total);
   });
 });

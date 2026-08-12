@@ -30,7 +30,7 @@ export type ProfileMetric = {
   unit: "KRW" | "PCT" | "X";
 };
 
-export type ProfileCatalog = Record<ProfileId, { pnl: ProfileMetric[]; stability: ProfileMetric[] }>;
+export type ProfileCatalog = Record<ProfileId, { pnl: ProfileMetric[]; stability: ProfileMetric[]; balance: ProfileMetric[] }>;
 
 /**
  * derive.ts가 다른 두 후보(영업이익÷매출액)로 계산하는 비율 지표 — 자체 account_id 폴백체인이
@@ -38,6 +38,22 @@ export type ProfileCatalog = Record<ProfileId, { pnl: ProfileMetric[]; stability
  * 않는다 — 카탈로그에는 그대로 남아 있어야 KB 화면에 "영업이익률 해당 없음"이 뜬다.
  */
 const DERIVED_RATIO_KEYS = new Set(["operating_margin"]);
+
+/**
+ * 7셋 SET2(재무상태)의 유동·비유동 구분 — **표준 프로필 전용**이다.
+ *
+ * 은행·증권·보험은 재무상태표를 유동/비유동으로 나누지 않는다(IAS 1이 금융기관에 유동성 순서
+ * 배열을 허용한다). 실제로 KB금융·삼성생명 등은 `ifrs-full_CurrentAssets` 행 자체가 없다 —
+ * 그러니 이 항목들이 금융 종목에서 비는 것은 "우리가 못 읽어서"(MISSING)가 아니라
+ * "그 회사엔 그 개념이 없어서"(NOT_IN_PROFILE)다. 두 사유를 화면에서 구분하기 위해
+ * 카탈로그로 게이팅한다.
+ */
+const STANDARD_BALANCE_METRICS: ProfileMetric[] = [
+  { key: "current_assets", label: "유동자산", sourceAvailable: true, chart: "none", unit: "KRW" },
+  { key: "noncurrent_assets", label: "비유동자산", sourceAvailable: true, chart: "none", unit: "KRW" },
+  { key: "current_liabilities", label: "유동부채", sourceAvailable: true, chart: "none", unit: "KRW" },
+  { key: "noncurrent_liabilities", label: "비유동부채", sourceAvailable: true, chart: "none", unit: "KRW" },
+];
 
 export const PROFILE_CATALOG: ProfileCatalog = {
   STANDARD: {
@@ -51,7 +67,13 @@ export const PROFILE_CATALOG: ProfileCatalog = {
       { key: "net_income", label: "당기순이익(총액)", sourceAvailable: true, chart: "none", unit: "KRW" },
       { key: "operating_margin", label: "영업이익률", sourceAvailable: true, chart: "none", unit: "PCT" },
     ],
-    stability: [{ key: "debt_ratio", label: "부채비율", sourceAvailable: true, chart: "none", unit: "PCT" }],
+    stability: [
+      { key: "debt_ratio", label: "부채비율", sourceAvailable: true, chart: "none", unit: "PCT" },
+      { key: "current_ratio", label: "유동비율", sourceAvailable: true, chart: "none", unit: "PCT" },
+      { key: "net_debt", label: "순차입금", sourceAvailable: true, chart: "none", unit: "KRW" },
+      { key: "interest_coverage", label: "이자보상배율", sourceAvailable: true, chart: "none", unit: "X" },
+    ],
+    balance: STANDARD_BALANCE_METRICS,
   },
   FIN_HOLDING: {
     pnl: [
@@ -72,6 +94,8 @@ export const PROFILE_CATALOG: ProfileCatalog = {
       { key: "bis_ratio", label: "BIS비율", sourceAvailable: false, chart: "none", unit: "PCT" },
       { key: "npl_ratio", label: "고정이하여신비율(NPL)", sourceAvailable: false, chart: "none", unit: "PCT" },
     ],
+    // 금융기관은 재무상태표를 유동/비유동으로 구분하지 않는다 — STANDARD_BALANCE_METRICS 주석 참조.
+    balance: [],
   },
   // 이번 주 유니버스엔 은행(FIN_BANK) 프로필 종목이 없다(T2 이월 노트) — 지주와 동일한 계정
   // 체계를 재사용해 둔다. 보험 세그먼트(insurance_*)는 순수 은행엔 없어 제외했다.
@@ -89,6 +113,8 @@ export const PROFILE_CATALOG: ProfileCatalog = {
       { key: "bis_ratio", label: "BIS비율", sourceAvailable: false, chart: "none", unit: "PCT" },
       { key: "npl_ratio", label: "고정이하여신비율(NPL)", sourceAvailable: false, chart: "none", unit: "PCT" },
     ],
+    // 금융기관은 재무상태표를 유동/비유동으로 구분하지 않는다 — STANDARD_BALANCE_METRICS 주석 참조.
+    balance: [],
   },
   // FIN_SECURITIES·FIN_INSURANCE 전용 손익 계정은 T7에선 미검증이었다(플랜 §14 R2). T10이
   // 3개 증권사(삼성증권·NH투자증권·신영증권)·2개 보험사(삼성생명·DB손해보험) 2024 스냅샷을
@@ -109,6 +135,7 @@ export const PROFILE_CATALOG: ProfileCatalog = {
       { key: "net_income", label: "당기순이익(총액)", sourceAvailable: true, chart: "none", unit: "KRW" },
     ],
     stability: [{ key: "ncr", label: "순자본비율(NCR)", sourceAvailable: false, chart: "none", unit: "PCT" }],
+    balance: [],
   },
   FIN_INSURANCE: {
     pnl: [
@@ -122,6 +149,7 @@ export const PROFILE_CATALOG: ProfileCatalog = {
       { key: "net_income", label: "당기순이익(총액)", sourceAvailable: true, chart: "none", unit: "KRW" },
     ],
     stability: [{ key: "kics", label: "K-ICS비율", sourceAvailable: false, chart: "none", unit: "PCT" }],
+    balance: [],
   },
 };
 
@@ -142,7 +170,17 @@ export function toProfileId(universeProfile: string): ProfileId {
 
 export function findProfileMetric(profile: ProfileId, metricKey: string): ProfileMetric | undefined {
   const catalog = PROFILE_CATALOG[profile];
-  return catalog.pnl.find((m) => m.key === metricKey) ?? catalog.stability.find((m) => m.key === metricKey);
+  return catalog.pnl.find((m) => m.key === metricKey) ?? catalog.stability.find((m) => m.key === metricKey) ?? catalog.balance.find((m) => m.key === metricKey);
+}
+
+/**
+ * `pnlKeysOnlyIn`의 일반화 — 임의의 카탈로그 축(stability/balance)에 대해 "표준엔 있는데 이
+ * 프로필엔 없는" 키를 구한다. 화면이 "은행에는 유동비율·순차입금 칸이 아예 없다"를 빈칸이
+ * 아니라 **`해당 없음` 배지**로 보여줄 수 있게 하는 목록이다.
+ */
+export function catalogKeysOnlyIn(axis: "pnl" | "stability" | "balance", sourceProfile: ProfileId, targetProfile: ProfileId): string[] {
+  const targetKeys = new Set(PROFILE_CATALOG[targetProfile][axis].map((m) => m.key));
+  return PROFILE_CATALOG[sourceProfile][axis].map((m) => m.key).filter((k) => !targetKeys.has(k));
 }
 
 /**
@@ -234,6 +272,10 @@ function coverageFor(profile: ProfileId, keys: string[], resolutions: Record<str
  * 비금융보다 커버리지가 구조적으로 낮다"는 완료판정 조건이 여기서 드러난다.
  */
 export function summarizeCoverage(profile: ProfileId, resolutions: Record<string, Resolution | undefined>): PnlCoverage {
-  const keys = [...countableKeys(profile), ...PROFILE_CATALOG[profile].stability.map((m) => m.key)];
+  const keys = [
+    ...countableKeys(profile),
+    ...PROFILE_CATALOG[profile].stability.map((m) => m.key),
+    ...PROFILE_CATALOG[profile].balance.map((m) => m.key),
+  ];
   return coverageFor(profile, keys, resolutions);
 }

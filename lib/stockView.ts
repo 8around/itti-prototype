@@ -9,7 +9,7 @@
 import { join } from "node:path";
 
 import { findStockByCode, findYear, loadDerived } from "./derived";
-import type { DerivedFile } from "./derived";
+import type { DerivedFile, DerivedQuarterSeries } from "./derived";
 import type { FsDiv } from "./normalize/resolve";
 import { resolveProfileExtras } from "./normalize/resolveProfileExtras";
 import type { Resolution } from "./normalize/types";
@@ -69,4 +69,18 @@ export function loadStockYearView(row: UniverseRow, year: string, derived: Deriv
 
 export function profileIdOf(row: UniverseRow): ProfileId {
   return toProfileId(row.profile);
+}
+
+/** derived.json이 실제로 담고 있는 연도 목록 — 화면의 연도 탭이 이 값을 그대로 쓴다(하드코딩 금지). */
+export function availableYears(derived: DerivedFile = getDerived()): string[] {
+  return [...derived.years];
+}
+
+/**
+ * 7셋 확장 — 종목의 단일분기 시계열. 연도 축과 무관하게 종목당 1벌이라 연도 인자를 받지 않는다.
+ * 해당 지표 시계열이 없으면 빈 배열(예: 금융 프로필의 revenue — 계정 자체가 없다).
+ */
+export function loadQuarterSeries(row: UniverseRow, metricKey: string, derived: DerivedFile = getDerived()): DerivedQuarterSeries["points"] {
+  const stock = findStockByCode(derived, row.stockCode);
+  return stock.quarters.find((q) => q.metricKey === metricKey)?.points ?? [];
 }

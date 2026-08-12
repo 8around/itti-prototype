@@ -345,6 +345,50 @@ a {
   margin-left: 2px;
 }
 
+/* ---- StackedBars (.sbstack/.sbseg) — 7셋 SET2 재무상태 "자산=부채+자본" 누적 막대 ----
+   QuarterBars의 .qbrow/.qbcol/.qbtrack 골격을 그대로 재사용하고, 채움(.qbfill) 자리에만
+   두 세그먼트를 세로로 쌓는 컨테이너를 넣는다. 색은 학습가이드 규약(아래 초록=자본,
+   위 붉은색=부채)을 따른다. */
+.sbstack {
+  width: 78%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px 5px 0 0;
+  overflow: hidden;
+}
+.sbseg.sbliab {
+  background: rgba(211, 47, 47, 0.45);
+}
+.sbseg.sbequity {
+  background: var(--green);
+}
+.sblegend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+  font-size: 8.5px;
+  font-weight: 700;
+  color: var(--gray);
+}
+.sblegend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.sbchip {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  display: inline-block;
+}
+.sblegend-note {
+  color: var(--gray-2);
+  font-weight: 600;
+}
+
 /* ---- ZeroAxisBars (.zbrow/.zbtop/.zbbot/.zline) — 목업 342-349줄, 화면 ④ 순이익 ---- */
 .zbrow {
   display: flex;

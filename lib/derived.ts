@@ -15,11 +15,26 @@ export interface DerivedYearResolutions {
   resolutions: Record<string, Resolution>;
 }
 
+/** 7셋 확장 — 단일분기 시계열 1개 지표(engine.ts QuarterSeries의 직렬화 형태). */
+export interface DerivedQuarterSeries {
+  metricKey: string;
+  points: {
+    year: string;
+    quarter: 1 | 2 | 3 | 4;
+    label: string;
+    provisional: boolean;
+    resolution: Resolution;
+    qoq: Resolution;
+    yoy: Resolution;
+  }[];
+}
+
 export interface DerivedStock {
   stockCode: string;
   corpCode: string;
   name: string;
   years: DerivedYearResolutions[];
+  quarters: DerivedQuarterSeries[];
   coverage: { candidates: number; hit: number };
 }
 

@@ -69,7 +69,17 @@ const FORCE = args.includes("--force");
 // 수집 매트릭스 상수 — 배열이 곧 계획. 원소를 추가/제거하면 루프 수정 없이 계획이 바뀐다.
 // ---------------------------------------------------------------------------
 const YEARS = ["2023", "2024", "2025"] as const;
-const ACNT_ALL_REPRT_CODES = ["11011", "11014"] as const;
+/**
+ * 7셋 확장(QoQ 성장률) — 단일분기 값을 만들려면 4개 reprt_code가 전부 필요하다.
+ *   Q1 = 11013.thstrm_amount
+ *   Q2 = 11012.thstrm_add_amount − 11013.thstrm_add_amount
+ *   Q3 = 11014.thstrm_add_amount − 11012.thstrm_add_amount
+ *   Q4 = 11011.thstrm_amount     − 11014.thstrm_add_amount
+ * 2026은 연간(11011)·3분기(11014)가 아직 미공시라 `013`이 예상된다 — 정상 기록하고
+ * manifest에 남긴다(어디까지가 실제 공시 한계인지를 화면에서 보여주기 위함).
+ */
+const ACNT_ALL_YEARS = ["2023", "2024", "2025", "2026"] as const;
+const ACNT_ALL_REPRT_CODES = ["11011", "11014", "11013", "11012"] as const;
 const INDX_REPRT_CODES = ["11011"] as const;
 const INDX_CATEGORIES = ["M210000", "M220000", "M230000", "M240000"] as const;
 const ALOT_MATTER_YEARS = ["2025"] as const; // 1회로 2023~2025 3개년 커버
@@ -184,7 +194,7 @@ function buildCompanyEntries(universe: UniverseRow[]): CallLogEntry[] {
 function buildBaseJobs(universe: UniverseRow[]): Job[] {
   const jobs: Job[] = [];
   for (const stock of universe) {
-    for (const year of YEARS) {
+    for (const year of ACNT_ALL_YEARS) {
       for (const reprt of ACNT_ALL_REPRT_CODES) {
         jobs.push(
           makeJob("fnlttSinglAcntAll", stock, { bsns_year: year, reprt_code: reprt, fs_div: "CFS" }, [

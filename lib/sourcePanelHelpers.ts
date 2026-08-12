@@ -11,7 +11,14 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { ACNT_ALL_CANDIDATES, ALOT_MATTER_CANDIDATES, SINGL_INDX_CANDIDATES, STOCK_TOTQY_CANDIDATES } from "./normalize/catalog";
+import {
+  ACNT_ALL_7SETS_CANDIDATES,
+  ACNT_ALL_CANDIDATES,
+  ALOT_MATTER_CANDIDATES,
+  SINGL_INDX_7SETS_CANDIDATES,
+  SINGL_INDX_CANDIDATES,
+  STOCK_TOTQY_CANDIDATES,
+} from "./normalize/catalog";
 import { ALOT_MATTER_REPORT_YEAR } from "./normalize/engine";
 import { FIN_HOLDING_EXTRA_CANDIDATES } from "./normalize/fin-holding-catalog";
 import { FIN_INSURANCE_EXTRA_CANDIDATES } from "./normalize/fin-insurance-catalog";
@@ -71,7 +78,27 @@ export function reportDateFromSnapshot(requestId: string): string {
  * 찾으면 프로필이 바뀌어도 항상 같은(먼저 나온) 정의가 반환돼 SourcePanel이 엉뚱한 원천으로
  * 조립될 수 있다 — 반드시 profile로 스코프를 좁혀서 찾는다.
  */
-const BASE_CANDIDATES: MetricCandidate[] = [...ACNT_ALL_CANDIDATES, ...SINGL_INDX_CANDIDATES, ...ALOT_MATTER_CANDIDATES, ...STOCK_TOTQY_CANDIDATES];
+const BASE_CANDIDATES: MetricCandidate[] = [
+  ...ACNT_ALL_CANDIDATES,
+  ...ACNT_ALL_7SETS_CANDIDATES,
+  ...SINGL_INDX_CANDIDATES,
+  ...SINGL_INDX_7SETS_CANDIDATES,
+  ...ALOT_MATTER_CANDIDATES,
+  ...STOCK_TOTQY_CANDIDATES,
+];
+
+/**
+ * 7셋 확장 — `preferIndx()`로 **원천이 런타임에 갈리는** 파생 지표.
+ * DART 산출지표(M211200 등)가 있으면 그 값을 그대로 쓰고, 없으면 acntAll 값으로 자체 계산한다.
+ * 따라서 SourcePanel이 붙일 "근거 원문"도 그때그때 달라야 한다 — Resolution에 남은 실제 hit의
+ * accountId가 해당 idx_code와 일치하면 singlIndx 스냅샷을, 아니면 acntAll 스냅샷을 붙인다.
+ * (여기서 갈라주지 않으면 DART 산출값을 쓴 지표의 "원문 보기"에 엉뚱한 재무제표 JSON이 뜬다.)
+ */
+const RUNTIME_INDX_FALLBACK_KEYS: Record<string, string> = {
+  net_margin: "net_margin_indx",
+  gross_margin: "gross_margin_indx",
+  interest_coverage: "interest_coverage_indx",
+};
 
 /** profile 매치가 실패했을 때만 쓰는 전역 안전망 — 정상 호출 경로에서는 도달하지 않아야 한다. */
 const ALL_EXTRA_CANDIDATES: MetricCandidate[] = [...FIN_HOLDING_EXTRA_CANDIDATES, ...FIN_SECURITIES_EXTRA_CANDIDATES, ...FIN_INSURANCE_EXTRA_CANDIDATES];
@@ -87,7 +114,14 @@ const DERIVED_SOURCE_OVERRIDES: Partial<Record<string, MetricSource>> = {
   dividend_payout_fallback: "alotMatter",
 };
 
-function findCandidate(metricKey: string, profile: ProfileId): MetricCandidate | undefined {
+function findCandidate(metricKey: string, profile: ProfileId, resolution?: Resolution): MetricCandidate | undefined {
+  const indxTwinKey = RUNTIME_INDX_FALLBACK_KEYS[metricKey];
+  if (indxTwinKey) {
+    const twin = SINGL_INDX_7SETS_CANDIDATES.find((c) => c.key === indxTwinKey);
+    // DART 산출값이 채택됐으면 hit.accountId가 그 idx_code(M211200 등)와 같다.
+    if (twin && resolution?.hit && twin.accountIds.includes(resolution.hit.accountId)) return twin;
+    return undefined; // 자체 계산 경로 → acntAll 스냅샷을 근거로 삼는다.
+  }
   // q4_역산값·roa·operating_margin·fcf처럼 자체 후보가 없는 파생 지표는 여기서 못 찾는다
   // (derive.ts가 다른 Resolution을 입력으로 계산) — undefined면 호출부가 acntAll로 간주한다.
   const base = BASE_CANDIDATES.find((c) => c.key === metricKey);
@@ -117,7 +151,7 @@ export function buildSourcePanelProps(
   panelUnit: "KRW" | "PCT" | "X",
   profile: ProfileId,
 ): SourcePanelProps {
-  const candidate = findCandidate(metricKey, profile);
+  const candidate = findCandidate(metricKey, profile, resolution);
   const source = candidate?.source ?? "acntAll";
 
   if (source === "singlIndx") {

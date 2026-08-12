@@ -83,6 +83,73 @@ export const ACNT_ALL_CANDIDATES: MetricCandidate[] = [
   },
 ];
 
+/**
+ * 7셋 확장 — 재무상태(유동·비유동)·안정성(순차입금·이자보상배율) 원재료.
+ * 기존 ACNT_ALL_CANDIDATES는 손대지 않고 별도 배열로 append한다(엔진이 두 배열을 이어 붙여 순회).
+ */
+export const ACNT_ALL_7SETS_CANDIDATES: MetricCandidate[] = [
+  { key: "current_assets", label: "유동자산", accountIds: ["ifrs-full_CurrentAssets"], sjDivPriority: ["BS"], unit: "KRW", sourceAvailable: true, source: "acntAll" },
+  { key: "noncurrent_assets", label: "비유동자산", accountIds: ["ifrs-full_NoncurrentAssets"], sjDivPriority: ["BS"], unit: "KRW", sourceAvailable: true, source: "acntAll" },
+  { key: "current_liabilities", label: "유동부채", accountIds: ["ifrs-full_CurrentLiabilities"], sjDivPriority: ["BS"], unit: "KRW", sourceAvailable: true, source: "acntAll" },
+  { key: "noncurrent_liabilities", label: "비유동부채", accountIds: ["ifrs-full_NoncurrentLiabilities"], sjDivPriority: ["BS"], unit: "KRW", sourceAvailable: true, source: "acntAll" },
+  { key: "cash_and_equivalents", label: "현금및현금성자산", accountIds: ["ifrs-full_CashAndCashEquivalents"], sjDivPriority: ["BS"], unit: "KRW", sourceAvailable: true, source: "acntAll" },
+  {
+    key: "short_term_investments",
+    label: "단기금융상품",
+    accountIds: ["ifrs-full_ShorttermDepositsNotClassifiedAsCashEquivalents"],
+    sjDivPriority: ["BS"],
+    unit: "KRW",
+    sourceAvailable: true,
+    source: "acntAll",
+  },
+  {
+    key: "interest_expense",
+    label: "이자비용",
+    // 삼성전자처럼 순수 이자비용 행 없이 금융비용(ifrs-full_FinanceCosts)만 공시하는 회사가 많다.
+    // 폴백이 적용되면 이자보상배율의 분모가 "이자비용"이 아니라 "금융비용"이 되므로,
+    // 화면에서 derivation 문구로 어느 계정을 썼는지 반드시 드러내야 한다.
+    accountIds: ["ifrs-full_InterestExpense", "ifrs-full_FinanceCosts"],
+    sjDivPriority: ["IS", "CIS"],
+    unit: "KRW",
+    sourceAvailable: true,
+    source: "acntAll",
+  },
+];
+
+/**
+ * 순차입금 = 총차입금 − 현금성자산. **총차입금은 단일 계정이 아니라 여러 계정의 합**이라
+ * 폴백 체인(첫 HIT 하나만 채택)으로는 표현할 수 없다 — deriveNetDebt가 아래 두 목록을
+ * 전부 훑어 존재하는 것만 합산한다.
+ *
+ * 20종목 실측 기준 account_id 편차가 가장 심한 영역이다(`ShorttermBorrowings` /
+ * `CurrentBorrowingsAndCurrentPortionOfNoncurrentBorrowings` / `Borrowings` /
+ * `LoansReceived` … 회사마다 다름). 이 목록에 없는 계정을 쓰는 회사는 총차입금이
+ * 과소 집계되므로, 화면에는 **합산에 실제로 잡힌 계정명을 전부 노출**한다.
+ */
+export const BORROWING_ACCOUNT_IDS = [
+  // 유동
+  "ifrs-full_ShorttermBorrowings",
+  "ifrs-full_CurrentBorrowingsAndCurrentPortionOfNoncurrentBorrowings",
+  "ifrs-full_CurrentPortionOfLongtermBorrowings",
+  "ifrs-full_CurrentBondsIssuedAndCurrentPortionOfNoncurrentBondsIssued",
+  "dart_CurrentPortionOfConvertibleBonds",
+  // 비유동
+  "ifrs-full_LongtermBorrowings",
+  "ifrs-full_NoncurrentPortionOfNoncurrentLoansReceived",
+  "ifrs-full_NoncurrentPortionOfNoncurrentBondsIssued",
+  "ifrs-full_NoncurrentPortionOfOtherNoncurrentBorrowings",
+  "ifrs-full_BondsIssued",
+  "dart_ConvertibleBonds",
+  "dart_LongTermBorrowingsGross",
+  // 유동/비유동 구분 없이 한 행으로 공시하는 회사
+  "ifrs-full_Borrowings",
+  "ifrs-full_OtherBorrowings",
+  "ifrs-full_LoansReceived",
+] as const;
+
+/** 순차입금 계산에서 총차입금에서 차감하는 현금성 자산 키(위 ACNT_ALL_7SETS_CANDIDATES의 key). */
+export const CASH_LIKE_KEYS = ["cash_and_equivalents", "short_term_investments"] as const;
+
 export const SINGL_INDX_CANDIDATES: MetricCandidate[] = [
   { key: "roe", label: "ROE", accountIds: ["M211550"], sjDivPriority: [], unit: "PCT", sourceAvailable: true, source: "singlIndx", idxClCode: "M210000" },
   { key: "debt_ratio", label: "부채비율", accountIds: ["M221100"], sjDivPriority: [], unit: "PCT", sourceAvailable: true, source: "singlIndx", idxClCode: "M220000" },
@@ -98,6 +165,39 @@ export const SINGL_INDX_CANDIDATES: MetricCandidate[] = [
     source: "singlIndx",
     idxClCode: "M240000",
   },
+];
+
+/**
+ * 7셋 확장 — `fnlttSinglIndx`가 이미 산출해 주는 비율·성장률. 우리가 나눗셈을 하는 대신
+ * DART 산출값을 1순위로 쓰고(권위 있는 값), 결측(`undefined`/`#########`)일 때만 자체 계산으로
+ * 폴백한다(derive.ts). 두 경로 중 어느 쪽이 쓰였는지는 Resolution.derivation에 남는다.
+ *
+ * idxClCode는 카테고리이며 콤마 다중지정이 불가해 카테고리마다 개별 호출이 필요하다(#42) —
+ * 이미 4카테고리 전부 수집돼 있어 추가 호출 없이 파싱만 늘리면 된다.
+ */
+export const SINGL_INDX_7SETS_CANDIDATES: MetricCandidate[] = [
+  // M210000 수익성
+  { key: "net_margin_indx", label: "순이익률(DART 산출)", accountIds: ["M211200"], sjDivPriority: [], unit: "PCT", sourceAvailable: true, source: "singlIndx", idxClCode: "M210000" },
+  { key: "gross_margin_indx", label: "매출총이익률(DART 산출)", accountIds: ["M211300"], sjDivPriority: [], unit: "PCT", sourceAvailable: true, source: "singlIndx", idxClCode: "M210000" },
+  // M220000 안정성
+  { key: "equity_ratio", label: "자기자본비율", accountIds: ["M221000"], sjDivPriority: [], unit: "PCT", sourceAvailable: true, source: "singlIndx", idxClCode: "M220000" },
+  { key: "current_ratio", label: "유동비율", accountIds: ["M221200"], sjDivPriority: [], unit: "PCT", sourceAvailable: true, source: "singlIndx", idxClCode: "M220000" },
+  {
+    key: "interest_coverage_indx",
+    label: "이자보상배율(DART 산출)",
+    // 실측상 20종목 대부분 결측이다 — 자체 계산(deriveInterestCoverage)이 사실상 주력이 된다.
+    accountIds: ["M221600"],
+    sjDivPriority: [],
+    unit: "X",
+    sourceAvailable: true,
+    source: "singlIndx",
+    idxClCode: "M220000",
+  },
+  // M230000 성장성 (전부 YoY)
+  { key: "revenue_growth_yoy_indx", label: "매출액증가율(YoY, DART 산출)", accountIds: ["M231000"], sjDivPriority: [], unit: "PCT", sourceAvailable: true, source: "singlIndx", idxClCode: "M230000" },
+  { key: "gross_profit_growth_yoy_indx", label: "매출총이익증가율(YoY, DART 산출)", accountIds: ["M231200"], sjDivPriority: [], unit: "PCT", sourceAvailable: true, source: "singlIndx", idxClCode: "M230000" },
+  { key: "operating_income_growth_yoy_indx", label: "영업이익증가율(YoY, DART 산출)", accountIds: ["M231400"], sjDivPriority: [], unit: "PCT", sourceAvailable: true, source: "singlIndx", idxClCode: "M230000" },
+  { key: "net_income_growth_yoy_indx", label: "순이익증가율(YoY, DART 산출)", accountIds: ["M231800"], sjDivPriority: [], unit: "PCT", sourceAvailable: true, source: "singlIndx", idxClCode: "M230000" },
 ];
 
 export const ALOT_MATTER_CANDIDATES: MetricCandidate[] = [

@@ -76,23 +76,66 @@
   border-radius: 5px;
 }
 
-.valuationStrip {
+/* 연도 탭 — derived.json이 담은 연도만큼 자동으로 늘어난다(app/stock/[code]/page.tsx 참조). */
+.yearTabs {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  gap: 20px;
+  gap: 6px;
+}
+
+.yearTab {
+  font-size: 11.5px;
+  font-weight: 800;
+  color: var(--gray);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 4px 13px;
+  text-decoration: none;
+}
+
+.yearTab:hover {
+  color: var(--green);
+  border-color: var(--green-bd);
+}
+
+.yearTabActive,
+.yearTabActive:hover {
+  color: var(--paper);
+  background: var(--green);
+  border-color: var(--green);
+}
+
+/* ⑦ 밸류에이션 — 4개 항목 전부 원천 미확보라 값이 아니라 "왜 없는지"가 본문이다. */
+.valuationGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 4px 20px;
   background: var(--wash);
   border: 1px dashed var(--line);
   border-radius: 12px;
   padding: 12px 16px;
 }
 
-.valuationHint {
-  font-size: 10.5px;
-  color: var(--gray-2);
+.gapNote {
+  font-size: 11.5px;
+  color: var(--ink-2);
+  line-height: 1.65;
+  background: var(--orange-bg);
+  border-left: 3px solid var(--prov);
+  border-radius: 0 8px 8px 0;
+  padding: 10px 14px;
+}
+
+/* 차트 제목 옆에 붙는 보조 설명 — 축 의미·해석 기준을 한 줄로 알려 준다. */
+.axisNote {
+  display: block;
+  margin-top: 3px;
+  font-size: 10px;
   font-weight: 600;
-  line-height: 1.5;
-  flex-basis: 100%;
+  color: var(--gray-2);
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 .section {
