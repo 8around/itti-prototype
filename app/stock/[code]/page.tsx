@@ -92,6 +92,7 @@ function FieldRow({
   basis,
   metricKey,
   corpCode,
+  profile,
   resolution,
 }: {
   label: string;
@@ -103,13 +104,16 @@ function FieldRow({
   basis?: "연결" | "별도";
   metricKey: string;
   corpCode: string;
+  /** buildSourcePanelProps가 프로필 확장 카탈로그(FIN_HOLDING/FIN_SECURITIES/FIN_INSURANCE)에서
+   *  같은 key라도 프로필별로 다른 account_id 정의를 찾도록 항상 넘긴다(리뷰 픽스 라운드 1). */
+  profile: ProfileId;
   resolution?: Resolution;
 }) {
   return (
     <div className={styles.field}>
       <div className={styles.fieldLabel}>{label}</div>
       <MetricValue state={state} value={value} unit={unit} basis={basis} note={note} />
-      {resolution && <SourcePanel {...buildSourcePanelProps(metricKey, corpCode, YEAR, withDisplayState(resolution, state), panelUnit)} />}
+      {resolution && <SourcePanel {...buildSourcePanelProps(metricKey, corpCode, YEAR, withDisplayState(resolution, state), panelUnit, profile)} />}
     </div>
   );
 }
@@ -129,14 +133,20 @@ function GatedField({ profile, corpCode, metric, resolution }: { profile: Profil
       basis={resolution ? basisLabel(resolution.fsDiv) : undefined}
       metricKey={metric.key}
       corpCode={corpCode}
+      profile={profile}
       resolution={resolution}
     />
   );
 }
 
-/** 카탈로그에 없는 보편 지표(ROE·ROA·EPS·DPS·자산총계 등) — 모든 프로필에 동일 개념으로 존재해 프로필 게이팅을 거치지 않는다. */
+/** 카탈로그에 없는 보편 지표(ROE·ROA·EPS·DPS·자산총계 등) — 모든 프로필에 동일 개념으로 존재해 프로필 게이팅을 거치지 않는다.
+ *  단, buildSourcePanelProps가 원천을 판별할 때는 profile을 그대로 넘긴다 — 이 지표들은 전부
+ *  BASE_CANDIDATES(4원천 공용, 전역 유일 key)에 있어 실제로는 profile에 안 좌우되지만, 호출부
+ *  전부가 항상 profile을 넘기는 하나의 계약을 유지해야 향후 확장 카탈로그에 우연히 같은 key가
+ *  추가돼도 조용히 잘못된 정의를 찾는 사고가 재발하지 않는다. */
 function RawField({
   corpCode,
+  profile,
   metricKey,
   label,
   unit,
@@ -145,6 +155,7 @@ function RawField({
   zeroByFactNote,
 }: {
   corpCode: string;
+  profile: ProfileId;
   metricKey: string;
   label: string;
   unit: NonNullable<MetricValueProps["unit"]>;
@@ -167,6 +178,7 @@ function RawField({
       basis={resolution ? basisLabel(resolution.fsDiv) : undefined}
       metricKey={metricKey}
       corpCode={corpCode}
+      profile={profile}
       resolution={resolution}
     />
   );
@@ -179,7 +191,7 @@ function TraceOnly({ profile, corpCode, metric, resolution }: { profile: Profile
   return (
     <div className={styles.field}>
       <div className={styles.fieldLabel}>{metric.label}</div>
-      <SourcePanel {...buildSourcePanelProps(metric.key, corpCode, YEAR, withDisplayState(resolution, state), metric.unit)} />
+      <SourcePanel {...buildSourcePanelProps(metric.key, corpCode, YEAR, withDisplayState(resolution, state), metric.unit, profile)} />
     </div>
   );
 }
@@ -366,7 +378,7 @@ function PnlSection({ profile, corpCode, years }: { profile: ProfileId; corpCode
   );
 }
 
-function BalanceSection({ corpCode, y2024 }: { corpCode: string; y2024: StockYearView }) {
+function BalanceSection({ profile, corpCode, y2024 }: { profile: ProfileId; corpCode: string; y2024: StockYearView }) {
   const liab = eok(y2024.resolutions.total_liabilities);
   const equity = eok(y2024.resolutions.total_equity);
   return (
@@ -377,16 +389,16 @@ function BalanceSection({ corpCode, y2024 }: { corpCode: string; y2024: StockYea
       </div>
       <PieChart slices={[{ label: "부채", value: liab }, { label: "자본", value: equity }]} />
       <div className={styles.fieldList}>
-        <RawField corpCode={corpCode} metricKey="total_assets" label="자산총계" unit="KRW" panelUnit="KRW" resolution={y2024.resolutions.total_assets} />
-        <RawField corpCode={corpCode} metricKey="total_liabilities" label="부채총계" unit="KRW" panelUnit="KRW" resolution={y2024.resolutions.total_liabilities} />
-        <RawField corpCode={corpCode} metricKey="total_equity" label="자본총계" unit="KRW" panelUnit="KRW" resolution={y2024.resolutions.total_equity} />
-        <RawField corpCode={corpCode} metricKey="equity_attributable_to_owners" label="지배주주지분" unit="KRW" panelUnit="KRW" resolution={y2024.resolutions.equity_attributable_to_owners} />
+        <RawField corpCode={corpCode} profile={profile} metricKey="total_assets" label="자산총계" unit="KRW" panelUnit="KRW" resolution={y2024.resolutions.total_assets} />
+        <RawField corpCode={corpCode} profile={profile} metricKey="total_liabilities" label="부채총계" unit="KRW" panelUnit="KRW" resolution={y2024.resolutions.total_liabilities} />
+        <RawField corpCode={corpCode} profile={profile} metricKey="total_equity" label="자본총계" unit="KRW" panelUnit="KRW" resolution={y2024.resolutions.total_equity} />
+        <RawField corpCode={corpCode} profile={profile} metricKey="equity_attributable_to_owners" label="지배주주지분" unit="KRW" panelUnit="KRW" resolution={y2024.resolutions.equity_attributable_to_owners} />
       </div>
     </section>
   );
 }
 
-function CashFlowSection({ corpCode, y2024 }: { corpCode: string; y2024: StockYearView }) {
+function CashFlowSection({ profile, corpCode, y2024 }: { profile: ProfileId; corpCode: string; y2024: StockYearView }) {
   const rows = [
     { label: "영업", value: eok(y2024.resolutions.operating_cf) },
     { label: "투자", value: eok(y2024.resolutions.investing_cf) },
@@ -400,10 +412,10 @@ function CashFlowSection({ corpCode, y2024 }: { corpCode: string; y2024: StockYe
       </div>
       <CashFlowDiverging rows={rows} />
       <div className={styles.fieldList}>
-        <TraceOnly profile="STANDARD" corpCode={corpCode} metric={{ key: "operating_cf", label: "영업활동현금흐름", sourceAvailable: true, unit: "KRW" }} resolution={y2024.resolutions.operating_cf} />
-        <TraceOnly profile="STANDARD" corpCode={corpCode} metric={{ key: "investing_cf", label: "투자활동현금흐름", sourceAvailable: true, unit: "KRW" }} resolution={y2024.resolutions.investing_cf} />
-        <TraceOnly profile="STANDARD" corpCode={corpCode} metric={{ key: "financing_cf", label: "재무활동현금흐름", sourceAvailable: true, unit: "KRW" }} resolution={y2024.resolutions.financing_cf} />
-        <RawField corpCode={corpCode} metricKey="fcf" label="잉여현금흐름(FCF = 영업CF − CAPEX)" unit="KRW" panelUnit="KRW" resolution={y2024.resolutions.fcf} />
+        <TraceOnly profile={profile} corpCode={corpCode} metric={{ key: "operating_cf", label: "영업활동현금흐름", sourceAvailable: true, unit: "KRW" }} resolution={y2024.resolutions.operating_cf} />
+        <TraceOnly profile={profile} corpCode={corpCode} metric={{ key: "investing_cf", label: "투자활동현금흐름", sourceAvailable: true, unit: "KRW" }} resolution={y2024.resolutions.investing_cf} />
+        <TraceOnly profile={profile} corpCode={corpCode} metric={{ key: "financing_cf", label: "재무활동현금흐름", sourceAvailable: true, unit: "KRW" }} resolution={y2024.resolutions.financing_cf} />
+        <RawField corpCode={corpCode} profile={profile} metricKey="fcf" label="잉여현금흐름(FCF = 영업CF − CAPEX)" unit="KRW" panelUnit="KRW" resolution={y2024.resolutions.fcf} />
       </div>
     </section>
   );
@@ -415,8 +427,8 @@ function ProfitabilitySection({ profile, corpCode, y2024 }: { profile: ProfileId
     <section className={styles.section}>
       <h2>⑤ 수익성</h2>
       <div className={styles.fieldList}>
-        <RawField corpCode={corpCode} metricKey="roe" label="ROE(자기자본이익률, DART 산출)" unit="PCT" panelUnit="PCT" resolution={y2024.resolutions.roe} />
-        <RawField corpCode={corpCode} metricKey="roa" label="ROA(총자산이익률, 계산: 순이익÷자산총계)" unit="PCT" panelUnit="PCT" resolution={y2024.resolutions.roa} />
+        <RawField corpCode={corpCode} profile={profile} metricKey="roe" label="ROE(자기자본이익률, DART 산출)" unit="PCT" panelUnit="PCT" resolution={y2024.resolutions.roe} />
+        <RawField corpCode={corpCode} profile={profile} metricKey="roa" label="ROA(총자산이익률, 계산: 순이익÷자산총계)" unit="PCT" panelUnit="PCT" resolution={y2024.resolutions.roa} />
         <GatedField profile={profile} corpCode={corpCode} metric={marginMetric} resolution={y2024.resolutions.operating_margin} />
       </div>
     </section>
@@ -436,20 +448,20 @@ function StabilitySection({ profile, corpCode, y2024 }: { profile: ProfileId; co
   );
 }
 
-function ShareholderReturnSection({ corpCode, y2024 }: { corpCode: string; y2024: StockYearView }) {
+function ShareholderReturnSection({ profile, corpCode, y2024 }: { profile: ProfileId; corpCode: string; y2024: StockYearView }) {
   const r = y2024.resolutions;
   return (
     <section className={styles.section}>
       <h2>⑦ 주주환원</h2>
       <div className={styles.fieldList}>
-        <RawField corpCode={corpCode} metricKey="eps_basic" label="기본주당이익(EPS, 재무제표)" unit="WON" panelUnit="KRW" resolution={r.eps_basic} />
-        <RawField corpCode={corpCode} metricKey="eps_alotmatter" label="주당순이익(배당공시)" unit="WON" panelUnit="KRW" resolution={r.eps_alotmatter} />
-        <RawField corpCode={corpCode} metricKey="dps_common" label="주당현금배당금(DPS, 보통주)" unit="WON" panelUnit="KRW" resolution={r.dps_common} zeroByFactNote="무배당 확인" />
-        <RawField corpCode={corpCode} metricKey="dividend_yield_common" label="현금배당수익률(보통주)" unit="PCT" panelUnit="PCT" resolution={r.dividend_yield_common} zeroByFactNote="무배당 확인" />
-        <RawField corpCode={corpCode} metricKey="dividend_payout_indx" label="배당성향(DART 산출지표)" unit="PCT" panelUnit="PCT" resolution={r.dividend_payout_indx} zeroByFactNote="무배당 확인" />
-        <RawField corpCode={corpCode} metricKey="dividend_payout_fallback" label="배당성향(fallback: 배당총액÷순이익)" unit="PCT" panelUnit="PCT" resolution={r.dividend_payout_fallback} zeroByFactNote="무배당 확인" />
-        <RawField corpCode={corpCode} metricKey="shares_outstanding" label="발행주식총수" unit="SHARES" panelUnit="X" resolution={r.shares_outstanding} />
-        <RawField corpCode={corpCode} metricKey="treasury_shares" label="자기주식수" unit="SHARES" panelUnit="X" resolution={r.treasury_shares} />
+        <RawField corpCode={corpCode} profile={profile} metricKey="eps_basic" label="기본주당이익(EPS, 재무제표)" unit="WON" panelUnit="KRW" resolution={r.eps_basic} />
+        <RawField corpCode={corpCode} profile={profile} metricKey="eps_alotmatter" label="주당순이익(배당공시)" unit="WON" panelUnit="KRW" resolution={r.eps_alotmatter} />
+        <RawField corpCode={corpCode} profile={profile} metricKey="dps_common" label="주당현금배당금(DPS, 보통주)" unit="WON" panelUnit="KRW" resolution={r.dps_common} zeroByFactNote="무배당 확인" />
+        <RawField corpCode={corpCode} profile={profile} metricKey="dividend_yield_common" label="현금배당수익률(보통주)" unit="PCT" panelUnit="PCT" resolution={r.dividend_yield_common} zeroByFactNote="무배당 확인" />
+        <RawField corpCode={corpCode} profile={profile} metricKey="dividend_payout_indx" label="배당성향(DART 산출지표)" unit="PCT" panelUnit="PCT" resolution={r.dividend_payout_indx} zeroByFactNote="무배당 확인" />
+        <RawField corpCode={corpCode} profile={profile} metricKey="dividend_payout_fallback" label="배당성향(fallback: 배당총액÷순이익)" unit="PCT" panelUnit="PCT" resolution={r.dividend_payout_fallback} zeroByFactNote="무배당 확인" />
+        <RawField corpCode={corpCode} profile={profile} metricKey="shares_outstanding" label="발행주식총수" unit="SHARES" panelUnit="X" resolution={r.shares_outstanding} />
+        <RawField corpCode={corpCode} profile={profile} metricKey="treasury_shares" label="자기주식수" unit="SHARES" panelUnit="X" resolution={r.treasury_shares} />
       </div>
     </section>
   );
@@ -502,11 +514,11 @@ export default async function StockDetailPage({ params }: { params: Promise<{ co
 
       <OverviewSection row={row} profile={profile} />
       <PnlSection profile={profile} corpCode={row.corpCode} years={years} />
-      <BalanceSection corpCode={row.corpCode} y2024={y2024} />
-      <CashFlowSection corpCode={row.corpCode} y2024={y2024} />
+      <BalanceSection profile={profile} corpCode={row.corpCode} y2024={y2024} />
+      <CashFlowSection profile={profile} corpCode={row.corpCode} y2024={y2024} />
       <ProfitabilitySection profile={profile} corpCode={row.corpCode} y2024={y2024} />
       <StabilitySection profile={profile} corpCode={row.corpCode} y2024={y2024} />
-      <ShareholderReturnSection corpCode={row.corpCode} y2024={y2024} />
+      <ShareholderReturnSection profile={profile} corpCode={row.corpCode} y2024={y2024} />
     </main>
   );
 }

@@ -17,7 +17,8 @@ import { FIN_HOLDING_EXTRA_CANDIDATES } from "./normalize/fin-holding-catalog";
 import { FIN_INSURANCE_EXTRA_CANDIDATES } from "./normalize/fin-insurance-catalog";
 import { FIN_SECURITIES_EXTRA_CANDIDATES } from "./normalize/fin-securities-catalog";
 import type { FsDiv } from "./normalize/resolve";
-import type { MetricCandidate, Resolution } from "./normalize/types";
+import { extraCandidatesFor } from "./normalize/resolveProfileExtras";
+import type { MetricCandidate, ProfileId, Resolution } from "./normalize/types";
 import type { SourcePanelProps } from "@/components/SourcePanel";
 
 const SNAPSHOTS_DIR = join(process.cwd(), "public", "snapshots");
@@ -59,20 +60,33 @@ export function reportDateFromSnapshot(requestId: string): string {
   return "-";
 }
 
-/** 지표 키 → 후보 선언(MetricCandidate) 역색인. q4_역산값·roa·operating_margin·fcf·dividend_payout_fallback처럼
- *  파생 지표는 자체 후보가 없다(derive.ts가 다른 Resolution을 입력으로 계산) — undefined면 acntAll로 간주한다. */
-const ALL_CANDIDATES: MetricCandidate[] = [
-  ...ACNT_ALL_CANDIDATES,
-  ...SINGL_INDX_CANDIDATES,
-  ...ALOT_MATTER_CANDIDATES,
-  ...STOCK_TOTQY_CANDIDATES,
-  ...FIN_HOLDING_EXTRA_CANDIDATES,
-  ...FIN_SECURITIES_EXTRA_CANDIDATES,
-  ...FIN_INSURANCE_EXTRA_CANDIDATES,
-];
+/**
+ * 지표 키 → 후보 선언(MetricCandidate) 역색인.
+ *
+ * 리뷰 픽스(T10 라운드 1): `BASE_CANDIDATES`(T4 원장 4원천)는 전역에서 key가 유일하지만,
+ * 프로필별 확장 카탈로그(FIN_HOLDING/FIN_SECURITIES/FIN_INSURANCE)는 **서로 다른 프로필에서
+ * 같은 key를 다른 account_id로 재사용한다** — 예: `insurance_result`는 FIN_HOLDING에서
+ * `dart_InsuranceRevenueExpense`(보험서비스결과), FIN_INSURANCE에서 `ifrs-full_InsuranceServiceResult`
+ * (보험손익)로 서로 다른 정의다. 과거처럼 이 셋을 flat concat한 뒤 `.find()`(first-match)로
+ * 찾으면 프로필이 바뀌어도 항상 같은(먼저 나온) 정의가 반환돼 SourcePanel이 엉뚱한 원천으로
+ * 조립될 수 있다 — 반드시 profile로 스코프를 좁혀서 찾는다.
+ */
+const BASE_CANDIDATES: MetricCandidate[] = [...ACNT_ALL_CANDIDATES, ...SINGL_INDX_CANDIDATES, ...ALOT_MATTER_CANDIDATES, ...STOCK_TOTQY_CANDIDATES];
 
-function findCandidate(metricKey: string): MetricCandidate | undefined {
-  return ALL_CANDIDATES.find((c) => c.key === metricKey);
+/** profile 매치가 실패했을 때만 쓰는 전역 안전망 — 정상 호출 경로에서는 도달하지 않아야 한다. */
+const ALL_EXTRA_CANDIDATES: MetricCandidate[] = [...FIN_HOLDING_EXTRA_CANDIDATES, ...FIN_SECURITIES_EXTRA_CANDIDATES, ...FIN_INSURANCE_EXTRA_CANDIDATES];
+
+function findCandidate(metricKey: string, profile: ProfileId): MetricCandidate | undefined {
+  // q4_역산값·roa·operating_margin·fcf·dividend_payout_fallback처럼 자체 후보가 없는 파생
+  // 지표는 여기서 못 찾는다(derive.ts가 다른 Resolution을 입력으로 계산) — undefined면 호출부가
+  // acntAll로 간주한다.
+  const base = BASE_CANDIDATES.find((c) => c.key === metricKey);
+  if (base) return base;
+  // resolveProfileExtras.ts와 동일한 매핑(EXTRA_CANDIDATES_BY_PROFILE)을 재사용해 화면이 실제로
+  // merge해서 쓰는 것과 같은 카탈로그에서만 찾는다.
+  const scoped = extraCandidatesFor(profile).find((c) => c.key === metricKey);
+  if (scoped) return scoped;
+  return ALL_EXTRA_CANDIDATES.find((c) => c.key === metricKey);
 }
 
 /**
@@ -87,8 +101,9 @@ export function buildSourcePanelProps(
   year: string,
   resolution: Resolution,
   panelUnit: "KRW" | "PCT" | "X",
+  profile: ProfileId,
 ): SourcePanelProps {
-  const candidate = findCandidate(metricKey);
+  const candidate = findCandidate(metricKey, profile);
   const source = candidate?.source ?? "acntAll";
 
   if (source === "singlIndx") {
