@@ -5,6 +5,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
+import type { QuarterResolutions } from "./normalize/engine";
 import type { FsDiv } from "./normalize/resolve";
 import type { Resolution } from "./normalize/types";
 
@@ -20,6 +21,8 @@ export interface DerivedStock {
   corpCode: string;
   name: string;
   years: DerivedYearResolutions[];
+  /** v2 T5 additive — T2가 만든 quarters[](16개, period로 정렬됨)를 그대로 노출한다. */
+  quarters: QuarterResolutions[];
   coverage: { candidates: number; hit: number };
 }
 

@@ -2,18 +2,26 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import CashFlowDiverging from "@/components/charts/CashFlowDiverging";
-import PieChart from "@/components/charts/PieChart";
+import LineChart from "@/components/charts/LineChart";
+import type { LineChartPoint } from "@/components/charts/LineChart";
+import OverlaidBars from "@/components/charts/OverlaidBars";
+import type { OverlaidBar } from "@/components/charts/OverlaidBars";
 import PnlWaterfall from "@/components/charts/PnlWaterfall";
-import QuarterBars from "@/components/charts/QuarterBars";
+import SignedGroupedBars from "@/components/charts/SignedGroupedBars";
+import type { SignedGroupedBarsGroup } from "@/components/charts/SignedGroupedBars";
 import StackedBar100 from "@/components/charts/StackedBar100";
+import StackedBarsAbs from "@/components/charts/StackedBarsAbs";
+import type { StackedBarsAbsBar } from "@/components/charts/StackedBarsAbs";
 import ZeroAxisBars from "@/components/charts/ZeroAxisBars";
+import type { ZeroAxisBar } from "@/components/charts/ZeroAxisBars";
 import MetricValue from "@/components/MetricValue";
 import type { MetricValueProps } from "@/components/MetricValue";
 import SourcePanel from "@/components/SourcePanel";
 import { formatEstDt, loadCompany } from "@/lib/company";
 import { toEok } from "@/lib/format";
+import type { QuarterResolutions } from "@/lib/normalize/engine";
 import type { DisplayState, ProfileId, Resolution } from "@/lib/normalize/types";
+import { ALL_ANNUAL_YEARS, LATEST_ANNUAL_YEAR, LATEST_QUARTER_HEADER_LABEL, quarterAxisLabel } from "@/lib/period";
 import {
   findProfileMetric,
   pnlKeysOnlyIn,
@@ -25,7 +33,7 @@ import {
 } from "@/lib/profiles";
 import type { ProfileMetric } from "@/lib/profiles";
 import { basisLabel, buildSourcePanelProps } from "@/lib/sourcePanelHelpers";
-import { loadStockYearView, profileIdOf, UNIVERSE } from "@/lib/stockView";
+import { loadStockQuarters, loadStockYearView, profileIdOf, UNIVERSE } from "@/lib/stockView";
 import type { StockYearView, UniverseRow } from "@/lib/stockView";
 
 import styles from "./page.module.css";
@@ -33,12 +41,14 @@ import styles from "./page.module.css";
 /**
  * T10 — 종목 상세(/stock/[code]). 20종목 전부 이 파일 하나로 렌더된다 — 종목별 분기 없이
  * lib/profiles.ts의 PROFILE_CATALOG를 순회해서 표준/금융 화면 차이를 만들어 낸다
- * (compare/pnl의 조립 패턴을 20종목으로 일반화). 서버 컴포넌트, 연도는 2024 고정
- * (기간 토글은 프로토타입 범위 밖 — 브리프 명시).
+ * (compare/pnl의 조립 패턴을 20종목으로 일반화). 서버 컴포넌트.
+ *
+ * v2 T4/T5 — 연도는 더 이상 고정하지 않는다. 기준연도·최신 분기는 lib/period.ts 단일 정의를
+ * 쓴다(기간 토글 UI 자체는 여전히 프로토타입 범위 밖). 표준 프로필(②~⑦)은 T2가 만든 분기 축
+ * (quarters[])·QoQ/YoY를 이용해 손익 섹션에 분기 막대·성장률 꺾은선을 추가하고, 재무상태를
+ * 누적 막대, 현금흐름을 ± 막대, 수익성·안정성·주주환원에 각각 꺾은선/겹침 막대를 붙였다.
+ * 금융 프로필(FIN_*)의 손익 섹션(스택형)은 이번 범위 밖(T6) — 그대로 유지한다.
  */
-
-const YEAR = "2024";
-const ALL_YEARS = ["2023", "2024", "2025"] as const;
 
 const PROFILE_LABEL: Record<ProfileId, string> = {
   STANDARD: "표준",
@@ -94,6 +104,7 @@ function FieldRow({
   metricKey,
   corpCode,
   profile,
+  year,
   resolution,
 }: {
   label: string;
@@ -108,19 +119,22 @@ function FieldRow({
   /** buildSourcePanelProps가 프로필 확장 카탈로그(FIN_HOLDING/FIN_SECURITIES/FIN_INSURANCE)에서
    *  같은 key라도 프로필별로 다른 account_id 정의를 찾도록 항상 넘긴다(리뷰 픽스 라운드 1). */
   profile: ProfileId;
+  /** v2 T4 — 모듈 상수 캡처 대신 호출부가 명시한다(리뷰 픽스: FieldRow/TraceOnly가 YEAR를
+   *  직접 캡처하던 구조를 prop화 — 연간 화면은 LATEST_ANNUAL_YEAR를 넘긴다). */
+  year: string;
   resolution?: Resolution;
 }) {
   return (
     <div className={styles.field}>
       <div className={styles.fieldLabel}>{label}</div>
       <MetricValue state={state} value={value} unit={unit} basis={basis} note={note} />
-      {resolution && <SourcePanel {...buildSourcePanelProps(metricKey, corpCode, YEAR, withDisplayState(resolution, state), panelUnit, profile)} />}
+      {resolution && <SourcePanel {...buildSourcePanelProps(metricKey, corpCode, year, withDisplayState(resolution, state), panelUnit, profile)} />}
     </div>
   );
 }
 
 /** 프로필 카탈로그(pnl/stability)에 등록된 지표 — NOT_IN_PROFILE/SOURCE_NOT_AVAILABLE 판정을 거친다. */
-function GatedField({ profile, corpCode, metric, resolution }: { profile: ProfileId; corpCode: string; metric: ProfileMetric; resolution?: Resolution }) {
+function GatedField({ profile, corpCode, year, metric, resolution }: { profile: ProfileId; corpCode: string; year: string; metric: ProfileMetric; resolution?: Resolution }) {
   const state = resolveDisplay(profile, metric.key, resolution);
   const value = state === "OK" && resolution?.normalized != null ? toDisplayValue(resolution.normalized, metric.unit) : undefined;
   return (
@@ -135,6 +149,7 @@ function GatedField({ profile, corpCode, metric, resolution }: { profile: Profil
       metricKey={metric.key}
       corpCode={corpCode}
       profile={profile}
+      year={year}
       resolution={resolution}
     />
   );
@@ -148,6 +163,7 @@ function GatedField({ profile, corpCode, metric, resolution }: { profile: Profil
 function RawField({
   corpCode,
   profile,
+  year,
   metricKey,
   label,
   unit,
@@ -158,6 +174,7 @@ function RawField({
 }: {
   corpCode: string;
   profile: ProfileId;
+  year: string;
   metricKey: string;
   label: string;
   unit: NonNullable<MetricValueProps["unit"]>;
@@ -184,19 +201,20 @@ function RawField({
       metricKey={metricKey}
       corpCode={corpCode}
       profile={profile}
+      year={year}
       resolution={resolution}
     />
   );
 }
 
 /** 차트가 이미 값을 그린 지표용 — 중복 숫자 표기 없이 출처 collapse만 붙인다(compare/pnl TraceRow와 동일 패턴). */
-function TraceOnly({ profile, corpCode, metric, resolution }: { profile: ProfileId; corpCode: string; metric: ProfileMetric; resolution?: Resolution }) {
+function TraceOnly({ profile, corpCode, year, metric, resolution }: { profile: ProfileId; corpCode: string; year: string; metric: ProfileMetric; resolution?: Resolution }) {
   if (!resolution) return null;
   const state = resolveDisplay(profile, metric.key, resolution);
   return (
     <div className={styles.field}>
       <div className={styles.fieldLabel}>{metric.label}</div>
-      <SourcePanel {...buildSourcePanelProps(metric.key, corpCode, YEAR, withDisplayState(resolution, state), metric.unit, profile)} />
+      <SourcePanel {...buildSourcePanelProps(metric.key, corpCode, year, withDisplayState(resolution, state), metric.unit, profile)} />
     </div>
   );
 }
@@ -223,6 +241,128 @@ function dividendPayoutConflictNote(indx: Resolution | undefined, fallback: Reso
   const signDiffers = a < 0 !== b < 0;
   const gapOverThreshold = Math.abs(a - b) >= DIVIDEND_PAYOUT_CONFLICT_GAP_PP;
   return signDiffers || gapOverThreshold ? DIVIDEND_PAYOUT_CONFLICT_NOTE : undefined;
+}
+
+/* ------------------------------------------------------------------------ */
+/* v2 T5 — 분기 차트 헬퍼(②만 사용). 분기 윈도는 데이터 주도로 자른다 — 하드코딩 분기 목록 금지. */
+/* ------------------------------------------------------------------------ */
+
+const QUARTER_WINDOW_MAX = 8;
+
+/**
+ * growth(QoQ/YoY) displayState → LineChart의 `state` 칩 문구. `components/MetricValue.tsx`의
+ * `renderText()`가 정본이다(TURN_TO_PROFIT/TURN_TO_LOSS/LOSS_CONTINUED) — LineChart.tsx doc이
+ * "여기서 새 문구를 짓지 말 것"이라 명시해 그 정본과 완전히 같은 3개 문구만 이 표에 담는다.
+ */
+const GROWTH_STATE_CHIP: Partial<Record<DisplayState, string>> = {
+  TURN_TO_PROFIT: "흑자전환",
+  TURN_TO_LOSS: "적자전환",
+  LOSS_CONTINUED: "적자지속",
+};
+
+/**
+ * 분기 윈도를 데이터 주도로 자른다(브리프 명시 — 하드코딩 분기 목록 금지). `referenceKey`의
+ * displayState가 MISSING이 아닌 마지막 분기를 찾아 그 지점까지 최근 `maxN`개를 반환한다. 윈도
+ * 안에 다른 키의 MISSING이 섞여 있어도(예: 신영증권 2023Q1) 차트가 null을 자리 표시로 그리므로
+ * 문제 없다 — 여러 분기 차트가 같은 윈도(같은 x축)를 공유하도록 이 함수는 대표 키(revenue) 한
+ * 번만 호출한다.
+ */
+function latestQuarterWindow(quarters: QuarterResolutions[], referenceKey: string, maxN: number = QUARTER_WINDOW_MAX): QuarterResolutions[] {
+  let lastIdx = -1;
+  quarters.forEach((q, i) => {
+    if (q.resolutions[referenceKey]?.displayState && q.resolutions[referenceKey]?.displayState !== "MISSING") lastIdx = i;
+  });
+  if (lastIdx === -1) return [];
+  return quarters.slice(Math.max(0, lastIdx - maxN + 1), lastIdx + 1);
+}
+
+/** 분기 금액 막대(ZeroAxisBars) — unit "WON"이면 억원 환산 없이 원 단위 그대로 쓴다(EPS 전용,
+ *  MetricValue의 WON 관례와 동일 — 억원으로 바꾸면 "0.00001116억원"처럼 오표기된다). */
+function quarterZeroAxisBars(quarters: QuarterResolutions[], key: string, accMt: string, unit: "KRW" | "WON"): ZeroAxisBar[] {
+  return quarters.map((q) => {
+    const r = q.resolutions[key];
+    const value = unit === "WON" ? (r?.normalized ?? null) : eok(r);
+    return { label: quarterAxisLabel(q.bsnsYear, q.quarter, accMt, q.fiscalPeriodName), value, provisional: r?.provisional };
+  });
+}
+
+/** QoQ/YoY LineChart 포인트 — state 칩은 GROWTH_STATE_CHIP 정본만 사용, 값은 PCT 그대로(eok 변환 없음). */
+function quarterGrowthPoints(quarters: QuarterResolutions[], growthKey: string, accMt: string): LineChartPoint[] {
+  return quarters.map((q) => {
+    const label = quarterAxisLabel(q.bsnsYear, q.quarter, accMt, q.fiscalPeriodName);
+    const r = q.resolutions[growthKey];
+    if (!r) return { label, value: null };
+    return { label, value: r.normalized, provisional: r.provisional, state: GROWTH_STATE_CHIP[r.displayState] };
+  });
+}
+
+/**
+ * TraceOnly의 분기 버전 — 분기 차트의 SourcePanel 부착에 쓴다(브리프 명시 "분기 차트는 해당
+ * reprt 스냅샷 requestId로"). `sourceMetricKey`(기본값 resolutionKey)로 원천 후보를 찾고
+ * `resolutionKey`로 실제 표시할 Resolution을 찾는다 — QoQ/YoY처럼 자체 후보가 없는 파생
+ * 지표는 기저 지표(revenue 등)의 acntAll 스냅샷을 그대로 가리키게 하기 위해 둘을 분리했다
+ * (파생 계산식 자체는 resolution.derivation에 남아 SourcePanel "파생" 탭에 그대로 보인다).
+ */
+function QuarterTraceOnly({
+  profile,
+  corpCode,
+  label,
+  sourceMetricKey,
+  unit,
+  quarter,
+  resolution,
+}: {
+  profile: ProfileId;
+  corpCode: string;
+  label: string;
+  sourceMetricKey: string;
+  unit: "KRW" | "PCT" | "X";
+  quarter: QuarterResolutions;
+  resolution?: Resolution;
+}) {
+  if (!resolution) return null;
+  return (
+    <div className={styles.field}>
+      <div className={styles.fieldLabel}>{label}</div>
+      <SourcePanel {...buildSourcePanelProps(sourceMetricKey, corpCode, quarter.bsnsYear, resolution, unit, profile, quarter.reprtCode)} />
+    </div>
+  );
+}
+
+/** 분기 윈도 전체(최대 8개)에 대해 QuarterTraceOnly를 반복하는 공용 fieldList. */
+function QuarterSourceRow({
+  profile,
+  corpCode,
+  accMt,
+  quarters,
+  resolutionKey,
+  sourceMetricKey = resolutionKey,
+  unit,
+}: {
+  profile: ProfileId;
+  corpCode: string;
+  accMt: string;
+  quarters: QuarterResolutions[];
+  resolutionKey: string;
+  sourceMetricKey?: string;
+  unit: "KRW" | "PCT" | "X";
+}) {
+  return (
+    <div className={styles.fieldList}>
+      {quarters.map((q) => (
+        <QuarterTraceOnly
+          key={q.period}
+          profile={profile}
+          corpCode={corpCode}
+          label={quarterAxisLabel(q.bsnsYear, q.quarter, accMt, q.fiscalPeriodName)}
+          sourceMetricKey={sourceMetricKey}
+          unit={unit}
+          quarter={q}
+          resolution={q.resolutions[resolutionKey]}
+        />
+      ))}
+    </div>
+  );
 }
 
 /* ------------------------------------------------------------------------ */
@@ -262,14 +402,26 @@ function OverviewSection({ row, profile }: { row: UniverseRow; profile: ProfileI
   );
 }
 
-function PnlSection({ profile, corpCode, years }: { profile: ProfileId; corpCode: string; years: StockYearView[] }) {
-  const y2024 = years.find((y) => y.year === "2024")!;
-  const coverage = summarizePnlCoverage(profile, y2024.resolutions);
+function PnlSection({
+  profile,
+  corpCode,
+  years,
+  quarters,
+  accMt,
+}: {
+  profile: ProfileId;
+  corpCode: string;
+  years: StockYearView[];
+  quarters: QuarterResolutions[];
+  accMt: string;
+}) {
+  const yLatest = years.find((y) => y.year === LATEST_ANNUAL_YEAR)!;
+  const coverage = summarizePnlCoverage(profile, yLatest.resolutions);
 
   if (profile === "STANDARD") {
     const waterfallMetrics = PROFILE_CATALOG.STANDARD.pnl.filter((m) => m.chart === "waterfall");
     const waterfallRows = waterfallMetrics.map((metric) => {
-      const resolution = y2024.resolutions[metric.key];
+      const resolution = yLatest.resolutions[metric.key];
       const state = resolveDisplay("STANDARD", metric.key, resolution);
       const value = state === "OK" && resolution?.normalized != null ? toEok(resolution.normalized) : null;
       return { metric, resolution, value };
@@ -282,42 +434,60 @@ function PnlSection({ profile, corpCode, years }: { profile: ProfileId; corpCode
     }));
     const ratioMetrics = PROFILE_CATALOG.STANDARD.pnl.filter((m) => m.chart === "none");
 
-    const revenueBars = [
-      ...years.map((y) => ({ label: `${y.year.slice(2)}년`, value: eok(y.resolutions.revenue) })),
-      { label: "24 Q4(역산)", value: eok(y2024.resolutions.q4_revenue), provisional: true },
-    ];
-    const operatingIncomeBars = [
-      ...years.map((y) => ({ label: `${y.year.slice(2)}년`, value: eok(y.resolutions.operating_income) })),
-      { label: "24 Q4(역산)", value: eok(y2024.resolutions.q4_operating_income), provisional: true },
-    ];
-    // 최종 리뷰 픽스(C1): 0 기준 발산 막대는 지배주주 귀속분을 주 지표로 그린다 — 총액과
-    // 부호가 갈리는 종목(LG화학 등)에서 적자가 실제로 아래(청색)로 표현되어야 한다.
-    const netIncomeBars = years.map((y) => ({ label: `${y.year.slice(2)}년`, value: eok(y.resolutions.net_income_attributable_to_owners) }));
+    // v2 T5 — 분기 막대 4개 + YoY 꺾은선 2개 + QoQ 꺾은선 1개. 4개 바 차트가 같은 x축을 쓰도록
+    // revenue의 데이터 유무로 정한 윈도 하나를 전부 재사용한다(하드코딩 분기 목록 금지).
+    const quarterWindow = latestQuarterWindow(quarters, "revenue", QUARTER_WINDOW_MAX);
+    const revenueBars = quarterZeroAxisBars(quarterWindow, "revenue", accMt, "KRW");
+    const operatingIncomeBars = quarterZeroAxisBars(quarterWindow, "operating_income", accMt, "KRW");
+    const netIncomeAttrBars = quarterZeroAxisBars(quarterWindow, "net_income_attributable_to_owners", accMt, "KRW");
+    const epsBars = quarterZeroAxisBars(quarterWindow, "eps_basic", accMt, "WON");
+    const yoyRevenuePoints = quarterGrowthPoints(quarterWindow, "yoy_revenue", accMt);
+    const yoyOperatingIncomePoints = quarterGrowthPoints(quarterWindow, "yoy_operating_income", accMt);
+    const qoqOperatingIncomePoints = quarterGrowthPoints(quarterWindow, "qoq_operating_income", accMt);
 
     return (
       <section className={styles.section}>
         <h2>② 손익</h2>
         <div className={styles.sectionTitle}>
-          손익 구조 — {YEAR} · {basisLabel(y2024.fsDiv)} · 억원
+          손익 구조 — {LATEST_ANNUAL_YEAR} · {basisLabel(yLatest.fsDiv)} · 억원
         </div>
         <PnlWaterfall rows={chartRows} />
         <div className={styles.fieldList}>
           {waterfallRows.map(({ metric, resolution }) => (
-            <TraceOnly key={metric.key} profile={profile} corpCode={corpCode} metric={metric} resolution={resolution} />
+            <TraceOnly key={metric.key} profile={profile} corpCode={corpCode} year={LATEST_ANNUAL_YEAR} metric={metric} resolution={resolution} />
           ))}
           {ratioMetrics.map((metric) => (
-            <GatedField key={metric.key} profile={profile} corpCode={corpCode} metric={metric} resolution={y2024.resolutions[metric.key]} />
+            <GatedField key={metric.key} profile={profile} corpCode={corpCode} year={LATEST_ANNUAL_YEAR} metric={metric} resolution={yLatest.resolutions[metric.key]} />
           ))}
         </div>
 
-        <div className={styles.sectionTitle}>매출액 추이 — 연간 3개년 + 24년 4분기(역산, 잠정) · 억원</div>
-        <QuarterBars bars={revenueBars} unit="억원" />
+        <div className={styles.sectionTitle}>매출액 — 최근 {quarterWindow.length}분기 · 억원 · 0 기준선(적자는 아래)</div>
+        <ZeroAxisBars bars={revenueBars} unit="억원" compactLabels />
+        <QuarterSourceRow profile={profile} corpCode={corpCode} accMt={accMt} quarters={quarterWindow} resolutionKey="revenue" unit="KRW" />
 
-        <div className={styles.sectionTitle}>영업이익 추이 — 연간 3개년 + 24년 4분기(역산, 잠정) · 억원</div>
-        <QuarterBars bars={operatingIncomeBars} unit="억원" />
+        <div className={styles.sectionTitle}>영업이익 — 최근 {quarterWindow.length}분기 · 억원</div>
+        <ZeroAxisBars bars={operatingIncomeBars} unit="억원" compactLabels />
+        <QuarterSourceRow profile={profile} corpCode={corpCode} accMt={accMt} quarters={quarterWindow} resolutionKey="operating_income" unit="KRW" />
 
-        <div className={styles.sectionTitle}>당기순이익(지배주주) 추이 — 0 기준 발산 막대(적자 구간 자동 표현) · 억원</div>
-        <ZeroAxisBars bars={netIncomeBars} />
+        <div className={styles.sectionTitle}>당기순이익(지배주주) — 최근 {quarterWindow.length}분기 · 억원</div>
+        <ZeroAxisBars bars={netIncomeAttrBars} unit="억원" compactLabels />
+        <QuarterSourceRow profile={profile} corpCode={corpCode} accMt={accMt} quarters={quarterWindow} resolutionKey="net_income_attributable_to_owners" unit="KRW" />
+
+        <div className={styles.sectionTitle}>기본주당이익(EPS) — 최근 {quarterWindow.length}분기 · 원</div>
+        <ZeroAxisBars bars={epsBars} unit="원" compactLabels />
+        <QuarterSourceRow profile={profile} corpCode={corpCode} accMt={accMt} quarters={quarterWindow} resolutionKey="eps_basic" unit="KRW" />
+
+        <div className={styles.sectionTitle}>매출액 YoY — 전년 동분기 대비 · % · 0% 기준선</div>
+        <LineChart points={yoyRevenuePoints} unit="%" sign baseline={{ value: 0, label: "0% 기준선" }} />
+        <QuarterSourceRow profile={profile} corpCode={corpCode} accMt={accMt} quarters={quarterWindow} resolutionKey="yoy_revenue" sourceMetricKey="revenue" unit="KRW" />
+
+        <div className={styles.sectionTitle}>영업이익 YoY — 전년 동분기 대비 · % · 0% 기준선</div>
+        <LineChart points={yoyOperatingIncomePoints} unit="%" sign baseline={{ value: 0, label: "0% 기준선" }} color="var(--chart-2)" />
+        <QuarterSourceRow profile={profile} corpCode={corpCode} accMt={accMt} quarters={quarterWindow} resolutionKey="yoy_operating_income" sourceMetricKey="operating_income" unit="KRW" />
+
+        <div className={styles.sectionTitle}>영업이익 QoQ — 전분기 대비 · %</div>
+        <LineChart points={qoqOperatingIncomePoints} unit="%" sign color="var(--chart-3)" />
+        <QuarterSourceRow profile={profile} corpCode={corpCode} accMt={accMt} quarters={quarterWindow} resolutionKey="qoq_operating_income" sourceMetricKey="operating_income" unit="KRW" />
 
         <div className={styles.coverageBox}>
           손익 후보 {coverage.total}개 중 {coverage.hit}개 존재
@@ -328,6 +498,7 @@ function PnlSection({ profile, corpCode, years }: { profile: ProfileId; corpCode
   }
 
   // 금융 프로필(FIN_HOLDING/FIN_BANK/FIN_SECURITIES/FIN_INSURANCE) — StackedBar100 + 차감 구획.
+  // v2 T5 범위 밖(브리프 명시 "금융 프로필은 T6") — 로직은 그대로 두고 year prop만 명시적으로 넘긴다.
   const stackedMetrics = PROFILE_CATALOG[profile].pnl.filter((m) => m.chart === "stacked");
   const deductionMetrics = PROFILE_CATALOG[profile].pnl.filter((m) => m.chart === "deduction");
   const referenceMetrics = PROFILE_CATALOG[profile].pnl.filter((m) => m.chart === "none");
@@ -336,7 +507,7 @@ function PnlSection({ profile, corpCode, years }: { profile: ProfileId; corpCode
   const segments: { label: string; value: number | null }[] = [];
   const negativeSegments: { metric: ProfileMetric; resolution: Resolution }[] = [];
   for (const metric of stackedMetrics) {
-    const resolution = y2024.resolutions[metric.key];
+    const resolution = yLatest.resolutions[metric.key];
     const state = resolveDisplay(profile, metric.key, resolution);
     if (state === "OK" && resolution?.normalized != null && resolution.normalized > 0) {
       segments.push({ label: metric.label, value: toEok(resolution.normalized) });
@@ -351,12 +522,12 @@ function PnlSection({ profile, corpCode, years }: { profile: ProfileId; corpCode
     <section className={styles.section}>
       <h2>② 손익</h2>
       <div className={styles.sectionTitle}>
-        손익 구성 — {YEAR} · {basisLabel(y2024.fsDiv)} · 억원 (워터폴 없음 — 금융 프로필은 표준 손익계정 체계를 따르지 않는다)
+        손익 구성 — {LATEST_ANNUAL_YEAR} · {basisLabel(yLatest.fsDiv)} · 억원 (워터폴 없음 — 금융 프로필은 표준 손익계정 체계를 따르지 않는다)
       </div>
       <StackedBar100 segments={segments} />
       <div className={styles.fieldList}>
         {stackedMetrics.map((metric) => (
-          <TraceOnly key={metric.key} profile={profile} corpCode={corpCode} metric={metric} resolution={y2024.resolutions[metric.key]} />
+          <TraceOnly key={metric.key} profile={profile} corpCode={corpCode} year={LATEST_ANNUAL_YEAR} metric={metric} resolution={yLatest.resolutions[metric.key]} />
         ))}
       </div>
 
@@ -365,7 +536,7 @@ function PnlSection({ profile, corpCode, years }: { profile: ProfileId; corpCode
           <div className={styles.sectionTitle}>차감 항목 (스택 아님 — 순영업수익에서 차감되는 비용성 항목)</div>
           <div className={styles.fieldList}>
             {deductionMetrics.map((metric) => (
-              <GatedField key={metric.key} profile={profile} corpCode={corpCode} metric={metric} resolution={y2024.resolutions[metric.key]} />
+              <GatedField key={metric.key} profile={profile} corpCode={corpCode} year={LATEST_ANNUAL_YEAR} metric={metric} resolution={yLatest.resolutions[metric.key]} />
             ))}
           </div>
         </div>
@@ -380,7 +551,7 @@ function PnlSection({ profile, corpCode, years }: { profile: ProfileId; corpCode
       <div className={styles.sectionTitle}>참고 지표 (스택 세그먼트 아님 — 총계/총액)</div>
       <div className={styles.fieldList}>
         {referenceMetrics.map((metric) => (
-          <GatedField key={metric.key} profile={profile} corpCode={corpCode} metric={metric} resolution={y2024.resolutions[metric.key]} />
+          <GatedField key={metric.key} profile={profile} corpCode={corpCode} year={LATEST_ANNUAL_YEAR} metric={metric} resolution={yLatest.resolutions[metric.key]} />
         ))}
       </div>
 
@@ -391,7 +562,7 @@ function PnlSection({ profile, corpCode, years }: { profile: ProfileId; corpCode
             {naKeys.map((key) => {
               const metric = findProfileMetric("STANDARD", key);
               if (!metric) return null;
-              return <GatedField key={key} profile={profile} corpCode={corpCode} metric={metric} resolution={y2024.resolutions[key]} />;
+              return <GatedField key={key} profile={profile} corpCode={corpCode} year={LATEST_ANNUAL_YEAR} metric={metric} resolution={yLatest.resolutions[key]} />;
             })}
           </div>
         </div>
@@ -405,106 +576,327 @@ function PnlSection({ profile, corpCode, years }: { profile: ProfileId; corpCode
   );
 }
 
-function BalanceSection({ profile, corpCode, y2024 }: { profile: ProfileId; corpCode: string; y2024: StockYearView }) {
-  const liab = eok(y2024.resolutions.total_liabilities);
-  const equity = eok(y2024.resolutions.total_equity);
+function BalanceSection({
+  profile,
+  corpCode,
+  years,
+  quarters,
+  accMt,
+}: {
+  profile: ProfileId;
+  corpCode: string;
+  years: StockYearView[];
+  quarters: QuarterResolutions[];
+  accMt: string;
+}) {
+  const yLatest = years.find((y) => y.year === LATEST_ANNUAL_YEAR)!;
+  // v2 T5 — 컨트롤러 확정 사항(§3): BS는 시점 데이터라 분기말 직독 가능 → 연간 3개년 + 최신
+  // 분기말 1개. "최신"은 lib/period.ts 상수가 아니라 total_assets 실데이터로 직접 찾는다(자체
+  // 교정 — 수집 상태가 바뀌어도 이 섹션은 항상 실제로 존재하는 가장 최근 분기를 그린다).
+  const latestQuarter = latestQuarterWindow(quarters, "total_assets", 1)[0];
+  const latestQuarterLabel = latestQuarter ? quarterAxisLabel(latestQuarter.bsnsYear, latestQuarter.quarter, accMt, latestQuarter.fiscalPeriodName) : undefined;
+
+  const bsBars: StackedBarsAbsBar[] = years.map((y) => ({
+    label: `${y.year.slice(2)}년`,
+    segments: [
+      { label: "자본", value: eok(y.resolutions.total_equity) },
+      { label: "부채", value: eok(y.resolutions.total_liabilities) },
+    ],
+  }));
+  if (latestQuarter && latestQuarterLabel) {
+    bsBars.push({
+      label: `${latestQuarterLabel}(잠정)`,
+      segments: [
+        { label: "자본", value: eok(latestQuarter.resolutions.total_equity) },
+        { label: "부채", value: eok(latestQuarter.resolutions.total_liabilities) },
+      ],
+    });
+  }
+
   return (
     <section className={styles.section}>
       <h2>③ 재무상태</h2>
-      <div className={styles.sectionTitle}>
-        자산 구성(부채+자본) — {YEAR} · {basisLabel(y2024.fsDiv)} · 억원
-      </div>
-      <PieChart slices={[{ label: "부채", value: liab }, { label: "자본", value: equity }]} />
+      <div className={styles.sectionTitle}>자산 구성(자본+부채) — 연간 3개년(FY23~25) + 최신 분기말 · 억원 · 아래 자본 · 위 부채</div>
+      <StackedBarsAbs bars={bsBars} />
       <div className={styles.fieldList}>
-        <RawField corpCode={corpCode} profile={profile} metricKey="total_assets" label="자산총계" unit="KRW" panelUnit="KRW" resolution={y2024.resolutions.total_assets} />
-        <RawField corpCode={corpCode} profile={profile} metricKey="total_liabilities" label="부채총계" unit="KRW" panelUnit="KRW" resolution={y2024.resolutions.total_liabilities} />
-        <RawField corpCode={corpCode} profile={profile} metricKey="total_equity" label="자본총계" unit="KRW" panelUnit="KRW" resolution={y2024.resolutions.total_equity} />
-        <RawField corpCode={corpCode} profile={profile} metricKey="equity_attributable_to_owners" label="지배주주지분" unit="KRW" panelUnit="KRW" resolution={y2024.resolutions.equity_attributable_to_owners} />
+        {years.map((y) => (
+          <TraceOnly
+            key={`equity-${y.year}`}
+            profile={profile}
+            corpCode={corpCode}
+            year={y.year}
+            metric={{ key: "total_equity", label: `자본총계 ${y.year}`, sourceAvailable: true, unit: "KRW" }}
+            resolution={y.resolutions.total_equity}
+          />
+        ))}
+        {years.map((y) => (
+          <TraceOnly
+            key={`liab-${y.year}`}
+            profile={profile}
+            corpCode={corpCode}
+            year={y.year}
+            metric={{ key: "total_liabilities", label: `부채총계 ${y.year}`, sourceAvailable: true, unit: "KRW" }}
+            resolution={y.resolutions.total_liabilities}
+          />
+        ))}
+        {latestQuarter && latestQuarterLabel && (
+          <>
+            <QuarterTraceOnly
+              profile={profile}
+              corpCode={corpCode}
+              label={`자본총계 ${latestQuarterLabel}`}
+              sourceMetricKey="total_equity"
+              unit="KRW"
+              quarter={latestQuarter}
+              resolution={latestQuarter.resolutions.total_equity}
+            />
+            <QuarterTraceOnly
+              profile={profile}
+              corpCode={corpCode}
+              label={`부채총계 ${latestQuarterLabel}`}
+              sourceMetricKey="total_liabilities"
+              unit="KRW"
+              quarter={latestQuarter}
+              resolution={latestQuarter.resolutions.total_liabilities}
+            />
+          </>
+        )}
+      </div>
+      <div className={styles.fieldList}>
+        <RawField corpCode={corpCode} profile={profile} year={LATEST_ANNUAL_YEAR} metricKey="total_assets" label="자산총계" unit="KRW" panelUnit="KRW" resolution={yLatest.resolutions.total_assets} />
+        <RawField
+          corpCode={corpCode}
+          profile={profile}
+          year={LATEST_ANNUAL_YEAR}
+          metricKey="total_liabilities"
+          label="부채총계"
+          unit="KRW"
+          panelUnit="KRW"
+          resolution={yLatest.resolutions.total_liabilities}
+        />
+        <RawField corpCode={corpCode} profile={profile} year={LATEST_ANNUAL_YEAR} metricKey="total_equity" label="자본총계" unit="KRW" panelUnit="KRW" resolution={yLatest.resolutions.total_equity} />
+        <RawField
+          corpCode={corpCode}
+          profile={profile}
+          year={LATEST_ANNUAL_YEAR}
+          metricKey="equity_attributable_to_owners"
+          label="지배주주지분"
+          unit="KRW"
+          panelUnit="KRW"
+          resolution={yLatest.resolutions.equity_attributable_to_owners}
+        />
       </div>
     </section>
   );
 }
 
-function CashFlowSection({ profile, corpCode, y2024 }: { profile: ProfileId; corpCode: string; y2024: StockYearView }) {
-  const rows = [
-    { label: "영업", value: eok(y2024.resolutions.operating_cf) },
-    { label: "투자", value: eok(y2024.resolutions.investing_cf) },
-    { label: "재무", value: eok(y2024.resolutions.financing_cf) },
-  ];
+function CashFlowSection({ profile, corpCode, years }: { profile: ProfileId; corpCode: string; years: StockYearView[] }) {
+  const yLatest = years.find((y) => y.year === LATEST_ANNUAL_YEAR)!;
+  const cfGroups: SignedGroupedBarsGroup[] = years.map((y) => ({
+    label: `${y.year.slice(2)}년`,
+    values: [eok(y.resolutions.operating_cf), eok(y.resolutions.investing_cf), eok(y.resolutions.financing_cf)],
+  }));
+
   return (
     <section className={styles.section}>
       <h2>④ 현금흐름</h2>
-      <div className={styles.sectionTitle}>
-        현금흐름 — {YEAR} · {basisLabel(y2024.fsDiv)} · 억원
-      </div>
-      <CashFlowDiverging rows={rows} />
+      <div className={styles.sectionTitle}>현금흐름 — 연간 3개년(FY23~25) · 억원 · 위 유입 · 아래 유출</div>
+      <SignedGroupedBars groups={cfGroups} seriesLabels={["영업", "투자", "재무"]} />
       <div className={styles.fieldList}>
-        <TraceOnly profile={profile} corpCode={corpCode} metric={{ key: "operating_cf", label: "영업활동현금흐름", sourceAvailable: true, unit: "KRW" }} resolution={y2024.resolutions.operating_cf} />
-        <TraceOnly profile={profile} corpCode={corpCode} metric={{ key: "investing_cf", label: "투자활동현금흐름", sourceAvailable: true, unit: "KRW" }} resolution={y2024.resolutions.investing_cf} />
-        <TraceOnly profile={profile} corpCode={corpCode} metric={{ key: "financing_cf", label: "재무활동현금흐름", sourceAvailable: true, unit: "KRW" }} resolution={y2024.resolutions.financing_cf} />
-        <RawField corpCode={corpCode} profile={profile} metricKey="fcf" label="잉여현금흐름(FCF = 영업CF − CAPEX)" unit="KRW" panelUnit="KRW" resolution={y2024.resolutions.fcf} />
+        {years.map((y) => (
+          <TraceOnly
+            key={`op-${y.year}`}
+            profile={profile}
+            corpCode={corpCode}
+            year={y.year}
+            metric={{ key: "operating_cf", label: `영업활동현금흐름 ${y.year}`, sourceAvailable: true, unit: "KRW" }}
+            resolution={y.resolutions.operating_cf}
+          />
+        ))}
+        {years.map((y) => (
+          <TraceOnly
+            key={`inv-${y.year}`}
+            profile={profile}
+            corpCode={corpCode}
+            year={y.year}
+            metric={{ key: "investing_cf", label: `투자활동현금흐름 ${y.year}`, sourceAvailable: true, unit: "KRW" }}
+            resolution={y.resolutions.investing_cf}
+          />
+        ))}
+        {years.map((y) => (
+          <TraceOnly
+            key={`fin-${y.year}`}
+            profile={profile}
+            corpCode={corpCode}
+            year={y.year}
+            metric={{ key: "financing_cf", label: `재무활동현금흐름 ${y.year}`, sourceAvailable: true, unit: "KRW" }}
+            resolution={y.resolutions.financing_cf}
+          />
+        ))}
+        <RawField corpCode={corpCode} profile={profile} year={LATEST_ANNUAL_YEAR} metricKey="fcf" label="잉여현금흐름(FCF = 영업CF − CAPEX)" unit="KRW" panelUnit="KRW" resolution={yLatest.resolutions.fcf} />
       </div>
     </section>
   );
 }
 
-function ProfitabilitySection({ profile, corpCode, y2024 }: { profile: ProfileId; corpCode: string; y2024: StockYearView }) {
+function ProfitabilitySection({ profile, corpCode, years }: { profile: ProfileId; corpCode: string; years: StockYearView[] }) {
+  const yLatest = years.find((y) => y.year === LATEST_ANNUAL_YEAR)!;
   const marginMetric = findProfileMetric("STANDARD", "operating_margin")!;
   // 최종 리뷰 픽스(C1): 수익성 섹션도 지배주주 귀속분을 주 지표로 병기한다 — 두 키 전부 모든
   // 프로필 카탈로그에 있어 findProfileMetric이 항상 값을 반환하지만, 방어적으로 optional 처리.
   const netIncomeAttrMetric = findProfileMetric(profile, "net_income_attributable_to_owners");
   const netIncomeTotalMetric = findProfileMetric(profile, "net_income");
+
+  const roePoints: LineChartPoint[] = years.map((y) => ({ label: `${y.year.slice(2)}년`, value: y.resolutions.roe?.normalized ?? null }));
+  const marginPoints: LineChartPoint[] = years.map((y) => ({ label: `${y.year.slice(2)}년`, value: y.resolutions.operating_margin?.normalized ?? null }));
+
   return (
     <section className={styles.section}>
       <h2>⑤ 수익성</h2>
+      <div className={styles.sectionTitle}>ROE 추이 — 연간 3개년(FY23~25) · %</div>
+      <LineChart points={roePoints} unit="%" sign />
+      <div className={styles.fieldList}>
+        {years.map((y) => (
+          <TraceOnly key={y.year} profile={profile} corpCode={corpCode} year={y.year} metric={{ key: "roe", label: `ROE ${y.year}`, sourceAvailable: true, unit: "PCT" }} resolution={y.resolutions.roe} />
+        ))}
+      </div>
+
+      <div className={styles.sectionTitle}>영업이익률 추이 — 연간 3개년(FY23~25) · %</div>
+      <LineChart points={marginPoints} unit="%" sign color="var(--chart-2)" />
+      <div className={styles.fieldList}>
+        {years.map((y) => (
+          <TraceOnly
+            key={y.year}
+            profile={profile}
+            corpCode={corpCode}
+            year={y.year}
+            metric={{ key: "operating_margin", label: `영업이익률 ${y.year}`, sourceAvailable: true, unit: "PCT" }}
+            resolution={y.resolutions.operating_margin}
+          />
+        ))}
+      </div>
+
       <div className={styles.fieldList}>
         {netIncomeAttrMetric && (
-          <GatedField profile={profile} corpCode={corpCode} metric={netIncomeAttrMetric} resolution={y2024.resolutions.net_income_attributable_to_owners} />
+          <GatedField profile={profile} corpCode={corpCode} year={LATEST_ANNUAL_YEAR} metric={netIncomeAttrMetric} resolution={yLatest.resolutions.net_income_attributable_to_owners} />
         )}
-        {netIncomeTotalMetric && <GatedField profile={profile} corpCode={corpCode} metric={netIncomeTotalMetric} resolution={y2024.resolutions.net_income} />}
-        <RawField corpCode={corpCode} profile={profile} metricKey="roe" label="ROE(자기자본이익률, DART 산출)" unit="PCT" panelUnit="PCT" resolution={y2024.resolutions.roe} />
+        {netIncomeTotalMetric && <GatedField profile={profile} corpCode={corpCode} year={LATEST_ANNUAL_YEAR} metric={netIncomeTotalMetric} resolution={yLatest.resolutions.net_income} />}
+        <RawField corpCode={corpCode} profile={profile} year={LATEST_ANNUAL_YEAR} metricKey="roe" label="ROE(자기자본이익률, DART 산출)" unit="PCT" panelUnit="PCT" resolution={yLatest.resolutions.roe} />
         <RawField
           corpCode={corpCode}
           profile={profile}
+          year={LATEST_ANNUAL_YEAR}
           metricKey="roa"
           label="ROA(총자산이익률(총액 기준), 계산: 당기순이익(총액)÷자산총계)"
           unit="PCT"
           panelUnit="PCT"
-          resolution={y2024.resolutions.roa}
+          resolution={yLatest.resolutions.roa}
         />
-        <GatedField profile={profile} corpCode={corpCode} metric={marginMetric} resolution={y2024.resolutions.operating_margin} />
+        <GatedField profile={profile} corpCode={corpCode} year={LATEST_ANNUAL_YEAR} metric={marginMetric} resolution={yLatest.resolutions.operating_margin} />
       </div>
     </section>
   );
 }
 
-function StabilitySection({ profile, corpCode, y2024 }: { profile: ProfileId; corpCode: string; y2024: StockYearView }) {
+function StabilitySection({ profile, corpCode, years }: { profile: ProfileId; corpCode: string; years: StockYearView[] }) {
+  const yLatest = years.find((y) => y.year === LATEST_ANNUAL_YEAR)!;
+  // v2 T5 — 부채비율은 PROFILE_CATALOG[profile].stability에 등록된 프로필(STANDARD)에서만 차트를
+  // 그린다(카탈로그 기반 — 금융 프로필은 stability에 debt_ratio 자체가 없어 findProfileMetric이
+  // undefined를 반환하고 차트가 자연히 생략된다. 지표 키를 프로필별로 하드코딩하지 않는다).
+  const debtRatioMetric = findProfileMetric(profile, "debt_ratio");
+  const debtRatioPoints: LineChartPoint[] = years.map((y) => ({ label: `${y.year.slice(2)}년`, value: y.resolutions.debt_ratio?.normalized ?? null }));
+
   return (
     <section className={styles.section}>
       <h2>⑥ 안정성</h2>
+      {debtRatioMetric && (
+        <>
+          <div className={styles.sectionTitle}>부채비율 추이 — 연간 3개년(FY23~25) · % · 100% 기준선</div>
+          <LineChart points={debtRatioPoints} unit="%" baseline={{ value: 100, label: "100% 기준선(부채가 자본을 초과)" }} />
+          <div className={styles.fieldList}>
+            {years.map((y) => (
+              <TraceOnly
+                key={y.year}
+                profile={profile}
+                corpCode={corpCode}
+                year={y.year}
+                metric={{ key: "debt_ratio", label: `${debtRatioMetric.label} ${y.year}`, sourceAvailable: true, unit: "PCT" }}
+                resolution={y.resolutions.debt_ratio}
+              />
+            ))}
+          </div>
+        </>
+      )}
       <div className={styles.fieldList}>
         {PROFILE_CATALOG[profile].stability.map((metric) => (
-          <GatedField key={metric.key} profile={profile} corpCode={corpCode} metric={metric} resolution={y2024.resolutions[metric.key]} />
+          <GatedField key={metric.key} profile={profile} corpCode={corpCode} year={LATEST_ANNUAL_YEAR} metric={metric} resolution={yLatest.resolutions[metric.key]} />
         ))}
       </div>
     </section>
   );
 }
 
-function ShareholderReturnSection({ profile, corpCode, y2024 }: { profile: ProfileId; corpCode: string; y2024: StockYearView }) {
-  const r = y2024.resolutions;
+function ShareholderReturnSection({ profile, corpCode, years }: { profile: ProfileId; corpCode: string; years: StockYearView[] }) {
+  const yLatest = years.find((y) => y.year === LATEST_ANNUAL_YEAR)!;
+  const r = yLatest.resolutions;
   const payoutConflictNote = dividendPayoutConflictNote(r.dividend_payout_indx, r.dividend_payout_fallback);
+
+  // v2 T5 — OverlaidBars(outer=EPS, inner=DPS). 승인 규칙 4: 무배당(ZERO_BY_FACT)과 데이터 없음
+  // (MISSING)을 구분한다 — dps_common의 displayState를 그대로 innerState에 반영한다.
+  const returnBars: OverlaidBar[] = years.map((y) => {
+    const eps = y.resolutions.eps_basic;
+    const dps = y.resolutions.dps_common;
+    const zeroByFact = dps?.displayState === "ZERO_BY_FACT";
+    return {
+      label: `${y.year.slice(2)}년`,
+      outer: eps?.normalized ?? null,
+      inner: zeroByFact ? 0 : (dps?.normalized ?? null),
+      innerState: zeroByFact ? "ZERO_BY_FACT" : undefined,
+    };
+  });
+
   return (
     <section className={styles.section}>
       <h2>⑦ 주주환원</h2>
+      <div className={styles.sectionTitle}>EPS·DPS 추이 — 연간 3개년(FY23~25) · 원 · 진한 안쪽 막대 = DPS</div>
+      <OverlaidBars bars={returnBars} outerLabel="EPS(기본주당이익)" innerLabel="DPS(주당현금배당금)" />
       <div className={styles.fieldList}>
-        <RawField corpCode={corpCode} profile={profile} metricKey="eps_basic" label="기본주당이익(EPS, 재무제표)" unit="WON" panelUnit="KRW" resolution={r.eps_basic} />
-        <RawField corpCode={corpCode} profile={profile} metricKey="eps_alotmatter" label="주당순이익(배당공시)" unit="WON" panelUnit="KRW" resolution={r.eps_alotmatter} />
-        <RawField corpCode={corpCode} profile={profile} metricKey="dps_common" label="주당현금배당금(DPS, 보통주)" unit="WON" panelUnit="KRW" resolution={r.dps_common} zeroByFactNote="무배당 확인" />
-        <RawField corpCode={corpCode} profile={profile} metricKey="dividend_yield_common" label="현금배당수익률(보통주)" unit="PCT" panelUnit="PCT" resolution={r.dividend_yield_common} zeroByFactNote="무배당 확인" />
+        {years.map((y) => (
+          <TraceOnly key={`eps-${y.year}`} profile={profile} corpCode={corpCode} year={y.year} metric={{ key: "eps_basic", label: `EPS ${y.year}`, sourceAvailable: true, unit: "KRW" }} resolution={y.resolutions.eps_basic} />
+        ))}
+        {years.map((y) => (
+          <TraceOnly key={`dps-${y.year}`} profile={profile} corpCode={corpCode} year={y.year} metric={{ key: "dps_common", label: `DPS ${y.year}`, sourceAvailable: true, unit: "KRW" }} resolution={y.resolutions.dps_common} />
+        ))}
+      </div>
+      <div className={styles.fieldList}>
+        <RawField corpCode={corpCode} profile={profile} year={LATEST_ANNUAL_YEAR} metricKey="eps_basic" label="기본주당이익(EPS, 재무제표)" unit="WON" panelUnit="KRW" resolution={r.eps_basic} />
+        <RawField corpCode={corpCode} profile={profile} year={LATEST_ANNUAL_YEAR} metricKey="eps_alotmatter" label="주당순이익(배당공시)" unit="WON" panelUnit="KRW" resolution={r.eps_alotmatter} />
         <RawField
           corpCode={corpCode}
           profile={profile}
+          year={LATEST_ANNUAL_YEAR}
+          metricKey="dps_common"
+          label="주당현금배당금(DPS, 보통주)"
+          unit="WON"
+          panelUnit="KRW"
+          resolution={r.dps_common}
+          zeroByFactNote="무배당 확인"
+        />
+        <RawField
+          corpCode={corpCode}
+          profile={profile}
+          year={LATEST_ANNUAL_YEAR}
+          metricKey="dividend_yield_common"
+          label="현금배당수익률(보통주)"
+          unit="PCT"
+          panelUnit="PCT"
+          resolution={r.dividend_yield_common}
+          zeroByFactNote="무배당 확인"
+        />
+        <RawField
+          corpCode={corpCode}
+          profile={profile}
+          year={LATEST_ANNUAL_YEAR}
           metricKey="dividend_payout_indx"
           label="배당성향(DART 산출지표)"
           unit="PCT"
@@ -516,6 +908,7 @@ function ShareholderReturnSection({ profile, corpCode, y2024 }: { profile: Profi
         <RawField
           corpCode={corpCode}
           profile={profile}
+          year={LATEST_ANNUAL_YEAR}
           metricKey="dividend_payout_fallback"
           label="배당성향(fallback: 배당총액÷순이익)"
           unit="PCT"
@@ -524,8 +917,8 @@ function ShareholderReturnSection({ profile, corpCode, y2024 }: { profile: Profi
           zeroByFactNote="무배당 확인"
           conflictNote={payoutConflictNote}
         />
-        <RawField corpCode={corpCode} profile={profile} metricKey="shares_outstanding" label="발행주식총수" unit="SHARES" panelUnit="X" resolution={r.shares_outstanding} />
-        <RawField corpCode={corpCode} profile={profile} metricKey="treasury_shares" label="자기주식수" unit="SHARES" panelUnit="X" resolution={r.treasury_shares} />
+        <RawField corpCode={corpCode} profile={profile} year={LATEST_ANNUAL_YEAR} metricKey="shares_outstanding" label="발행주식총수" unit="SHARES" panelUnit="X" resolution={r.shares_outstanding} />
+        <RawField corpCode={corpCode} profile={profile} year={LATEST_ANNUAL_YEAR} metricKey="treasury_shares" label="자기주식수" unit="SHARES" panelUnit="X" resolution={r.treasury_shares} />
       </div>
     </section>
   );
@@ -542,7 +935,7 @@ function ValuationStrip() {
         <div className={styles.fieldLabel}>PBR</div>
         <MetricValue state="SOURCE_NOT_AVAILABLE" unit="X" note="주가 미연동" />
       </div>
-      <p className={styles.valuationHint}>DART 재무 API는 시세를 제공하지 않는다 — 시세 연동은 이 프로토타입 범위 밖이다(정직하게 미확보로 표기).</p>
+      <p className={styles.valuationHint}>DART 재무 API는 시세를 제공하지 않는다 — 시세 연동은 이 프로토타입 범위 밖이다(정직하게 미확보로 표기). 적자 기업 PER도 같은 이유로 N/A다.</p>
     </section>
   );
 }
@@ -553,9 +946,10 @@ export default async function StockDetailPage({ params }: { params: Promise<{ co
   if (!row) notFound();
 
   const profile = profileIdOf(row);
-  const years = ALL_YEARS.map((year) => loadStockYearView(row, year));
-  const y2024 = years.find((y) => y.year === "2024")!;
-  const coverage = summarizeCoverage(profile, y2024.resolutions);
+  const years = ALL_ANNUAL_YEARS.map((year) => loadStockYearView(row, year));
+  const yLatest = years.find((y) => y.year === LATEST_ANNUAL_YEAR)!;
+  const quarters = loadStockQuarters(row);
+  const coverage = summarizeCoverage(profile, yLatest.resolutions);
   const coveragePct = Math.round((coverage.hit / coverage.total) * 100);
 
   return (
@@ -572,20 +966,21 @@ export default async function StockDetailPage({ params }: { params: Promise<{ co
           {row.accMt !== "12" && <span className={styles.fyBadge}>결산월 {row.accMt}월(비12월)</span>}
         </div>
         <p className={styles.headMeta}>
-          {row.market === "Y" ? "코스피" : row.market === "K" ? "코스닥" : row.market} · 기준연도 {YEAR}(고정) · 기준 {basisLabel(y2024.fsDiv)}
-          {y2024.fsDivFallbackApplied && " (CFS 미작성 → OFS 폴백)"} · 커버리지 {coveragePct}% ({coverage.hit}/{coverage.total})
+          {row.market === "Y" ? "코스피" : row.market === "K" ? "코스닥" : row.market} · 기준연도 {LATEST_ANNUAL_YEAR} · 최신 분기 {LATEST_QUARTER_HEADER_LABEL}(잠정) · 기준{" "}
+          {basisLabel(yLatest.fsDiv)}
+          {yLatest.fsDivFallbackApplied && " (CFS 미작성 → OFS 폴백)"} · 커버리지 {coveragePct}% ({coverage.hit}/{coverage.total})
         </p>
       </header>
 
       <ValuationStrip />
 
       <OverviewSection row={row} profile={profile} />
-      <PnlSection profile={profile} corpCode={row.corpCode} years={years} />
-      <BalanceSection profile={profile} corpCode={row.corpCode} y2024={y2024} />
-      <CashFlowSection profile={profile} corpCode={row.corpCode} y2024={y2024} />
-      <ProfitabilitySection profile={profile} corpCode={row.corpCode} y2024={y2024} />
-      <StabilitySection profile={profile} corpCode={row.corpCode} y2024={y2024} />
-      <ShareholderReturnSection profile={profile} corpCode={row.corpCode} y2024={y2024} />
+      <PnlSection profile={profile} corpCode={row.corpCode} years={years} quarters={quarters} accMt={row.accMt} />
+      <BalanceSection profile={profile} corpCode={row.corpCode} years={years} quarters={quarters} accMt={row.accMt} />
+      <CashFlowSection profile={profile} corpCode={row.corpCode} years={years} />
+      <ProfitabilitySection profile={profile} corpCode={row.corpCode} years={years} />
+      <StabilitySection profile={profile} corpCode={row.corpCode} years={years} />
+      <ShareholderReturnSection profile={profile} corpCode={row.corpCode} years={years} />
     </main>
   );
 }

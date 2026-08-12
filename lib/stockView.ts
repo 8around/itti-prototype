@@ -10,6 +10,7 @@ import { join } from "node:path";
 
 import { findStockByCode, findYear, loadDerived } from "./derived";
 import type { DerivedFile } from "./derived";
+import type { QuarterResolutions } from "./normalize/engine";
 import type { FsDiv } from "./normalize/resolve";
 import { resolveProfileExtras } from "./normalize/resolveProfileExtras";
 import type { Resolution } from "./normalize/types";
@@ -69,4 +70,14 @@ export function loadStockYearView(row: UniverseRow, year: string, derived: Deriv
 
 export function profileIdOf(row: UniverseRow): ProfileId {
   return toProfileId(row.profile);
+}
+
+/**
+ * v2 T5 — derived.json의 종목별 quarters[](T2 산출, 16개)를 그대로 노출한다. `loadStockYearView`와
+ * 달리 프로필 확장(resolveProfileExtras)을 병합하지 않는다 — 금융 프로필의 분기 확장 지표는
+ * T6 범위(브리프 명시 "금융 프로필은 이번 범위 밖")라 여기서는 base quarters만 반환한다.
+ */
+export function loadStockQuarters(row: UniverseRow, derived: DerivedFile = getDerived()): QuarterResolutions[] {
+  const stock = findStockByCode(derived, row.stockCode);
+  return stock.quarters;
 }
