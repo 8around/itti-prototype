@@ -1,0 +1,87 @@
+/* kitchen-sink 페이지 전용 레이아웃 CSS — 차트 프리미티브 자체의 스타일(.wf/.qbrow/... 등)은
+   전부 app/globals.css(T6 이식분)에 있다. 여기서는 데모 카드 배열/캡션만 담당한다. */
+
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 20px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.lead {
+  font-size: 13px;
+  color: var(--gray);
+  font-weight: 500;
+  max-width: 720px;
+  line-height: 1.6;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.demo {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  padding: 14px 15px 12px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.demoTitle {
+  font-size: 12px;
+  font-weight: 900;
+  color: var(--ink);
+}
+
+.demoRef {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  color: var(--green-dk);
+  font-weight: 600;
+}
+
+.demoNote {
+  font-size: 10.5px;
+  color: var(--gray);
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.mvGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.mvCard {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  padding: 12px 13px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mvState {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  color: var(--gray-2);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}

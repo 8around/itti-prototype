@@ -1,13 +1,56 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css");
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ============================================================
+   T6 — 목업 디자인 토큰 전체 이식
+   출처: docs/goals-in-2months/이띠_R1_배포앱_목업_6.html :root (10-18줄)
+   T5가 SourcePanel용으로 넣었던 최소 토큰 구획(--green/--up/--down/--line/--wash/--ink)을
+   같은 값으로 흡수·대체한다 — 변수명 유지, 중복 선언만 제거.
+
+   버그 수정 2건 (플랜 §4 지적):
+   1) --orange-dk / --orange-bg — 목업 :root에 미정의였는데 .qbv.prov · .pchip 등에서
+      4회·1회 참조됨. 여기서 정의 추가.
+   2) --line2(오기) → --line-2(정본) 통일. 이 파일이 이식하는 클래스 중에는 --line2를 쓰는
+      것이 없어 직접적인 영향은 없지만, 이후(T7·T10) 목업 클래스를 추가로 이식할 때 같은
+      실수가 반복되지 않도록 --line-2 하나만 존재하게 유지한다.
+   ============================================================ */
+:root {
+  --green: #2e7d32;
+  --green-dk: #2e7d32;
+  --green-dp: #1f5c2a;
+  --green-bg: #edf4ee;
+  --green-bd: #c9decb;
+  --ink: #16241d;
+  --ink-2: #3a4a40;
+  --gray: #5b6b62;
+  --gray-2: #95a29a;
+  --line: #e3eae4;
+  --line-2: #eff3ef;
+  --paper: #ffffff;
+  --wash: #f4f7f4;
+  --t1: #2e7d32;
+  --t1-bg: #edf4ee;
+  --t2: #1565c0;
+  --t2-bg: #e8f0fa;
+  --t0: #8a938e;
+  --t0-bg: #f0f2f1;
+  --up: #d32f2f;
+  --down: #1565c0;
+  /* 버그 수정 1: 목업에 미정의였던 잠정/파생 강조색 */
+  --orange-dk: #b26a00;
+  --orange-bg: #fdf3e3;
+  --prov: #f2a31e;
+  /* 차트 팔레트 토큰화 — 기존 화면들의 인라인 하드코딩(#2E7D32 #6BAF7E #E8A13A #5B8FA8 #B4CBD9)을 대체 */
+  --chart-1: #2e7d32;
+  --chart-2: #6baf7e;
+  --chart-3: #e8a13a;
+  --chart-4: #5b8fa8;
+  --chart-5: #b4cbd9;
+  --shadow: 0 2px 10px rgba(60, 50, 35, 0.07);
+  --mono: "Pretendard", "Noto Sans KR", sans-serif;
+
+  /* 앱 배경/전경 — 목업은 단일 라이트 테마(다크모드 없음)이므로 --paper/--ink에 고정 */
+  --background: var(--paper);
+  --foreground: var(--ink);
 }
 
 html {
@@ -26,9 +69,11 @@ body {
   flex-direction: column;
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Pretendard", "Noto Sans KR", -apple-system, sans-serif;
+  font-feature-settings: "tnum";
+  word-break: keep-all;
+  letter-spacing: -0.02em;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 * {
@@ -42,28 +87,16 @@ a {
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+.mono {
+  font-family: var(--mono);
+  letter-spacing: -0.01em;
+  font-feature-settings: "tnum";
 }
 
 /* ============================================================
-   T5 SourcePanel — 최소 토큰
-   전체 목업 :root 토큰(40여 개) 이식은 T6 소관. 여기서는 SourcePanel/.srcfoot이
-   당장 쓰는 것만 선언한다. T6가 같은 이름으로 재정의할 수 있으므로 값 자체를
-   여기서 임의로 늘리지 말 것 — 이 블록은 T5 종료 후에도 유지되되 T6가 흡수한다.
+   T5 SourcePanel — 출처 슬롯 (변경 없음, 전체 토큰 이식 이후에도 --green/--up/--down/
+   --line/--wash/--ink는 위 :root가 동일 값으로 계속 제공한다)
    ============================================================ */
-:root {
-  --green: #2e7d32;
-  --up: #d32f2f;
-  --down: #1565c0;
-  --line: #e3eae4;
-  --wash: #f4f7f4;
-  --ink: #16241d;
-}
-
-/* 모든 수치·차트 밑에 붙는 출처 슬롯 한 줄. <summary>에 적용한다 (전역 유틸 클래스). */
 .srcfoot {
   display: flex;
   align-items: center;
@@ -91,6 +124,474 @@ a {
   outline: 2px solid var(--green);
   outline-offset: 2px;
 }
+
 /* ============================================================
-   /T5 토큰
+   T6 — 차트 프리미티브 8종 + MetricValue
+   출처: 이띠_R1_배포앱_목업_6.html (클래스별 원본 줄 번호 주석)
+   컴포넌트는 components/charts/*.tsx · components/MetricValue.tsx — 전부 서버 컴포넌트라
+   여기 정의된 클래스는 순수 CSS로만 소비되고 클라이언트 JS에는 어떤 형태로도 들어가지 않는다.
    ============================================================ */
+
+/* ---- 공통: 티어 배지 (.tier) — MetricValue의 tier prop, 목업 85-88줄 ---- */
+.tier {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1.5px 5px;
+  border-radius: 4px;
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+}
+.tier.t1 {
+  background: var(--t1-bg);
+  color: var(--t1);
+}
+.tier.t2 {
+  background: var(--t2-bg);
+  color: var(--t2);
+}
+.tier.t0 {
+  background: var(--t0-bg);
+  color: var(--t0);
+}
+
+/* ---- PnlWaterfall (.wf/.wfrow) — 목업 233-239줄, 화면 ⑥ 손익 구조 ---- */
+.wf {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  padding: 12px 13px 10px;
+  box-shadow: var(--shadow);
+}
+.wfrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+.wfrow .wl {
+  font-size: 10.5px;
+  font-weight: 700;
+  width: 58px;
+  flex: none;
+  color: var(--ink-2);
+}
+.wfrow .wbar {
+  flex: 1;
+  height: 15px;
+  background: var(--wash);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.wfrow .wbar i {
+  display: block;
+  height: 100%;
+  background: var(--green);
+  border-radius: 4px;
+}
+.wfrow .wbar i.empty {
+  background: var(--line);
+}
+.wfrow .wv {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  width: 42px;
+  text-align: right;
+  flex: none;
+}
+.wfrow .wm {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 600;
+  width: 38px;
+  text-align: right;
+  flex: none;
+  color: var(--gray);
+}
+
+/* ---- QuarterBars (.qbrow/.qbfill.prov) — 목업 327-336줄, 화면 ③④ 매출액/영업이익 ---- */
+.qb-unit {
+  font-family: var(--mono);
+  font-size: 8.5px;
+  color: var(--gray-2);
+  font-weight: 500;
+  text-align: right;
+  margin-bottom: 4px;
+}
+.qbrow {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+}
+.qbcol {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.qbtrack {
+  height: 86px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.qbfill {
+  width: 78%;
+  background: #c5cec7;
+  border-radius: 5px 5px 0 0;
+  position: relative;
+}
+.qbfill.prov {
+  background: rgba(242, 163, 30, 0.07);
+  border: 1.5px dashed var(--prov);
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+}
+.qbfill.empty {
+  background: var(--line);
+}
+.qbv {
+  position: absolute;
+  top: -14px;
+  left: -4px;
+  right: -4px;
+  text-align: center;
+  font-size: 8.5px;
+  font-weight: 800;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.qbv.prov {
+  color: var(--orange-dk);
+  font-weight: 900;
+}
+.qbv.down {
+  color: var(--down);
+}
+.qbv.missing {
+  color: var(--gray-2);
+  font-weight: 600;
+}
+.qbrow.eps .qbtrack {
+  display: none;
+}
+.qbx {
+  font-size: 7.5px;
+  font-weight: 700;
+  color: var(--gray);
+  text-align: center;
+  margin-top: 5px;
+  white-space: nowrap;
+}
+.qbx.prov {
+  color: var(--orange-dk);
+  font-weight: 900;
+}
+.qbx.missing {
+  color: var(--gray-2);
+  font-weight: 600;
+}
+.pchip {
+  font-size: 6.5px;
+  font-weight: 800;
+  background: var(--orange-bg);
+  color: var(--orange-dk);
+  padding: 1px 3px;
+  border-radius: 3px;
+  margin-left: 2px;
+}
+
+/* ---- ZeroAxisBars (.zbrow/.zbtop/.zbbot/.zline) — 목업 342-349줄, 화면 ④ 순이익 ---- */
+.zbrow {
+  display: flex;
+  gap: 6px;
+  position: relative;
+}
+.zbcol {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.zbtop {
+  height: 56px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.zbbot {
+  height: 26px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+.zbf {
+  width: 78%;
+  background: #c5cec7;
+  border-radius: 5px 5px 0 0;
+  position: relative;
+}
+.zbbot .zbf {
+  border-radius: 0 0 5px 5px;
+  background: #b9c7d8;
+}
+.zbf.prov {
+  background: rgba(242, 163, 30, 0.07);
+  border: 1.5px dashed var(--prov);
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+}
+.zbf.empty {
+  background: var(--line);
+}
+.zline {
+  height: 1px;
+  background: var(--gray-2);
+  opacity: 0.5;
+}
+
+/* ---- GroupedBars (.bars/.bar-a/.bar-b) — 목업 150-157줄, 화면 ⑥ 손익 추이(매출+영업이익) ---- */
+.bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 7px;
+  height: 82px;
+  padding: 0 2px;
+}
+.bcol {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  height: 100%;
+  justify-content: flex-end;
+}
+.bwrap {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 3px;
+}
+.bar-a {
+  width: 9px;
+  background: var(--green);
+  border-radius: 2px 2px 0 0;
+}
+.bar-b {
+  width: 9px;
+  background: var(--green-bd);
+  border-radius: 2px 2px 0 0;
+}
+.bar-a.empty,
+.bar-b.empty {
+  background: var(--line);
+}
+.blabel {
+  font-family: var(--mono);
+  font-size: 8px;
+  color: var(--gray);
+  font-weight: 600;
+}
+.leg {
+  display: flex;
+  gap: 11px;
+  margin-top: 9px;
+  font-size: 8.5px;
+  font-weight: 600;
+  color: var(--gray);
+}
+.leg .d {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  display: inline-block;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+/* ---- CashFlowDiverging (.flowrow/.fill.pos|.neg) — 목업 160-166줄, 화면 ⑥ 현금흐름 ---- */
+.flowrow {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 0;
+}
+.flowrow .fl {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ink-2);
+  width: 52px;
+  flex: none;
+}
+.flowrow .track {
+  flex: 1;
+  height: 14px;
+  background: var(--wash);
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+.flowrow .fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 4px;
+}
+.fill.pos {
+  background: var(--green);
+  left: 50%;
+}
+.fill.neg {
+  background: #a9c5e3;
+  right: 50%;
+}
+.flowrow .fv {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  width: 46px;
+  text-align: right;
+  flex: none;
+}
+/* 목업 markup은 .fv.up/.fv.down을 쓰지만 해당 CSS 규칙이 없었다(누락) — 프로젝트 컨벤션
+   (상승 --up 적색 · 하락 --down 청색)에 맞춰 여기서 추가한다. */
+.fv.up {
+  color: var(--up);
+}
+.fv.down {
+  color: var(--down);
+}
+
+/* ---- LineChart (<polyline> + stroke-dasharray) — 목업 630-644줄, 화면 ④ EPS ---- */
+.cnote {
+  font-size: 8.5px;
+  color: var(--gray-2);
+  font-weight: 700;
+  margin-top: 8px;
+  padding-top: 7px;
+  border-top: 1px solid var(--line-2);
+}
+
+/* ---- PieChart (.piesvg + <path> arc) — 목업 321-326줄, 화면 ③ 사업부문별 매출 비중 ---- */
+.pierow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.piesvg {
+  width: 104px;
+  height: 104px;
+  flex: none;
+}
+.pieleg {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.pl {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+.pl i {
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+  flex: none;
+}
+.pl b {
+  margin-left: auto;
+  font-weight: 900;
+  font-size: 11.5px;
+}
+.pl b.muted {
+  color: var(--gray-2);
+  font-weight: 700;
+}
+
+/* ---- StackedBar100 (.mix/.mixlist) — 목업 369-375줄, 화면 ⑦ 재무상태(자산 구성 등) ---- */
+.mix {
+  display: flex;
+  height: 20px;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+.mix i {
+  display: block;
+  height: 100%;
+}
+.mixlist {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 9px;
+}
+.mx {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+.mx i {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex: none;
+}
+.mx b {
+  margin-left: auto;
+  font-weight: 900;
+}
+.mx b.muted {
+  color: var(--gray-2);
+  font-weight: 700;
+}
+.mx em {
+  font-style: normal;
+  color: var(--gray-2);
+  font-size: 8.5px;
+  font-weight: 700;
+  margin-left: 6px;
+  width: 36px;
+  text-align: right;
+}
+
+/* ---- MetricValue — displayState 6종 단일 렌더링 진입점 (플랜 §7) ----
+   목업에 1:1 대응 클래스가 없어 이 컴포넌트 전용으로 신설. 토큰(--ink/--gray/--gray-2/--mono)과
+   기존 .tier 배지는 위에서 이식한 것을 그대로 재사용한다. */
+.mv {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+  font-family: var(--mono);
+}
+.mv-num {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+.mv-num.muted {
+  color: var(--gray-2);
+  font-weight: 700;
+}
+.mv-note,
+.mv-basis {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--gray);
+}
