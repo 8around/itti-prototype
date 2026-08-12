@@ -309,8 +309,11 @@ a {
   color: var(--orange-dk);
   font-weight: 900;
 }
-.qbv.down {
-  color: var(--down);
+/* v2 T3 — ZeroAxisBars 음수(zbbot) 값 텍스트. 막대 배색(--up)과 맞춰 예전 .qbv.down(청색)을
+   대체한다. QuarterBars는 이 클래스를 쓰지 않으므로(항상 양수 스케일) 영향 없음. */
+.qbv.neg {
+  color: var(--up);
+  font-weight: 800;
 }
 .qbv.missing {
   color: var(--gray-2);
@@ -374,15 +377,25 @@ a {
   border-radius: 5px 5px 0 0;
   position: relative;
 }
+/* v2 T3 — 승인 규칙 2(손실 분기는 기준선 아래) 준수 확인용 배색 수정: 이전 청색(#b9c7d8,
+   --down 계열)은 "하락"으로 착각되기 쉬워 학습가이드 bars()가 쓰는 --up(적색) 계열로 교체. */
 .zbbot .zbf {
   border-radius: 0 0 5px 5px;
-  background: #b9c7d8;
+  background: var(--up);
 }
 .zbf.prov {
   background: rgba(242, 163, 30, 0.07);
   border: 1.5px dashed var(--prov);
   border-bottom: none;
   border-radius: 6px 6px 0 0;
+}
+/* 음수(zbbot) 잠정 막대 — 위쪽 rule과 셀렉터 특이도(0,3,0 > 0,2,0)로 자동 우선 적용. 바닥선에
+   닿는 변은 위쪽(zbtop과 반대)이라 border-top을 지우고 아래쪽 모서리만 둥글린다. */
+.zbbot .zbf.prov {
+  background: rgba(242, 163, 30, 0.07);
+  border: 1.5px dashed var(--prov);
+  border-top: none;
+  border-radius: 0 0 6px 6px;
 }
 .zbf.empty {
   background: var(--line);
@@ -391,6 +404,16 @@ a {
   height: 1px;
   background: var(--gray-2);
   opacity: 0.5;
+}
+/* v2 T3 — compactLabels prop: 분기 수가 많을 때(8분기+) 라벨·값 폰트를 줄여 겹침을 줄인다. */
+.zbrow.compact {
+  gap: 3px;
+}
+.zbrow.compact .qbx {
+  font-size: 6.5px;
+}
+.zbrow.compact .qbv {
+  font-size: 7px;
 }
 
 /* ---- GroupedBars (.bars/.bar-a/.bar-b) — 목업 150-157줄, 화면 ⑥ 손익 추이(매출+영업이익) ---- */
@@ -441,6 +464,7 @@ a {
 }
 .leg {
   display: flex;
+  flex-wrap: wrap;
   gap: 11px;
   margin-top: 9px;
   font-size: 8.5px;
@@ -517,6 +541,22 @@ a {
   margin-top: 8px;
   padding-top: 7px;
   border-top: 1px solid var(--line-2);
+}
+/* v2 T3 — LineChart 확장: 음수 값 텍스트(성장률·비율이 0 아래로 갈 때) + points[].state 칩
+   (예: "흑자전환" — 분모가 적자라 %가 무의미할 때 값 대신 표시, .qbx 안에 중첩해 기존 중앙
+   정렬을 그대로 물려받는다). */
+.qbx.neg {
+  color: var(--up);
+}
+.statechip {
+  display: inline-block;
+  font-size: 8px;
+  font-weight: 800;
+  background: var(--green-bg);
+  color: var(--green-dp);
+  padding: 2px 6px;
+  border-radius: 10px;
+  white-space: nowrap;
 }
 
 /* ---- PieChart (.piesvg + <path> arc) — 목업 321-326줄, 화면 ③ 사업부문별 매출 비중 ---- */
@@ -608,6 +648,156 @@ a {
   margin-left: 6px;
   width: 36px;
   text-align: right;
+}
+
+/* ============================================================
+   v2 T3 — 차트 컴포넌트 확장 5종 (신설 3종 + 확장 2종은 위 기존 섹션에서 처리)
+   출처: docs/goals-in-2months/이띠_데이터항목_학습가이드.html 하단 <script>의 bars()/stacked()/
+   line()/epsDiv() 기하를 그대로 이식. ZeroAxisBars/LineChart 확장분은 위 해당 섹션에 이미 추가.
+   ============================================================ */
+
+/* ---- StackedBarsAbs (.sbarow/.sbastack/.sbaseg) — 학습가이드 stacked(), SET2 자산 구성 ----
+   StackedBar100(가로·100% 정규화)과 별개 컴포넌트. 세로·절대값 스케일이라 기간 간 합계 변화가
+   막대 높이 차이로 그대로 드러난다. */
+.sbarow {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+.sbacol {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.sbatrack {
+  height: 86px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.sbastack {
+  width: 78%;
+  position: relative;
+  display: flex;
+  flex-direction: column-reverse;
+}
+.sbastack.empty {
+  background: var(--line);
+}
+.sbaseg {
+  width: 100%;
+}
+.sbaseg:first-child {
+  border-radius: 0 0 5px 5px;
+}
+.sbaseg:last-child {
+  border-radius: 5px 5px 0 0;
+}
+.sbaseg:only-child {
+  border-radius: 5px;
+}
+
+/* ---- OverlaidBars (.obrow/.obouter/.obinner/.obchip) — 학습가이드 epsDiv(), SET6 EPS+배당 ----
+   같은 x·같은 바닥에서 바깥(EPS, opacity .4) 위에 안쪽(DPS, 진한색)을 겹친다. ZERO_BY_FACT(무배당
+   확인)와 null(데이터 없음)을 칩 문구로 구분한다(승인 규칙 4). */
+.obrow {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+.obcol {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+}
+.obtrack {
+  height: 86px;
+  width: 100%;
+  position: relative;
+}
+.obouter {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 70%;
+  background: var(--green);
+  opacity: 0.4;
+  border-radius: 5px 5px 0 0;
+}
+.obouter.empty {
+  background: var(--line);
+  opacity: 1;
+}
+.obinner {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 34%;
+  background: var(--green);
+  border-radius: 3px 3px 0 0;
+}
+.obchip {
+  position: absolute;
+  left: 50%;
+  bottom: 2px;
+  transform: translateX(-50%);
+  font-size: 6.5px;
+  font-weight: 800;
+  background: var(--line-2);
+  color: var(--gray);
+  padding: 1px 4px;
+  border-radius: 3px;
+  white-space: nowrap;
+  z-index: 1;
+}
+.obchip.muted {
+  color: var(--gray-2);
+  background: transparent;
+  font-weight: 700;
+}
+
+/* ---- SignedGroupedBars (.sgrow/.sgtop/.sgbot/.sgbar) — 학습가이드 bars() 발산 막대의 다계열
+   확장, SET3 현금흐름(영업/투자/재무 ±). ZeroAxisBars(단일 계열)와 같은 zbtop/zbbot 62:38
+   비율의 0축 분할을 쓰고, 계열 색은 CHART_PALETTE. 막대가 얇아(9px) 개별 숫자 라벨은
+   GroupedBars와 같은 이유로 생략한다(범례로 갈음). */
+.sgrow {
+  display: flex;
+  gap: 10px;
+}
+.sgcol {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.sgtop {
+  height: 56px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 3px;
+}
+.sgbot {
+  height: 26px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 3px;
+}
+.sgbar {
+  width: 9px;
+  border-radius: 2px 2px 0 0;
+}
+.sgbot .sgbar {
+  border-radius: 0 0 2px 2px;
+}
+.sgbar.empty {
+  background: var(--line);
 }
 
 /* ---- MetricValue — displayState 6종 단일 렌더링 진입점 (플랜 §7) ----

@@ -34,7 +34,10 @@ export type DisplayState =
   | "MISSING" // 우리가 못 읽음 → 데이터 없음
   | "NA_NEGATIVE_BASE" // 분모 음수 → N/A
   | "NOT_IN_PROFILE" // 이 프로필에 해당 없음 (T4에서는 판정하지 않음 — T7 소관)
-  | "SOURCE_NOT_AVAILABLE"; // DART 미제공
+  | "SOURCE_NOT_AVAILABLE" // DART 미제공
+  | "TURN_TO_PROFIT" // 흑자전환 (직전 ≤0, 당기 >0)
+  | "TURN_TO_LOSS" // 적자전환 (직전 >0, 당기 ≤0)
+  | "LOSS_CONTINUED"; // 적자지속 (직전 ≤0, 당기 ≤0)
 
 export type Resolution = {
   metricKey: string;
@@ -50,7 +53,15 @@ export type Resolution = {
   displayState: DisplayState;
   derivation?: string; // "Q4 = 300,870,903,000,000 − 225,082,634,000,000"
   parserVersion: string;
+  /**
+   * v2 T2 — 클라이언트 승인 규칙 3 "잠정치는 점선" 대상 신호. 직독이 아니라 인접 보고서 차분으로
+   * 만든 값(IS/CIS Q4 역산, CF Q2~Q4 단일화)에만 true — 직독값(Q1~Q3 IS/CIS, 전 분기 BS, Q1 CF)
+   * 에는 아예 세팅하지 않는다(undefined). EPS Q4는 여기에 더해 가중평균주식수 변동으로 근사치라는
+   * 주의 문구를 derivation에 추가로 남긴다.
+   */
+  provisional?: boolean;
 };
 
-/** T4에서는 OK/MISSING/ZERO_BY_FACT/NA_NEGATIVE_BASE 4종만 실제로 배정한다 (NOT_IN_PROFILE·SOURCE_NOT_AVAILABLE은 T7 소관). */
-export const PARSER_VERSION = "t4.1";
+/** T4에서는 OK/MISSING/ZERO_BY_FACT/NA_NEGATIVE_BASE 4종만 실제로 배정한다 (NOT_IN_PROFILE·SOURCE_NOT_AVAILABLE은 T7 소관).
+ *  v2 T2 — 분기 축 + QoQ/YoY(TURN_TO_PROFIT/TURN_TO_LOSS/LOSS_CONTINUED) + provisional 필드 추가로 범프. */
+export const PARSER_VERSION = "v2t2.1";

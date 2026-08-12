@@ -28,4 +28,7 @@ export const CORP = {
   NH투자증권: "00120182",
   삼성생명: "00126256",
   DB손해보험: "00159102",
+  // v2 T2 — QoQ/YoY 전환 상태(TURN_TO_PROFIT/TURN_TO_LOSS) 실측 케이스에 쓰인다.
+  SK하이닉스: "00164779",
+  POSCO홀딩스: "00155319",
 } as const;

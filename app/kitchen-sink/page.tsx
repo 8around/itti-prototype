@@ -3,10 +3,13 @@ import type { Metadata } from "next";
 import CashFlowDiverging from "@/components/charts/CashFlowDiverging";
 import GroupedBars from "@/components/charts/GroupedBars";
 import LineChart from "@/components/charts/LineChart";
+import OverlaidBars from "@/components/charts/OverlaidBars";
 import PieChart from "@/components/charts/PieChart";
 import PnlWaterfall from "@/components/charts/PnlWaterfall";
 import QuarterBars from "@/components/charts/QuarterBars";
+import SignedGroupedBars from "@/components/charts/SignedGroupedBars";
 import StackedBar100 from "@/components/charts/StackedBar100";
+import StackedBarsAbs from "@/components/charts/StackedBarsAbs";
 import ZeroAxisBars from "@/components/charts/ZeroAxisBars";
 import MetricValue from "@/components/MetricValue";
 import type { DisplayState } from "@/lib/normalize/types";
@@ -63,10 +66,12 @@ export default function KitchenSinkPage() {
   return (
     <main className={styles.page}>
       <div>
-        <div className={styles.title}>차트 프리미티브 8종 + MetricValue</div>
+        <div className={styles.title}>차트 프리미티브 11종 + MetricValue</div>
         <p className={styles.lead}>
-          목업 화면의 CSS/SVG 프리미티브를 그대로 이식한 서버 컴포넌트 데모. 값은 전부 목업 원본 화면의 하드코딩된
-          숫자를 그대로 인용했다(T6 완료 판정 §8 예외). 트리 전체에 클라이언트 JS가 0바이트다.
+          목업 화면의 CSS/SVG 프리미티브를 그대로 이식한 서버 컴포넌트 데모(8종, T6) + v2 T3에서 확장한
+          ZeroAxisBars·LineChart와 신설한 StackedBarsAbs·OverlaidBars·SignedGroupedBars(3종). 값은 목업/학습가이드
+          원본의 하드코딩된 숫자를 그대로 인용했다(T6 완료 판정 §8 예외 — 킷친싱크 한정). 트리 전체에 클라이언트
+          JS가 0바이트다.
         </p>
       </div>
 
@@ -185,6 +190,148 @@ export default function KitchenSinkPage() {
               { label: "기타", value: 820 },
             ]}
           />
+        </div>
+      </section>
+
+      <div>
+        <div className={styles.title}>v2 T3 — 차트 확장 5종 데모</div>
+        <p className={styles.lead}>
+          클라이언트 승인 차트 문법(슬랙 #pj-외부-이띠, 2026-08-12)의 근거인{" "}
+          <code>이띠_데이터항목_학습가이드.html</code> 하단 <code>&lt;script&gt;</code>의 <code>bars()</code>/
+          <code>stacked()</code>/<code>line()</code>/<code>epsDiv()</code> 예시 수치를 그대로 인용해 검증한다.
+        </p>
+      </div>
+
+      <section className={styles.grid}>
+        <div className={styles.demo}>
+          <div className={styles.demoTitle}>ZeroAxisBars (확장 — provisional·unit·compactLabels)</div>
+          <div className={styles.demoRef}>학습가이드 c1a 영업이익 · bars([160,175,168,-30,200]) 그대로 인용</div>
+          <ZeroAxisBars
+            unit="억원 · 최근 5분기"
+            compactLabels
+            bars={[
+              { label: "1Q25", value: 160 },
+              { label: "2Q25", value: 175 },
+              { label: "3Q25", value: 168 },
+              { label: "4Q25", value: -30 },
+              { label: "1Q26", value: 200, provisional: true },
+            ]}
+          />
+          <div className={styles.demoNote}>
+            4Q25(-30)이 기준선 아래 적색으로 그려지는지(승인 규칙 2), 1Q26이 점선 테두리+&quot;잠정&quot; 칩으로
+            구분되는지(승인 규칙 3) 확인하는 데모.
+          </div>
+        </div>
+
+        <div className={styles.demo}>
+          <div className={styles.demoTitle}>LineChart (확장 — baseline 기준선)</div>
+          <div className={styles.demoRef}>학습가이드 c5 부채비율 threshold 문법 인용 · 값은 도메인 강제 포함 검증용으로 낮게 구성</div>
+          <LineChart
+            color="var(--chart-4)"
+            unit="%"
+            baseline={{ value: 100, label: "빨간 점선 = 부채비율 100% 기준(도메인에 강제 포함)" }}
+            points={[
+              { label: "1Q25", value: 42 },
+              { label: "2Q25", value: 45 },
+              { label: "3Q25", value: 48 },
+              { label: "4Q25", value: 44 },
+              { label: "1Q26", value: 50 },
+            ]}
+          />
+          <div className={styles.demoNote}>
+            값이 전부 100%를 크게 밑돌아도(42~50%) 100% 기준선이 도메인에 강제 포함되어 화면 밖으로 밀려나지
+            않는지 확인하는 데모.
+          </div>
+        </div>
+
+        <div className={styles.demo}>
+          <div className={styles.demoTitle}>LineChart (확장 — state 칩)</div>
+          <div className={styles.demoRef}>학습가이드 c1b 영업이익 QoQ · line([9,-4,-118], {"{sign:true}"}) 인용 + 1Q26 흑자전환 칩 추가</div>
+          <LineChart
+            unit="%"
+            sign
+            points={[
+              { label: "2Q25", value: 9 },
+              { label: "3Q25", value: -4 },
+              { label: "4Q25", value: -118 },
+              { label: "1Q26", state: "흑자전환" },
+            ]}
+          />
+          <div className={styles.demoNote}>
+            1Q26은 직전 분기(4Q25)가 적자라 QoQ %가 무의미 — 값 대신 상태 칩을 표시하고 선이 끊기는지 확인하는
+            데모(학습가이드 c1b 캡션과 동일한 시나리오).
+          </div>
+        </div>
+
+        <div className={styles.demo}>
+          <div className={styles.demoTitle}>StackedBarsAbs (신설)</div>
+          <div className={styles.demoRef}>학습가이드 c2 자산 구성 · stacked([[1150,750],[1180,780],[1200,800]]) 그대로 인용 · 억원</div>
+          <StackedBarsAbs
+            bars={[
+              {
+                label: "2024",
+                segments: [
+                  { label: "자본", value: 1150 },
+                  { label: "부채", value: 750 },
+                ],
+              },
+              {
+                label: "2025",
+                segments: [
+                  { label: "자본", value: 1180 },
+                  { label: "부채", value: 780 },
+                ],
+              },
+              {
+                label: "최근",
+                segments: [
+                  { label: "자본", value: 1200 },
+                  { label: "부채", value: 800 },
+                ],
+              },
+            ]}
+          />
+          <div className={styles.demoNote}>
+            StackedBar100(100% 정규화)과 달리 막대 높이 자체가 합계(자산)라서 기간이 갈수록 막대가 커지는 절대
+            크기 변화가 그대로 보인다 — 아래 자본, 위 부채.
+          </div>
+        </div>
+
+        <div className={styles.demo}>
+          <div className={styles.demoTitle}>OverlaidBars (신설)</div>
+          <div className={styles.demoRef}>
+            학습가이드 c6 EPS+배당 겹침 epsDiv() 문법 인용 · 2023·2024는 무배당/데이터없음 대비 데모용 구성 · 원
+          </div>
+          <OverlaidBars
+            outerLabel="EPS"
+            innerLabel="DPS"
+            bars={[
+              { label: "2022", outer: 3800, inner: 600 },
+              { label: "2023", outer: 4200, inner: 0, innerState: "ZERO_BY_FACT" },
+              { label: "2024", outer: 4600, inner: null },
+              { label: "2025", outer: 5100, inner: 1100 },
+            ]}
+          />
+          <div className={styles.demoNote}>
+            2023(ZERO_BY_FACT)은 &quot;무배당&quot; 칩, 2024(inner: null)는 &quot;—&quot;(데이터 없음) 칩으로
+            나란히 — 배당 0원과 데이터 없음을 구분하는 승인 규칙 4 검증용.
+          </div>
+        </div>
+
+        <div className={styles.demo}>
+          <div className={styles.demoTitle}>SignedGroupedBars (신설)</div>
+          <div className={styles.demoRef}>학습가이드 c3 현금흐름(24.3Q, [250,-100,-60]) 인용 + 24.4Q는 다기간 데모용 구성값 · 억원</div>
+          <SignedGroupedBars
+            seriesLabels={["영업", "투자", "재무"]}
+            groups={[
+              { label: "24.3Q", values: [250, -100, -60] },
+              { label: "24.4Q", values: [310, -150, 40] },
+            ]}
+          />
+          <div className={styles.demoNote}>
+            0축 기준으로 3계열이 각각 위(+)/아래(−)로 갈리는지, 24.4Q 재무(+40)처럼 계열별로 부호가 바뀌는
+            경우도 정상 렌더되는지 확인하는 데모.
+          </div>
         </div>
       </section>
 

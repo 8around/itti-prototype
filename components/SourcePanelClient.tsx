@@ -45,6 +45,10 @@ const DISPLAY_STATE_LABEL: Record<DisplayState, string> = {
   NA_NEGATIVE_BASE: "N/A(분모 음수)",
   NOT_IN_PROFILE: "해당 없음(프로필)",
   SOURCE_NOT_AVAILABLE: "원천 미확보",
+  // v2 T2
+  TURN_TO_PROFIT: "흑자전환(QoQ/YoY)",
+  TURN_TO_LOSS: "적자전환(QoQ/YoY)",
+  LOSS_CONTINUED: "적자지속(QoQ/YoY)",
 };
 
 /**
@@ -102,6 +106,12 @@ function fallbackSummaryLine(resolution: Resolution): string {
       return "→ 이 프로필에는 해당 지표가 없음";
     case "SOURCE_NOT_AVAILABLE":
       return "→ DART가 제공하지 않는 원천";
+    case "TURN_TO_PROFIT":
+      return "→ 직전 기간 ≤0 → 당기 >0 (흑자전환 — %는 의미가 없어 상태만 표기)";
+    case "TURN_TO_LOSS":
+      return "→ 직전 기간 >0 → 당기 ≤0 (적자전환 — %는 의미가 없어 상태만 표기)";
+    case "LOSS_CONTINUED":
+      return "→ 직전·당기 모두 ≤0 (적자지속 — %는 의미가 없어 상태만 표기)";
     default:
       return "";
   }

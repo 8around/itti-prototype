@@ -27,26 +27,45 @@ export interface FinExtrasResult {
   resolutions: Record<string, Resolution>;
 }
 
-/** `fnlttSinglAcntAll__{corpCode}__{year}__11011__{fsDiv}` 스냅샷 요청 ID — SourcePanel 부착용으로도 재사용된다. */
-export function finExtrasAcntAllRequestId(corpCode: string, year: string, fsDiv: FsDiv): string {
-  return `fnlttSinglAcntAll__${corpCode}__${year}__11011__${fsDiv}`;
+/**
+ * `fnlttSinglAcntAll__{corpCode}__{year}__{reprtCode}__{fsDiv}` 스냅샷 요청 ID — SourcePanel
+ * 부착용으로도 재사용된다. `reprtCode`는 v2 T2 추가 — 기본값 "11011"이라 기존 호출부(연간, T7/T10)는
+ * 그대로 동작한다.
+ */
+export function finExtrasAcntAllRequestId(corpCode: string, year: string, fsDiv: FsDiv, reprtCode = "11011"): string {
+  return `fnlttSinglAcntAll__${corpCode}__${year}__${reprtCode}__${fsDiv}`;
 }
 
-/** candidates가 비어 있으면(STANDARD 프로필 등) 파일 I/O 자체를 생략한다. */
-export function resolveFinExtras(snapshotsDir: string, corpCode: string, year: string, candidates: MetricCandidate[]): FinExtrasResult {
+/**
+ * candidates가 비어 있으면(STANDARD 프로필 등) 파일 I/O 자체를 생략한다.
+ *
+ * v2 T2 — `reprtCode`(기본 "11011")·`field`(기본 "thstrm_amount") 파라미터 추가. 금융 확장
+ * 후보(fin-*-catalog.ts)는 전부 IS/CIS 계정이라 분기에서도 본 엔진(resolveStockQuarter)과 동일한
+ * 규약이 적용된다 — Q1~Q3는 `reprtCode`만 바꿔 `thstrm_amount`를 직독하면 되고, Q4 역산이 필요하면
+ * 호출부가 이 함수를 두 번(11011/thstrm_amount, 11014/thstrm_add_amount) 호출해 `deriveQ4`로
+ * 직접 합성한다(이 함수 자체는 단일 보고서 읽기만 책임진다 — 원장 엔진과 동일한 책임 분리).
+ */
+export function resolveFinExtras(
+  snapshotsDir: string,
+  corpCode: string,
+  year: string,
+  candidates: MetricCandidate[],
+  reprtCode = "11011",
+  field: "thstrm_amount" | "thstrm_add_amount" = "thstrm_amount",
+): FinExtrasResult {
   if (candidates.length === 0) {
     return { fsDiv: "CFS", fsDivFallbackApplied: false, resolutions: {} };
   }
 
   const fsRes = resolveFsDiv(
-    () => loadSnapshot<AcntAllBody>(snapshotsDir, finExtrasAcntAllRequestId(corpCode, year, "CFS")),
-    () => loadSnapshot<AcntAllBody>(snapshotsDir, finExtrasAcntAllRequestId(corpCode, year, "OFS")),
+    () => loadSnapshot<AcntAllBody>(snapshotsDir, finExtrasAcntAllRequestId(corpCode, year, "CFS", reprtCode)),
+    () => loadSnapshot<AcntAllBody>(snapshotsDir, finExtrasAcntAllRequestId(corpCode, year, "OFS", reprtCode)),
   );
   const list = fsRes.envelope?.body.list ?? [];
 
   const resolutions: Record<string, Resolution> = {};
   for (const c of candidates) {
-    resolutions[c.key] = resolveAcntAllField(c, list, "thstrm_amount", fsRes.fsDiv, fsRes.fsDivFallbackApplied);
+    resolutions[c.key] = resolveAcntAllField(c, list, field, fsRes.fsDiv, fsRes.fsDivFallbackApplied);
   }
   return { fsDiv: fsRes.fsDiv, fsDivFallbackApplied: fsRes.fsDivFallbackApplied, resolutions };
 }

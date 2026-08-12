@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import { ACNT_ALL_CANDIDATES } from "./catalog";
-import { deriveFcf, deriveOperatingMargin, deriveQ4, deriveRoa } from "./derive";
+import { deriveFcf, deriveOperatingMargin, deriveQ4, deriveQoQ, deriveQuarterCf, deriveRoa, deriveYoY, missingResolution } from "./derive";
 import { resolveAcntAllField } from "./resolve";
 import type { AcntAllBody } from "./resolve";
+import type { Resolution } from "./types";
 import { CORP, loadFixture } from "./test-support";
 
 function candidate(key: string) {
@@ -83,5 +84,74 @@ describe("deriveRoa / deriveOperatingMargin / deriveFcf", () => {
     const fcf = deriveFcf(operatingCf, capex);
     expect(fcf.normalized).toBe(21576266000000);
     expect(fcf.displayState).toBe("OK");
+  });
+});
+
+/** v2 T2 — 순수 함수 단위 테스트(스냅샷 불필요). 정수 리터럴로 4개 분기 부호 조합 경계를 고정한다. */
+function res(normalized: number | null, displayState: Resolution["displayState"] = "OK"): Resolution {
+  return { metricKey: "x", attempts: [], fsDiv: "CFS", fsDivFallbackApplied: false, normalized, displayState, parserVersion: "test" };
+}
+
+describe("deriveQuarterCf — CF 분기 단일화(Q2~Q4 차분, T1V 판정2)", () => {
+  it("당기 누적 − 직전 누적, derivation 라벨을 그대로 반영한다", () => {
+    const current = res(28761716000000); // 11012(반기) 누적
+    const prior = res(11866306000000); // 11013(1분기) 누적
+    const q2 = deriveQuarterCf("operating_cf", "Q2(CF)", current, prior);
+    expect(q2.displayState).toBe("OK");
+    expect(q2.normalized).toBe(16895410000000);
+    expect(q2.derivation).toBe("Q2(CF) = 28,761,716,000,000 − 11,866,306,000,000");
+  });
+
+  it("피연산자 중 하나라도 MISSING이면 MISSING(0 채우기 금지)", () => {
+    const q = deriveQuarterCf("operating_cf", "Q3(CF)", res(null, "MISSING"), res(11866306000000));
+    expect(q.displayState).toBe("MISSING");
+    expect(q.normalized).toBeNull();
+  });
+});
+
+describe("deriveQoQ/deriveYoY — 4분면 + MISSING (팀리드 브리프 승인 규칙)", () => {
+  it("직전>0, 당기>0 — 정상 %", () => {
+    const r = deriveQoQ("qoq_revenue", res(110), res(100));
+    expect(r.displayState).toBe("OK");
+    expect(r.normalized).toBeCloseTo(10, 6);
+  });
+
+  it("직전≤0, 당기>0 — TURN_TO_PROFIT(흑자전환), 수치는 숨긴다", () => {
+    const r = deriveYoY("yoy_operating_income", res(50), res(-30));
+    expect(r.displayState).toBe("TURN_TO_PROFIT");
+    expect(r.normalized).toBeNull();
+    expect(r.derivation).toContain("흑자전환");
+  });
+
+  it("직전>0, 당기≤0 — TURN_TO_LOSS(적자전환)", () => {
+    const r = deriveQoQ("qoq_net_income_attributable_to_owners", res(-10), res(20));
+    expect(r.displayState).toBe("TURN_TO_LOSS");
+    expect(r.normalized).toBeNull();
+  });
+
+  it("직전≤0, 당기≤0 — LOSS_CONTINUED(적자지속)", () => {
+    const r = deriveYoY("yoy_operating_income", res(-5), res(-20));
+    expect(r.displayState).toBe("LOSS_CONTINUED");
+    expect(r.normalized).toBeNull();
+  });
+
+  it("직전=0, 당기=0 — 경계값도 LOSS_CONTINUED(0은 '이익'이 아니라 '흑자 아님'으로 취급)", () => {
+    const r = deriveQoQ("qoq_revenue", res(0), res(0));
+    expect(r.displayState).toBe("LOSS_CONTINUED");
+  });
+
+  it("한쪽이 MISSING이면 growth도 MISSING", () => {
+    const r = deriveQoQ("qoq_revenue", res(null, "MISSING"), res(100));
+    expect(r.displayState).toBe("MISSING");
+  });
+});
+
+describe("missingResolution — 비교 대상 분기가 데이터셋 밖일 때의 자리표시", () => {
+  it("normalized null / MISSING / like의 fsDiv를 그대로 물려받는다", () => {
+    const like = res(100);
+    const m = missingResolution("qoq_revenue", like);
+    expect(m.normalized).toBeNull();
+    expect(m.displayState).toBe("MISSING");
+    expect(m.fsDiv).toBe(like.fsDiv);
   });
 });

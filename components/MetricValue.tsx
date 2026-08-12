@@ -67,6 +67,13 @@ function renderText(state: DisplayState, value: number | null | undefined, unit:
       return "해당 없음";
     case "SOURCE_NOT_AVAILABLE":
       return "원천 미확보";
+    // v2 T2 — QoQ/YoY 분모(직전 기간) 부호 전환. 숫자(%)가 아니라 부호 전환 사실 자체가 값이다.
+    case "TURN_TO_PROFIT":
+      return "흑자전환";
+    case "TURN_TO_LOSS":
+      return "적자전환";
+    case "LOSS_CONTINUED":
+      return "적자지속";
   }
 }
 
@@ -76,8 +83,13 @@ const TIER_CLASS: Record<NonNullable<MetricValueProps["tier"]>, string> = {
   T0: "tier t0",
 };
 
+// v2 T2 — "확인된 사실" 상태(값이 없는 게 아니라 명확한 질적 결과가 있는 상태)는 흐리게 처리하지
+// 않는다. ZERO_BY_FACT(무배당 확인)와 같은 취지 — TURN_TO_PROFIT/TURN_TO_LOSS/LOSS_CONTINUED는
+// %가 아닐 뿐 실제로 확인된 값이다(MISSING/NA_NEGATIVE_BASE 같은 데이터 공백이 아니다).
+const KNOWN_FACT_STATES: DisplayState[] = ["OK", "ZERO_BY_FACT", "TURN_TO_PROFIT", "TURN_TO_LOSS", "LOSS_CONTINUED"];
+
 export default function MetricValue({ state, value, unit, basis, tier, note }: MetricValueProps) {
-  const muted = state !== "OK" && state !== "ZERO_BY_FACT";
+  const muted = !KNOWN_FACT_STATES.includes(state);
   const text = renderText(state, value, unit);
 
   return (

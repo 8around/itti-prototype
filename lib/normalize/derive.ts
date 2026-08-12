@@ -86,3 +86,75 @@ export function deriveFcf(operatingCf: Resolution, capex: Resolution): Resolutio
     derivation: `FCF = ${formatAmount(operatingCf.normalized)} − ${formatAmount(capex.normalized)}`,
   };
 }
+
+/* -------------------------------------------------------------------------------------------- */
+/* v2 T2 — 분기 축 파생 (CF 단일분기화, QoQ/YoY)                                                  */
+/* -------------------------------------------------------------------------------------------- */
+
+/**
+ * CF(누적) 단일분기화 = 당기 reprt.thstrm − 직전 reprt.thstrm (T1V 판정2). `deriveQ4`와 같은 뺄셈
+ * 형태이지만 ① 피연산자가 둘 다 `thstrm_amount`(CF엔 `thstrm_add_amount` 필드 자체가 없다) ②
+ * 대상 분기가 Q2~Q4로 다양해 derivation 라벨을 호출부가 지정한다(예: "Q2(CF)").
+ */
+export function deriveQuarterCf(metricKey: string, label: string, current: Resolution, prior: Resolution): Resolution {
+  const base = baseOf(metricKey, current);
+  if (current.normalized === null || prior.normalized === null) {
+    return { ...base, normalized: null, displayState: "MISSING" };
+  }
+  const value = current.normalized - prior.normalized;
+  return {
+    ...base,
+    normalized: value,
+    displayState: "OK",
+    derivation: `${label} = ${formatAmount(current.normalized)} − ${formatAmount(prior.normalized)}`,
+  };
+}
+
+/**
+ * QoQ/YoY 공용 계산. 승인 규칙(팀리드 브리프): 직전·당기 둘 다 양수일 때만 통상 %를 계산하고,
+ * 그 외 3가지 부호 조합은 흑자전환/적자전환/적자지속 상태로 분류한다 — 그 구간은 %가 왜곡되므로
+ * (분모가 0에 가깝거나 음수) 숫자를 아예 감추고 상태만 노출한다(NA_NEGATIVE_BASE와 같은 취지).
+ */
+function deriveGrowth(kind: "QoQ" | "YoY", metricKey: string, current: Resolution, previous: Resolution): Resolution {
+  const base = baseOf(metricKey, current);
+  if (current.normalized === null || previous.normalized === null) {
+    return { ...base, normalized: null, displayState: "MISSING" };
+  }
+  const cur = current.normalized;
+  const prev = previous.normalized;
+
+  if (prev > 0 && cur > 0) {
+    const value = ((cur - prev) / Math.abs(prev)) * 100;
+    return { ...base, normalized: value, displayState: "OK", derivation: `${kind} = (${formatAmount(cur)} − ${formatAmount(prev)}) ÷ |${formatAmount(prev)}| × 100` };
+  }
+  if (prev <= 0 && cur > 0) {
+    return { ...base, normalized: null, displayState: "TURN_TO_PROFIT", derivation: `${kind} 흑자전환: 직전 ${formatAmount(prev)} → 당기 ${formatAmount(cur)}` };
+  }
+  if (prev > 0 && cur <= 0) {
+    return { ...base, normalized: null, displayState: "TURN_TO_LOSS", derivation: `${kind} 적자전환: 직전 ${formatAmount(prev)} → 당기 ${formatAmount(cur)}` };
+  }
+  return { ...base, normalized: null, displayState: "LOSS_CONTINUED", derivation: `${kind} 적자지속: 직전 ${formatAmount(prev)} → 당기 ${formatAmount(cur)}` };
+}
+
+/** QoQ(전분기 대비) — `metricKey`는 호출부가 `qoq_<key>` 형태로 넘긴다. */
+export function deriveQoQ(metricKey: string, current: Resolution, previous: Resolution): Resolution {
+  return deriveGrowth("QoQ", metricKey, current, previous);
+}
+
+/** YoY(전년 동분기 대비) — `metricKey`는 호출부가 `yoy_<key>` 형태로 넘긴다. */
+export function deriveYoY(metricKey: string, current: Resolution, previous: Resolution): Resolution {
+  return deriveGrowth("YoY", metricKey, current, previous);
+}
+
+/** 비교 대상 분기 자체가 데이터셋에 없을 때(예: 2023Q1의 직전분기 2022Q4) QoQ/YoY 입력으로 쓰는 자리표시 MISSING. */
+export function missingResolution(metricKey: string, like: Resolution): Resolution {
+  return {
+    metricKey,
+    attempts: [],
+    fsDiv: like.fsDiv,
+    fsDivFallbackApplied: like.fsDivFallbackApplied,
+    normalized: null,
+    displayState: "MISSING",
+    parserVersion: PARSER_VERSION,
+  };
+}
