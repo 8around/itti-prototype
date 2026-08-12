@@ -34,7 +34,7 @@ pnpm dev
 # 사전 요구: Node 20.x 또는 22.x
 corepack enable && corepack prepare pnpm@latest --activate
 
-git clone <이 저장소>   # 현재 원격 없음 — 디렉터리 복사로 대체
+git clone <원격 저장소 URL>
 cd itti-dart-prototype
 pnpm install
 pnpm approve-builds esbuild     # pnpm이 postinstall을 차단하므로 1회 승인 필요
@@ -66,27 +66,40 @@ pnpm dev
 
 에이전트가 할 수 없거나 하면 안 되는 것들이다.
 
-### 4-1. Vercel 배포 (다음 주 T12 범위 — 클라이언트에게 URL 공유 시)
+### 4-1. 원격 push + Vercel 배포
 
-이 저장소는 **원격 push가 없으므로 Vercel Git 연동을 못 쓴다.** CLI 직접 업로드 방식이다.
+**사전 점검 완료 상태** (2026-08-12 감사): 추적 파일에 API 키 평문 0건 · `.env*`/`.vercel`/`.superpowers` 전부 gitignore · 최대 파일 1.1MB(LFS 불필요) · **키 없이도 `pnpm build` 성공**(SSG는 커밋된 스냅샷만 사용) · `packageManager` 고정으로 Vercel이 pnpm 자동 감지.
+
+**① 원격 push (사람 — 저장소 생성·인증)**
 
 ```bash
-pnpm dlx vercel@latest login        # ← 브라우저 인증 (사람)
+# GitHub에 저장소 생성 — 반드시 Private 권장:
+#   specs 문서에 클라이언트사 인명·내부 논의가 포함되어 있음
 cd /Volumes/DYIexs/Projects/8around/itti/itti-dart-prototype
-pnpm dlx vercel link                # 새 프로젝트로 연결 (사람이 프롬프트 응답)
-pnpm dlx vercel env add DART_API_KEY production   # 키 값 입력 (사람)
-pnpm dlx vercel deploy --prod       # 빌드·업로드 (이후 재배포는 이 한 줄)
+git remote add origin <원격 URL>
+git push -u origin main
 ```
 
-배포 전 반드시:
-- [ ] **Vercel 대시보드 → Settings → Deployment Protection 활성화** (클라이언트 외 접근 차단, 검색 인덱싱 방지)
-- [ ] 배포된 URL에서 `/compare/pnl`의 "지금 다시 호출" 동작 확인 (env 키가 제대로 들어갔는지)
+**② Vercel Git 연동 (사람 — 대시보드)**
 
-> 참고: 스냅샷 21MB가 `public/`에 있어 업로드가 1~2분 걸릴 수 있다. 정상이다.
+1. vercel.com → Add New Project → 방금 올린 저장소 Import
+2. Framework: Next.js 자동 감지, Root Directory: 저장소 루트 그대로 (설정 불필요)
+3. **Environment Variables에 `DART_API_KEY` 추가** — 없어도 빌드·화면은 전부 뜨지만 "지금 다시 호출"(라이브 대조)이 실패한다
+4. Deploy → 이후 `git push`마다 자동 배포
 
-### 4-2. DART API 키 재발급 (보안 — 권장)
+> CLI 직접 업로드(`vercel deploy --prod`)도 여전히 가능 — Git 연동이 있으면 불필요.
 
-현재 키는 개발 과정에서 채팅·슬랙 등에 노출된 적이 있다. **클라이언트 공개 전 opendart.fss.or.kr에서 재발급**하고 `.env.local`(+Vercel env)만 갱신하면 된다. 코드 수정 불필요.
+**③ 배포 직후 확인 (사람)**
+
+- [ ] `/compare/pnl`에서 collapse 열고 **"지금 다시 호출"** 1회 — 「일치」가 뜨면 env 키·아웃바운드 정상. 만약 `012`(접근할 수 없는 IP) 에러가 보이면 DART 키의 IP 제한 문제이니 opendart.fss.or.kr에서 키 설정 확인
+- [ ] 접근 제어 결정: 클라이언트 외 비공개가 필요하면 **Deployment Protection**(Vercel 대시보드 → Settings). 프로덕션 URL 보호는 플랜에 따라 유료일 수 있음 — 무료로 가려면 **프리뷰 URL 공유**(기본적으로 Vercel 인증이 걸림)가 대안
+- [ ] 검색 인덱싱 방지가 필요하면 `robots.txt` noindex 추가 (현재 없음)
+
+> 참고: 스냅샷 21MB가 `public/`에 있어 첫 push·빌드가 1~2분 걸릴 수 있다. 정상이다.
+
+### 4-2. DART API 키 재발급 (보안 — 원격 공개 전 강력 권장)
+
+현재 키는 개발 과정에서 채팅·슬랙 등에 노출된 적이 있다. **원격 push·배포 전 opendart.fss.or.kr에서 재발급**하고 `.env.local`과 Vercel Environment Variables만 갱신하면 된다. 코드 수정 불필요. (커밋된 파일에는 키가 없으므로 저장소 히스토리는 안전하다 — 2026-08-12 전수 검사 0건.)
 
 ### 4-3. 클라이언트 확인 3건 (다음 미팅 안건)
 
