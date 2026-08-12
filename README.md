@@ -2,7 +2,7 @@
 
 DART 공시 원본 값을 그대로 추적할 수 있는 20종목 재무 프로토타입.
 정규화 엔진(`data/derived.json`) · 출처 collapse(SourcePanel) · 프로필별(표준/금융) 손익 화면을
-Next.js App Router 위에 실증한다. 전체 계획·완료판정은 [`docs/prototype-plan.md`](docs/prototype-plan.md) 참고.
+Next.js App Router 위에 실증한다. 계획 문서는 `docs/specs/`에 년월(YYMM) 접두사로 관리한다 — [v1](docs/specs/2608_prototype-plan.md) · [v2 차트 개편](docs/specs/2608_prototype-v2-chart-refit.md).
 
 ---
 
@@ -113,4 +113,4 @@ public/snapshots/  DART 원본 응답 467건 (재현성 위해 커밋)
 scripts/        snapshot-fetch / snapshot-build / resolve-corp-codes
 ```
 
-관련 문서: [개발 플랜](docs/prototype-plan.md) · [DART 명세 9종](../ete-django/docs/dart-api/) · [도메인 입문(Artifact)](https://claude.ai/code/artifact/41b656d6-b3d4-49c7-af00-1ad56806fa7c)
+관련 문서: [개발 플랜 v1](docs/specs/2608_prototype-plan.md) · [v2 차트 개편](docs/specs/2608_prototype-v2-chart-refit.md) · [DART 명세 9종](../ete-django/docs/dart-api/) · [도메인 입문(Artifact)](https://claude.ai/code/artifact/41b656d6-b3d4-49c7-af00-1ad56806fa7c)

@@ -2,10 +2,10 @@
 
 **상태** 계획 확정 · 구현 미착수
 **작성일** 2026-08-11
-**위치** `itti/itti-dart-prototype/docs/` — 이 프로토타입의 작업 디렉터리
-**관련 자료** [도메인 입문서 (Artifact)](https://claude.ai/code/artifact/41b656d6-b3d4-49c7-af00-1ad56806fa7c) · [`dart-api/`](../../ete-django/docs/dart-api/) 명세 9종
+**위치** `itti/itti-dart-prototype/docs/specs/` — 이 프로토타입의 작업 디렉터리
+**관련 자료** [도메인 입문서 (Artifact)](https://claude.ai/code/artifact/41b656d6-b3d4-49c7-af00-1ad56806fa7c) · [`dart-api/`](../../../ete-django/docs/dart-api/) 명세 9종
 
-> DART 명세 문서는 `ete-django` 저장소에, 이 문서는 프로토타입 저장소에 있다. 링크가 `../../ete-django/docs/` 상대경로이므로 **두 디렉터리가 `itti/` 아래 나란히 있어야** 열린다.
+> DART 명세 문서는 `ete-django` 저장소에, 이 문서는 프로토타입 저장소에 있다. 링크가 `../../../ete-django/docs/` 상대경로이므로 **두 디렉터리가 `itti/` 아래 나란히 있어야** 열린다.
 
 ---
 
@@ -183,7 +183,7 @@
 
 **결정적 근거: DART 재무 데이터는 분기당 1회 갱신되는 저빈도 데이터다.** 실시간 호출의 정보 가치가 0에 수렴한다. 반면 클라이언트 미팅 중 화면이 비는 리스크는 치명적이다.
 
-"진짜 호출한 게 맞냐"는 의심은 **각 collapse의 "지금 다시 호출" 버튼**이 해결한다. 라이브 응답과 스냅샷을 나란히 놓고 일치/상이를 표시하므로, 오히려 **스키마 변경 감지 카나리 역할까지 겸한다** ([`dart-api/schema-monitoring.md`](../../ete-django/docs/dart-api/schema-monitoring.md)의 UI 버전).
+"진짜 호출한 게 맞냐"는 의심은 **각 collapse의 "지금 다시 호출" 버튼**이 해결한다. 라이브 응답과 스냅샷을 나란히 놓고 일치/상이를 표시하므로, 오히려 **스키마 변경 감지 카나리 역할까지 겸한다** ([`dart-api/schema-monitoring.md`](../../../ete-django/docs/dart-api/schema-monitoring.md)의 UI 버전).
 
 ### 3레인 구조
 
@@ -711,7 +711,7 @@ FIN_* 안정성 (전부 sourceAvailable: false — DART 미제공):
 
 ## 15. 구현 시 체크리스트
 
-프로토타입 범위에서 **실제로 터지는** 함정만 추렸다. 전체 58개는 [`dart-api/README.md` §4](../../ete-django/docs/dart-api/README.md) 참조.
+프로토타입 범위에서 **실제로 터지는** 함정만 추렸다. 전체 58개는 [`dart-api/README.md` §4](../../../ete-django/docs/dart-api/README.md) 참조.
 
 - `#1` 모든 에러가 HTTP 200 → `body.status !== "000"` 판정
 - `#2` `status != 000`이면 `list` 키 없음 → `body.list ?? []`
@@ -743,11 +743,11 @@ FIN_* 안정성 (전부 sourceAvailable: false — DART 미제공):
 
 | 문서 | 용도 |
 |---|---|
-| [`dart-api/README.md`](../../ete-django/docs/dart-api/README.md) | 함정 58개 · status 처리 · 백필 전략 — **T1·T3·T4 기준** |
-| [`dart-api/ds003-financials.md`](../../ete-django/docs/dart-api/ds003-financials.md) | §1.5 계정명 불일치 실측표 · §1.6 금융업 손익 구조 · §1.8 4Q 역산 검산 — **T4·T7 직접 근거** |
-| [`dart-api/ds002-periodic-reports.md`](../../ete-django/docs/dart-api/ds002-periodic-reports.md) | `alotMatter` 15행 인덱스 규약 · 무배당/적자 케이스 — **T4 근거** |
-| [`dart-api/ds001-disclosure.md`](../../ete-django/docs/dart-api/ds001-disclosure.md) | `company.json` 필드 · corpCode ZIP 처리 · KSIC 앞2자리 — **T2 근거** |
-| [`dart-api/indicators.md`](../../ete-django/docs/dart-api/indicators.md) | 지표 66개 · ROA·영업이익률 미제공 확정 — **T4 자체계산 목록** |
-| [`dart-api/schema-monitoring.md`](../../ete-django/docs/dart-api/schema-monitoring.md) | 카나리 설계 — **T5 "지금 다시 호출"의 근거** |
-| `../../ete-django/docs/goals-in-2months/이띠_R1_배포앱_목업_6.html` | 프리미티브 16종 · `:root` 토큰 · `.srcfoot` — **T6 CSS 직접 이식** |
+| [`dart-api/README.md`](../../../ete-django/docs/dart-api/README.md) | 함정 58개 · status 처리 · 백필 전략 — **T1·T3·T4 기준** |
+| [`dart-api/ds003-financials.md`](../../../ete-django/docs/dart-api/ds003-financials.md) | §1.5 계정명 불일치 실측표 · §1.6 금융업 손익 구조 · §1.8 4Q 역산 검산 — **T4·T7 직접 근거** |
+| [`dart-api/ds002-periodic-reports.md`](../../../ete-django/docs/dart-api/ds002-periodic-reports.md) | `alotMatter` 15행 인덱스 규약 · 무배당/적자 케이스 — **T4 근거** |
+| [`dart-api/ds001-disclosure.md`](../../../ete-django/docs/dart-api/ds001-disclosure.md) | `company.json` 필드 · corpCode ZIP 처리 · KSIC 앞2자리 — **T2 근거** |
+| [`dart-api/indicators.md`](../../../ete-django/docs/dart-api/indicators.md) | 지표 66개 · ROA·영업이익률 미제공 확정 — **T4 자체계산 목록** |
+| [`dart-api/schema-monitoring.md`](../../../ete-django/docs/dart-api/schema-monitoring.md) | 카나리 설계 — **T5 "지금 다시 호출"의 근거** |
+| `../../../ete-django/docs/goals-in-2months/이띠_R1_배포앱_목업_6.html` | 프리미티브 16종 · `:root` 토큰 · `.srcfoot` — **T6 CSS 직접 이식** |
 | [도메인 입문서 (Artifact)](https://claude.ai/code/artifact/41b656d6-b3d4-49c7-af00-1ad56806fa7c) | 용어 학습 — 신규 투입 인원 온보딩용 |
