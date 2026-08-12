@@ -13,7 +13,12 @@ import { formatComma, NULL_PLACEHOLDER } from "./chartUtils";
  *   항상 `--up`(적색) 점선으로 그린다(기준선=경고선 관례, 학습가이드와 동일 배색).
  * - `color`: 선·점 색(기본 `--green`) — 기존 코드의 "%-계열 등 다른 색 필요" 한계를 해소.
  * - `points[].state`: 값 대신 상태 칩(예: "흑자전환")을 표시. 값이 있어도 내부적으로 null
- *   취급해 선을 끊는다 — QoQ 분모(직전 분기)가 적자라 %가 무의미할 때 쓴다.
+ *   취급해 선을 끊는다 — QoQ 분모(직전 분기)가 적자라 %가 무의미할 때 쓴다. **자체 문구를
+ *   새로 정의하지 말 것**: `DisplayState`의 `TURN_TO_PROFIT`/`TURN_TO_LOSS`/`LOSS_CONTINUED`가
+ *   이미 `MetricValue`에서 "흑자전환"/"적자전환"/"적자지속"으로 렌더된다(components/MetricValue.tsx
+ *   `renderText()`가 정본) — 호출부(T5/T6)는 QoQ/YoY resolution의 displayState를 그 정본 문구로
+ *   변환해 넘겨야 중복 정의로 인한 문구 드리프트가 없다. LineChart 자체는 `DisplayState`를 import하지
+ *   않는다(차트 프리미티브를 정규화 레이어에서 계속 분리하기 위해 `state`는 일부러 순수 문자열).
  * - `unit`/`sign`: 값 라벨에 단위 접미사·양수 `+` 접두사. 음수 값은 `--up`(적색)으로 표시.
  */
 
@@ -22,7 +27,11 @@ export type LineChartPoint = {
   /** state가 있으면 생략 가능(무시된다) — 기존 계약과의 호환을 위해 옵셔널로만 완화. */
   value?: number | null;
   provisional?: boolean;
-  /** 값 대신 표시할 상태 칩 텍스트(예: "흑자전환"). 지정되면 value는 무시하고 선을 끊는다. */
+  /**
+   * 값 대신 표시할 상태 칩 텍스트. 지정되면 value는 무시하고 선을 끊는다. `MetricValue`의
+   * `renderText()`가 만드는 문구("흑자전환"/"적자전환"/"적자지속" 등)를 그대로 전달할 것 —
+   * 여기서 새 문구를 짓지 말 것(위 컴포넌트 doc 참고).
+   */
   state?: string;
 };
 
