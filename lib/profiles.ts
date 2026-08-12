@@ -16,7 +16,12 @@ export type ProfileMetric = {
   label: string;
   /** false = DART에 원천 자체가 없음 (BIS비율 등) — Resolution을 시도조차 하지 않는다. */
   sourceAvailable: boolean;
-  chart?: "waterfall" | "stacked" | "none";
+  /**
+   * "stacked" = StackedBar100 세그먼트(서로 겹치지 않는 순액·부호 무관하게 합이 전체를 이룸).
+   * "deduction" = 위 stacked 합계에서 차감되는 비용성 항목 — 100% 스택에 넣으면 "수익 원천"처럼
+   * 오독되므로 별도 구획에 표기한다(리뷰 픽스 1 — credit_loss_allowance).
+   */
+  chart?: "waterfall" | "stacked" | "deduction" | "none";
   /**
    * MetricValue/SourcePanel 렌더링에 필요한 표시 단위. 브리프의 타입 스니펫(§7)엔 없으나
    * 화면이 이 값 없이는 KRW/PCT 포맷을 구분할 수 없어 컨트롤러 결정으로 추가했다 — T4의
@@ -50,7 +55,9 @@ export const PROFILE_CATALOG: ProfileCatalog = {
       { key: "net_interest_income", label: "순이자손익", sourceAvailable: true, chart: "stacked", unit: "KRW" },
       { key: "net_fee_income", label: "순수수료손익", sourceAvailable: true, chart: "stacked", unit: "KRW" },
       { key: "insurance_result", label: "보험서비스결과", sourceAvailable: true, chart: "stacked", unit: "KRW" },
-      { key: "credit_loss_allowance", label: "신용손실충당금 전입액", sourceAvailable: true, chart: "stacked", unit: "KRW" },
+      // 리뷰 픽스 1: 이익 기여형 순액 3개(위)와 달리 이 항목은 그 합계를 깎아 먹는 비용성
+      // 항목이다 — 실측값이 양수여도 100% 스택에 넣으면 "수익원의 ~10%"처럼 오독된다.
+      { key: "credit_loss_allowance", label: "신용손실충당금 전입액", sourceAvailable: true, chart: "deduction", unit: "KRW" },
       { key: "interest_revenue", label: "이자수익(총)", sourceAvailable: true, chart: "none", unit: "KRW" },
       { key: "insurance_revenue", label: "보험수익(총)", sourceAvailable: true, chart: "none", unit: "KRW" },
       { key: "operating_income", label: "영업이익", sourceAvailable: true, chart: "none", unit: "KRW" },
@@ -67,7 +74,7 @@ export const PROFILE_CATALOG: ProfileCatalog = {
     pnl: [
       { key: "net_interest_income", label: "순이자손익", sourceAvailable: true, chart: "stacked", unit: "KRW" },
       { key: "net_fee_income", label: "순수수료손익", sourceAvailable: true, chart: "stacked", unit: "KRW" },
-      { key: "credit_loss_allowance", label: "신용손실충당금 전입액", sourceAvailable: true, chart: "stacked", unit: "KRW" },
+      { key: "credit_loss_allowance", label: "신용손실충당금 전입액", sourceAvailable: true, chart: "deduction", unit: "KRW" },
       { key: "interest_revenue", label: "이자수익(총)", sourceAvailable: true, chart: "none", unit: "KRW" },
       { key: "operating_income", label: "영업이익", sourceAvailable: true, chart: "none", unit: "KRW" },
       { key: "net_income", label: "당기순이익", sourceAvailable: true, chart: "none", unit: "KRW" },

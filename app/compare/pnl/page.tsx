@@ -84,6 +84,7 @@ function buildSourcePanelProps(corpCode: string, year: string, metric: ProfileMe
 function chartTagClass(chart: ProfileMetric["chart"]): string {
   if (chart === "waterfall") return `${styles.chartTag} ${styles.waterfall}`;
   if (chart === "stacked") return `${styles.chartTag} ${styles.stacked}`;
+  if (chart === "deduction") return `${styles.chartTag} ${styles.deduction}`;
   return styles.chartTag;
 }
 
@@ -215,8 +216,10 @@ export default function ComparePnlPage() {
     ratioPct: r.value !== null && baseValue !== null && baseValue !== 0 ? (r.value / baseValue) * 100 : null,
   }));
 
-  const marginMetric = PROFILE_CATALOG.STANDARD.pnl.find((m) => m.key === "operating_margin")!;
-  const debtRatioMetric = PROFILE_CATALOG.STANDARD.stability[0];
+  // 리뷰 픽스 2: 고정 키(.find(k === "operating_margin")!) 대신 chart 값으로 동적 순회한다 —
+  // profiles.ts에서 이 항목을 지워도 빈 배열이 될 뿐 크래시하지 않는다("단일 파일 수정만으로
+  // 지표 변경" 완료판정을 실제로 만족시키려면 화면이 고정 키에 의존하면 안 된다).
+  const ratioMetrics = PROFILE_CATALOG.STANDARD.pnl.filter((m) => m.chart === "none");
   const standardCoverage = summarizePnlCoverage("STANDARD", samsungYear.resolutions);
 
   // 우: KB금융 (FIN_HOLDING) — derived.json(operating_income/net_income 등) + 요청 시점 추가 해석(6종) 병합
@@ -226,6 +229,9 @@ export default function ComparePnlPage() {
   const kbResolutions: Record<string, Resolution> = { ...kbYear.resolutions, ...kbExtras.resolutions };
 
   const stackedMetrics = PROFILE_CATALOG.FIN_HOLDING.pnl.filter((m) => m.chart === "stacked");
+  // 리뷰 픽스 1: credit_loss_allowance 등 비용성 항목 — 위 stackedMetrics 합계에서 차감되는
+  // 개념이라 100% 스택에는 넣지 않고 별도 구획에 실제 부호 그대로 노출한다.
+  const deductionMetrics = PROFILE_CATALOG.FIN_HOLDING.pnl.filter((m) => m.chart === "deduction");
   const referenceMetrics = PROFILE_CATALOG.FIN_HOLDING.pnl.filter((m) => m.chart === "none");
   // STANDARD 카탈로그엔 있지만 FIN_HOLDING 카탈로그엔 없는 키 — "해당 없음" 데모행. 화면에
   // "revenue"/"gross_profit"을 직접 쓰지 않고 카탈로그 차집합으로 계산한다.
@@ -278,7 +284,9 @@ export default function ComparePnlPage() {
             {waterfallRows.map(({ metric, resolution }) => (
               <TraceRow key={metric.key} corpCode={samsung.corpCode} year={YEAR} metric={metric} resolution={resolution} />
             ))}
-            <MetricSlot profile="STANDARD" corpCode={samsung.corpCode} year={YEAR} metric={marginMetric} resolution={samsungYear.resolutions[marginMetric.key]} />
+            {ratioMetrics.map((metric) => (
+              <MetricSlot key={metric.key} profile="STANDARD" corpCode={samsung.corpCode} year={YEAR} metric={metric} resolution={samsungYear.resolutions[metric.key]} />
+            ))}
           </div>
 
           <div className={styles.coverageBox}>
@@ -293,7 +301,9 @@ export default function ComparePnlPage() {
           <div>
             <div className={styles.sectionTitle}>안정성</div>
             <div className={styles.metricList}>
-              <MetricSlot profile="STANDARD" corpCode={samsung.corpCode} year={YEAR} metric={debtRatioMetric} resolution={samsungYear.resolutions[debtRatioMetric.key]} />
+              {PROFILE_CATALOG.STANDARD.stability.map((metric) => (
+                <MetricSlot key={metric.key} profile="STANDARD" corpCode={samsung.corpCode} year={YEAR} metric={metric} resolution={samsungYear.resolutions[metric.key]} />
+              ))}
             </div>
           </div>
         </div>
@@ -316,6 +326,21 @@ export default function ComparePnlPage() {
               <TraceRow key={metric.key} corpCode={kb.corpCode} year={YEAR} metric={metric} resolution={kbResolutions[metric.key]} />
             ))}
           </div>
+
+          {deductionMetrics.length > 0 && (
+            <div className={styles.deductionBlock}>
+              <div className={styles.sectionTitle}>차감 항목 (스택 아님)</div>
+              <p className={styles.naHint}>
+                위 순영업수익성 항목 합계에서 차감되어 영업이익으로 이어지는 비용성 항목이다 — 실측값이 양수여도
+                100% 스택에 넣지 않는다(수익 원천처럼 보이는 오독 방지).
+              </p>
+              <div className={styles.metricList}>
+                {deductionMetrics.map((metric) => (
+                  <MetricSlot key={metric.key} profile="FIN_HOLDING" corpCode={kb.corpCode} year={YEAR} metric={metric} resolution={kbResolutions[metric.key]} />
+                ))}
+              </div>
+            </div>
+          )}
 
           {negativeSegments.length > 0 && (
             <div className={styles.negativeNote}>

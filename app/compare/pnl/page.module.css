@@ -128,6 +128,17 @@
   line-height: 1.5;
 }
 
+.deductionBlock {
+  border: 1px solid var(--orange-bg);
+  border-left: 3px solid var(--orange-dk);
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: var(--orange-bg);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .coverageBox {
   border-radius: 10px;
   background: var(--wash);
@@ -224,6 +235,11 @@
 .chartTag.stacked {
   background: var(--t2-bg);
   color: var(--t2);
+}
+
+.chartTag.deduction {
+  background: var(--orange-bg);
+  color: var(--orange-dk);
 }
 
 .footnote {

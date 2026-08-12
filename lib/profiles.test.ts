@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { pnlKeysOnlyIn, resolveDisplay, summarizePnlCoverage, toProfileId, withDisplayState } from "./profiles";
+import { PROFILE_CATALOG, pnlKeysOnlyIn, resolveDisplay, summarizePnlCoverage, toProfileId, withDisplayState } from "./profiles";
 import type { Resolution } from "./normalize/types";
 
 function ok(metricKey: string, normalized = 1): Resolution {
@@ -113,6 +113,36 @@ describe("pnlKeysOnlyIn — 프로필 간 후보 차집합 (화면 하드코딩 
     expect(new Set(onlyFinHolding)).toEqual(
       new Set(["net_interest_income", "net_fee_income", "insurance_result", "credit_loss_allowance", "interest_revenue", "insurance_revenue"]),
     );
+  });
+});
+
+describe("리뷰 픽스 1 — credit_loss_allowance는 stacked가 아니라 deduction", () => {
+  it("FIN_HOLDING/FIN_BANK 둘 다 chart:'deduction' — 100% 스택 세그먼트에 섞이지 않는다", () => {
+    const finHolding = PROFILE_CATALOG.FIN_HOLDING.pnl.find((m) => m.key === "credit_loss_allowance");
+    const finBank = PROFILE_CATALOG.FIN_BANK.pnl.find((m) => m.key === "credit_loss_allowance");
+    expect(finHolding?.chart).toBe("deduction");
+    expect(finBank?.chart).toBe("deduction");
+  });
+
+  it("stacked 후보에는 net_interest_income/net_fee_income/insurance_result 3개만 남는다", () => {
+    const stackedKeys = PROFILE_CATALOG.FIN_HOLDING.pnl.filter((m) => m.chart === "stacked").map((m) => m.key);
+    expect(new Set(stackedKeys)).toEqual(new Set(["net_interest_income", "net_fee_income", "insurance_result"]));
+  });
+
+  it("커버리지 집계(후보 8개)는 chart 재분류와 무관하게 그대로 유지된다", () => {
+    const resolutions: Record<string, Resolution> = {
+      net_interest_income: ok("net_interest_income"),
+      net_fee_income: ok("net_fee_income"),
+      insurance_result: ok("insurance_result"),
+      credit_loss_allowance: ok("credit_loss_allowance"),
+      interest_revenue: ok("interest_revenue"),
+      insurance_revenue: ok("insurance_revenue"),
+      operating_income: ok("operating_income"),
+      net_income: ok("net_income"),
+    };
+    const coverage = summarizePnlCoverage("FIN_HOLDING", resolutions);
+    expect(coverage.total).toBe(8);
+    expect(coverage.hit).toBe(8);
   });
 });
 
