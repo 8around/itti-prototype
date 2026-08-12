@@ -27,7 +27,9 @@ function formatValue(value: number, unit: MetricValueProps["unit"]): string {
     case "PCT":
       return `${value.toLocaleString("ko-KR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`;
     case "X":
-      return value.toLocaleString("ko-KR");
+      // "배"는 증감 표기가 아니라 X 단위 자체의 기본 표기(브리프 "포맷: … 배수는 배") — %p처럼
+      // 범위 밖이 아니다. 컨트롤러 판정: 리뷰 픽스 라운드 1.
+      return `${value.toLocaleString("ko-KR")}배`;
     case "KRW":
     default:
       return `${Math.round(value).toLocaleString("ko-KR")}억원`;

@@ -5,6 +5,12 @@ import { formatComma, NULL_PLACEHOLDER } from "./chartUtils";
  * `provisional`이 true인 지점들(뒤쪽 연속 구간으로 가정 — 4Q 역산 등)은 주황 점선 + 큰 원형
  * 마커로 확정 구간과 구분한다. 값이 null인 지점은 선을 끊고(구간 분리) 라벨만 회색으로 표시한다.
  * 서버 컴포넌트.
+ *
+ * **색 고정 제약**: stroke는 확정 구간 `--green`(브랜드 그린) / 잠정 구간 `--prov`(주황) 두 가지로
+ * 고정돼 있고 색을 바꾸는 prop이 없다. 목업은 EPS(그린)와 영업이익률(주황, 잠정 아님에도)을 다른
+ * 색으로 그리는데, `LineChart({points})` 계약(브리프 확정)에 색 지정이 없어 이 둘을 구분할 수
+ * 없다 — %-계열 등 다른 색이 필요한 화면에 쓰려면 `color`/`variant` 같은 prop 확장이 필요하다.
+ * T7이 실제로 필요해지면 그때 확장할 것(이번 범위 밖).
  */
 
 export type LineChartPoint = {

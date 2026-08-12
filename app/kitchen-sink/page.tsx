@@ -200,6 +200,12 @@ export default function KitchenSinkPage() {
             {m.render}
           </div>
         ))}
+        {/* 리뷰 픽스: unit:"X"의 "배" 접미사 렌더 증거. 14.9배는 목업 화면 ②⑨(한빛소재 PER)의
+            실제 하드코딩 값 — 6상태 그리드 밖이라 state는 OK 재사용, 카드 라벨로만 구분한다. */}
+        <div className={styles.mvCard} key="OK-unit-X">
+          <div className={styles.mvState}>OK (unit: X)</div>
+          <MetricValue state="OK" value={14.9} unit="X" basis="연결" />
+        </div>
       </section>
     </main>
   );
