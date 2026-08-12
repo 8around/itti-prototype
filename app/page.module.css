@@ -1,150 +1,174 @@
-.page {
-  --background: #fafafa;
-  --foreground: #fff;
-
-  --text-primary: #000;
-  --text-secondary: #666;
-
-  --button-primary-hover: #383838;
-  --button-secondary-hover: #f2f2f2;
-  --button-secondary-border: #ebebeb;
-
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-geist-sans);
-  background-color: var(--background);
-}
+/* / (20종목 카드 리스트) 전용 레이아웃 CSS. MetricValue 자체 스타일은 app/globals.css(T6)에 있다. */
 
 .main {
-  display: flex;
-  flex: 1;
-  width: 100%;
-  max-width: 800px;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: space-between;
-  background-color: var(--foreground);
-  padding: 120px 60px;
-}
-
-.intro {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 20px 80px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-  gap: 24px;
+  gap: 22px;
 }
 
-.intro h1 {
-  max-width: 320px;
-  font-size: 40px;
-  font-weight: 600;
-  line-height: 48px;
-  letter-spacing: -2.4px;
-  text-wrap: balance;
-  color: var(--text-primary);
+.title {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
 }
 
-.intro p {
-  max-width: 440px;
-  font-size: 18px;
-  line-height: 32px;
-  text-wrap: balance;
-  color: var(--text-secondary);
-}
-
-.intro a {
+.lead {
+  font-size: 13px;
+  color: var(--gray);
   font-weight: 500;
-  color: var(--text-primary);
+  max-width: 880px;
+  line-height: 1.6;
 }
 
-.ctas {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  max-width: 440px;
-  gap: 16px;
-  font-size: 14px;
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
 }
 
-.ctas a {
+.card {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  padding: 16px 17px;
+  box-shadow: var(--shadow);
+  transition: border-color 0.15s ease;
+}
+
+.card:hover {
+  border-color: var(--green-bd);
+}
+
+.cardHead {
+  display: flex;
   align-items: center;
-  height: 40px;
-  padding: 0 16px;
-  border-radius: 128px;
-  border: 1px solid transparent;
-  transition: 0.2s;
-  cursor: pointer;
-  width: fit-content;
-  font-weight: 500;
-}
-
-a.primary {
-  background: var(--text-primary);
-  color: var(--background);
+  justify-content: space-between;
   gap: 8px;
 }
 
-a.secondary {
-  border-color: var(--button-secondary-border);
+.name {
+  font-size: 15px;
+  font-weight: 900;
+  color: var(--ink);
 }
 
-/* Enable hover only on non-touch devices */
-@media (hover: hover) and (pointer: fine) {
-  a.primary:hover {
-    background: var(--button-primary-hover);
-    border-color: transparent;
-  }
-
-  a.secondary:hover {
-    background: var(--button-secondary-hover);
-    border-color: transparent;
-  }
+.badge {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 5px;
+  flex: none;
+  white-space: nowrap;
 }
 
-@media (max-width: 600px) {
-  .main {
-    padding: 48px 24px;
-  }
-
-  .intro {
-    gap: 16px;
-  }
-
-  .intro h1 {
-    font-size: 32px;
-    line-height: 40px;
-    letter-spacing: -1.92px;
-  }
+.badgeStandard {
+  background: var(--green-bg);
+  color: var(--green-dk);
+  border: 1px solid var(--green-bd);
 }
 
-@media (prefers-color-scheme: dark) {
-  .logo {
-    filter: invert();
-  }
-
-  .page {
-    --background: #000;
-    --foreground: #000;
-
-    --text-primary: #ededed;
-    --text-secondary: #999;
-
-    --button-primary-hover: #ccc;
-    --button-secondary-hover: #1a1a1a;
-    --button-secondary-border: #1a1a1a;
-  }
+.badgeFin {
+  background: var(--t2-bg);
+  color: var(--t2);
+  border: 1px solid var(--t2-bg);
 }
 
-.code {
-  font-family: var(--font-geist-mono);
-  font-size: 0.9em;
-  background: color-mix(in srgb, currentColor 8%, transparent);
-  padding: 0.1em 0.4em;
-  border-radius: 6px;
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--gray);
+}
+
+.fyBadge {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--orange-dk);
+  background: var(--orange-bg);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.coverageRow {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.coverageTrack {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--wash);
+  overflow: hidden;
+}
+
+.coverageFill {
+  height: 100%;
+  background: var(--green);
+  border-radius: 3px;
+}
+
+.coverageText {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--gray);
+}
+
+.repMetric {
+  border-top: 1px solid var(--line-2);
+  padding-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.repLabel {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+.repYears {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.repYear {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.repYearLabel {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  color: var(--gray-2);
+  width: 32px;
+  flex: none;
+}
+
+/* MetricValue는 공용 컴포넌트라 손대지 않는다 — 카드 안에서만 축소 표기하도록 스코프 오버라이드. */
+.repYear :global(.mv-num) {
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.note {
+  font-size: 10px;
+  color: var(--gray-2);
+  font-weight: 500;
+  line-height: 1.5;
+  border-top: 1px solid var(--line-2);
+  padding-top: 8px;
+  margin-top: -2px;
 }

@@ -21,7 +21,8 @@ import type { Resolution } from "./types";
 /** T3 수집 매트릭스와 동일한 대상 연도. alotMatter는 2025년 보고서 1건이 이 3개년을 전부 커버한다. */
 export const YEARS = ["2023", "2024", "2025"] as const;
 
-const ALOT_MATTER_REPORT_YEAR = "2025";
+/** alotMatter는 bsns_year=2025 보고서 1건이 2023~2025 3개년을 전부 커버한다 — T10 SourcePanel requestId 조립에도 재사용된다. */
+export const ALOT_MATTER_REPORT_YEAR = "2025";
 const ALOT_COLUMN_BY_YEAR: Record<string, AlotColumn> = { "2025": "thstrm", "2024": "frmtrm", "2023": "lwfr" };
 
 export interface StockRef {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { PROFILE_CATALOG, pnlKeysOnlyIn, resolveDisplay, summarizePnlCoverage, toProfileId, withDisplayState } from "./profiles";
+import { PROFILE_CATALOG, pnlKeysOnlyIn, resolveDisplay, summarizeCoverage, summarizePnlCoverage, toProfileId, withDisplayState } from "./profiles";
 import type { Resolution } from "./normalize/types";
 
 function ok(metricKey: string, normalized = 1): Resolution {
@@ -143,6 +143,47 @@ describe("리뷰 픽스 1 — credit_loss_allowance는 stacked가 아니라 dedu
     const coverage = summarizePnlCoverage("FIN_HOLDING", resolutions);
     expect(coverage.total).toBe(8);
     expect(coverage.hit).toBe(8);
+  });
+});
+
+describe("summarizeCoverage — T10 카드/상세 배지용 (pnl + stability 합산)", () => {
+  it("STANDARD: debt_ratio(stability, sourceAvailable:true)까지 합쳐 5개 후보 중 5개 HIT", () => {
+    const resolutions: Record<string, Resolution> = {
+      revenue: ok("revenue"),
+      gross_profit: ok("gross_profit"),
+      operating_income: ok("operating_income"),
+      net_income: ok("net_income"),
+      debt_ratio: ok("debt_ratio"),
+    };
+    const coverage = summarizeCoverage("STANDARD", resolutions);
+    expect(coverage.total).toBe(5);
+    expect(coverage.hit).toBe(5);
+  });
+
+  it("FIN_HOLDING: bis_ratio/npl_ratio는 sourceAvailable:false라 항상 미존재 처리 — 8개 pnl이 전부 HIT여도 10개 중 8개", () => {
+    const resolutions: Record<string, Resolution> = {
+      net_interest_income: ok("net_interest_income"),
+      net_fee_income: ok("net_fee_income"),
+      insurance_result: ok("insurance_result"),
+      credit_loss_allowance: ok("credit_loss_allowance"),
+      interest_revenue: ok("interest_revenue"),
+      insurance_revenue: ok("insurance_revenue"),
+      operating_income: ok("operating_income"),
+      net_income: ok("net_income"),
+    };
+    const coverage = summarizeCoverage("FIN_HOLDING", resolutions);
+    expect(coverage.total).toBe(10);
+    expect(coverage.hit).toBe(8);
+    expect(coverage.missing.map((m) => m.key)).toEqual(["bis_ratio", "npl_ratio"]);
+    // 금융(FIN_HOLDING) 8/10=80% < 비금융(STANDARD) 5/5=100% — 완료판정 "금융 < 비금융"의 근거.
+    const standardCoverage = summarizeCoverage("STANDARD", {
+      revenue: ok("revenue"),
+      gross_profit: ok("gross_profit"),
+      operating_income: ok("operating_income"),
+      net_income: ok("net_income"),
+      debt_ratio: ok("debt_ratio"),
+    });
+    expect(coverage.hit / coverage.total).toBeLessThan(standardCoverage.hit / standardCoverage.total);
   });
 });
 

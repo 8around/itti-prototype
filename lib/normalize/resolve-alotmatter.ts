@@ -188,13 +188,13 @@ export function resolveDividendPayoutFallback(
   return {
     ...base,
     attempts,
-    hit: {
-      accountId: "dividend_total/net_income",
-      accountNm: "배당성향(fallback)",
-      sjDiv: "",
-      rawValue: `${dividendTotal}/${netIncome}`,
-      ord: 0,
-    },
+    // T10 리뷰 픽스: 예전엔 여기에 합성 accountId("dividend_total/net_income")를 가진 hit을
+    // 채웠다 — alotMatter 원본 어떤 행도 se === "배당성향(fallback)"이 아니라서
+    // SourcePanel의 "원문 보기 › 사용된 행만 보기"가 항상 0건으로 보이는 이슈(T5 이월)였다.
+    // 두 행(배당총액·순이익)을 합성한 값이라 단일 hit row 개념 자체가 안 맞는다 — derive.ts의
+    // deriveQ4/deriveRoa 등 다른 파생 지표들과 동일하게 hit을 비워 두고 derivation 문자열
+    // (아래)로만 계산식을 남긴다. NormalizeTab은 hit 없으면 "정규화된 원장 값 없음"을 보여주고
+    // 폴백/파생 탭으로 안내한다 — 이미 검증된 기존 동작(정보 손실 없음).
     normalized: value,
     displayState: "OK",
     derivation: `배당성향(fallback) = ${dividendTotal.toLocaleString("en-US")} ÷ ${netIncome.toLocaleString("en-US")} × 100`,

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-12T03:39:05.100Z",
+  "generatedAt": "2026-08-12T05:59:19.539Z",
   "parserVersion": "t4.1",
   "years": [
     "2023",
@@ -525,13 +525,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "9809438/14473401",
-                "ord": 0
-              },
               "normalized": 67.77562509323137,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 9,809,438 ÷ 14,473,401 × 100"
@@ -1086,13 +1079,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "9810767/33621363",
-                "ord": 0
-              },
               "normalized": 29.180158460559735,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 9,810,767 ÷ 33,621,363 × 100"
@@ -1654,13 +1640,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "11107906/44260956",
-                "ord": 0
-              },
               "normalized": 25.096398731197763,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 11,107,906 ÷ 44,260,956 × 100"
@@ -2832,13 +2811,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "1520090/19788681",
-                "ord": 0
-              },
               "normalized": 7.681613544631903,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 1,520,090 ÷ 19,788,681 × 100"
@@ -3425,13 +3397,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "2095133/42919287",
-                "ord": 0
-              },
               "normalized": 4.88156525060633,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 2,095,133 ÷ 42,919,287 × 100"
@@ -4011,13 +3976,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "2998657/11961717",
-                "ord": 0
-              },
               "normalized": 25.06878402155811,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 2,998,657 ÷ 11,961,717 × 100"
@@ -4579,13 +4537,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "3147839/12526691",
-                "ord": 0
-              },
               "normalized": 25.12905443265105,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 3,147,839 ÷ 12,526,691 × 100"
@@ -5147,13 +5098,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "2618263/9445987",
-                "ord": 0
-              },
               "normalized": 27.718257499189868,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 2,618,263 ÷ 9,445,987 × 100"
@@ -5750,13 +5694,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "758762/1698092",
-                "ord": 0
-              },
               "normalized": 44.68320915474545,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 758,762 ÷ 1,698,092 × 100"
@@ -6343,13 +6280,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "757485/1094917",
-                "ord": 0
-              },
               "normalized": 69.1819562578716,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 757,485 ÷ 1,094,917 × 100"
@@ -6936,13 +6866,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "756208/657654",
-                "ord": 0
-              },
               "normalized": 114.9856915642572,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 756,208 ÷ 657,654 × 100"
@@ -7514,13 +7437,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "274347/1337812",
-                "ord": 0
-              },
               "normalized": 20.507141511662326,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 274,347 ÷ 1,337,812 × 100"
@@ -9761,13 +9677,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "29857/55277",
-                "ord": 0
-              },
               "normalized": 54.0134233044485,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 29,857 ÷ 55,277 × 100"
@@ -10357,13 +10266,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "33025/491492",
-                "ord": 0
-              },
               "normalized": 6.719336225208142,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 33,025 ÷ 491,492 × 100"
@@ -10964,13 +10866,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "181383/1012322",
-                "ord": 0
-              },
               "normalized": 17.917520314682484,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 181,383 ÷ 1,012,322 × 100"
@@ -11550,13 +11445,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "168437/1923237",
-                "ord": 0
-              },
               "normalized": 8.75799498449749,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 168,437 ÷ 1,923,237 × 100"
@@ -12136,13 +12024,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "393596/1953215",
-                "ord": 0
-              },
               "normalized": 20.151186633319938,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 393,596 ÷ 1,953,215 × 100"
@@ -12715,13 +12596,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "103604/535648",
-                "ord": 0
-              },
               "normalized": 19.341806559531634,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 103,604 ÷ 535,648 × 100"
@@ -13276,13 +13150,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "153773/422692",
-                "ord": 0
-              },
               "normalized": 36.379444134263245,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 153,773 ÷ 422,692 × 100"
@@ -13837,13 +13704,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "163960/1029613",
-                "ord": 0
-              },
               "normalized": 15.924429858597355,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 163,960 ÷ 1,029,613 × 100"
@@ -19881,13 +19741,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "185536/621509",
-                "ord": 0
-              },
               "normalized": 29.8525041471644,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 185,536 ÷ 621,509 × 100"
@@ -20467,13 +20320,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "567022/1415485",
-                "ord": 0
-              },
               "normalized": 40.05849585124533,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 567,022 ÷ 1,415,485 × 100"
@@ -22662,13 +22508,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "1173937/4594835",
-                "ord": 0
-              },
               "normalized": 25.549056712591423,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 1,173,937 ÷ 4,594,835 × 100"
@@ -23249,13 +23088,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "1198257/5078221",
-                "ord": 0
-              },
               "normalized": 23.595999465167033,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 1,198,257 ÷ 5,078,221 × 100"
@@ -23836,13 +23668,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "1577774/5833162",
-                "ord": 0
-              },
               "normalized": 27.048348734357113,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 1,577,774 ÷ 5,833,162 × 100"
@@ -24434,13 +24259,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "1086317/4368035",
-                "ord": 0
-              },
               "normalized": 24.869695412239142,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 1,086,317 ÷ 4,368,035 × 100"
@@ -25021,13 +24839,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "1088042/4450177",
-                "ord": 0
-              },
               "normalized": 24.44940954033963,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 1,088,042 ÷ 4,450,177 × 100"
@@ -25608,13 +25419,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "1245730/4971561",
-                "ord": 0
-              },
               "normalized": 25.05711988649038,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 1,245,730 ÷ 4,971,561 × 100"
@@ -26199,13 +26003,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "196460/547406",
-                "ord": 0
-              },
               "normalized": 35.88926683302704,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 196,460 ÷ 547,406 × 100"
@@ -26772,13 +26569,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "312550/899038",
-                "ord": 0
-              },
               "normalized": 34.76493763333697,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 312,550 ÷ 899,038 × 100"
@@ -27345,13 +27135,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "357200/1007227",
-                "ord": 0
-              },
               "normalized": 35.463703812546726,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 357,200 ÷ 1,007,227 × 100"
@@ -27929,13 +27712,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "278946/556440",
-                "ord": 0
-              },
               "normalized": 50.130472288117325,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 278,946 ÷ 556,440 × 100"
@@ -28509,13 +28285,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "328342/686659",
-                "ord": 0
-              },
               "normalized": 47.817329999315525,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 328,342 ÷ 686,659 × 100"
@@ -29089,13 +28858,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "487835/1031599",
-                "ord": 0
-              },
               "normalized": 47.28920830671608,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 487,835 ÷ 1,031,599 × 100"
@@ -29680,13 +29442,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "664427/1895312",
-                "ord": 0
-              },
               "normalized": 35.05633900909191,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 664,427 ÷ 1,895,312 × 100"
@@ -30260,13 +30015,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "808087/2106839",
-                "ord": 0
-              },
               "normalized": 38.35542250736767,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 808,087 ÷ 2,106,839 × 100"
@@ -30840,13 +30588,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "951746/2302837",
-                "ord": 0
-              },
               "normalized": 41.3292820985593,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 951,746 ÷ 2,302,837 × 100"
@@ -31431,13 +31172,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "318230/1738569",
-                "ord": 0
-              },
               "normalized": 18.3041340320689,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 318,230 ÷ 1,738,569 × 100"
@@ -32011,13 +31745,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "408296/1851594",
-                "ord": 0
-              },
               "normalized": 22.0510543888131,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 408,296 ÷ 1,851,594 × 100"
@@ -32591,13 +32318,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "460890/1788026",
-                "ord": 0
-              },
               "normalized": 25.77647081194569,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 460,890 ÷ 1,788,026 × 100"
@@ -33102,13 +32822,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "32093/96391",
-                "ord": 0
-              },
               "normalized": 33.294602193150816,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 32,093 ÷ 96,391 × 100"
@@ -33691,13 +33404,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "36132/142650",
-                "ord": 0
-              },
               "normalized": 25.329127234490013,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 36,132 ÷ 142,650 × 100"
@@ -34280,13 +33986,6 @@
                   "result": "HIT"
                 }
               ],
-              "hit": {
-                "accountId": "dividend_total/net_income",
-                "accountNm": "배당성향(fallback)",
-                "sjDiv": "",
-                "rawValue": "40086/108625",
-                "ord": 0
-              },
               "normalized": 36.90310701956271,
               "displayState": "OK",
               "derivation": "배당성향(fallback) = 40,086 ÷ 108,625 × 100"

@@ -1,0 +1,227 @@
+/* /stock/[code] 전용 레이아웃 CSS. 차트 프리미티브 자체 스타일(.wf/.mix/.zbrow 등)과 MetricValue(.mv)는
+   app/globals.css(T6 이식분)에 있다 — 여기는 헤더·섹션·필드 그리드·collapse 배치만 담당한다. */
+
+.main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 32px 20px 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.headTop {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.headTop h1 {
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
+
+.headMeta {
+  font-size: 12px;
+  color: var(--gray);
+  font-weight: 500;
+}
+
+.badge {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 5px;
+  flex: none;
+}
+
+.badgeStandard {
+  background: var(--green-bg);
+  color: var(--green-dk);
+  border: 1px solid var(--green-bd);
+}
+
+.badgeFin {
+  background: var(--t2-bg);
+  color: var(--t2);
+  border: 1px solid var(--t2-bg);
+}
+
+.fyBadge {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--orange-dk);
+  background: var(--orange-bg);
+  padding: 2px 8px;
+  border-radius: 5px;
+}
+
+.valuationStrip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+  background: var(--wash);
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  padding: 12px 16px;
+}
+
+.valuationHint {
+  font-size: 10.5px;
+  color: var(--gray-2);
+  font-weight: 600;
+  line-height: 1.5;
+  flex-basis: 100%;
+}
+
+.section {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  padding: 18px 19px 16px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.section h2 {
+  font-size: 15px;
+  font-weight: 900;
+  color: var(--ink);
+}
+
+.sectionTitle {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--gray);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.fieldList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 4px 20px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 8px 0;
+  border-top: 1px solid var(--line-2);
+}
+
+.fieldLabel {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+.overviewGrid {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 6px 12px;
+  font-size: 12.5px;
+}
+
+.overviewGrid dt {
+  color: var(--gray);
+  font-weight: 600;
+}
+
+.overviewGrid dd {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.noteText {
+  font-size: 11px;
+  color: var(--gray);
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.highlight {
+  color: var(--orange-dk);
+}
+
+.rawDetails {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 8px 12px;
+}
+
+.rawDetails summary {
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.pre {
+  background: #0b1021;
+  color: #d6e2ff;
+  padding: 14px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-size: 11px;
+  line-height: 1.5;
+  margin-top: 8px;
+}
+
+.coverageBox {
+  border-radius: 10px;
+  background: var(--wash);
+  padding: 10px 12px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+.coverageMissing {
+  font-weight: 500;
+  color: var(--gray);
+  font-size: 10.5px;
+}
+
+.deductionBlock {
+  border: 1px solid var(--orange-bg);
+  border-left: 3px solid var(--orange-dk);
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: var(--orange-bg);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.naBlock {
+  border: 1px dashed var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: var(--wash);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.negativeNote {
+  font-size: 10.5px;
+  color: var(--orange-dk);
+  font-weight: 600;
+  background: var(--orange-bg);
+  border-radius: 8px;
+  padding: 6px 9px;
+}

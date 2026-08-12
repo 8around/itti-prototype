@@ -84,11 +84,20 @@ export const PROFILE_CATALOG: ProfileCatalog = {
       { key: "npl_ratio", label: "고정이하여신비율(NPL)", sourceAvailable: false, chart: "none", unit: "PCT" },
     ],
   },
-  // FIN_SECURITIES·FIN_INSURANCE 전용 손익 계정은 T7 범위 밖이다 — 플랜 §14 R2("증권·보험
-  // 4종은 미검증")대로 계정 실측 없이 후보를 지어내지 않는다. T10이 실측 후 보강할 때까지는
-  // 두 프로필 공통으로 이미 검증된 operating_income/net_income만 노출한다.
+  // FIN_SECURITIES·FIN_INSURANCE 전용 손익 계정은 T7에선 미검증이었다(플랜 §14 R2). T10이
+  // 3개 증권사(삼성증권·NH투자증권·신영증권)·2개 보험사(삼성생명·DB손해보험) 2024 스냅샷을
+  // 실측해 lib/normalize/fin-securities-catalog.ts · fin-insurance-catalog.ts로 보강했다 —
+  // resolveProfileExtras.ts가 요청 시점에 해석한다(FIN_HOLDING의 6종 확장과 동일 패턴).
+  // 신영증권은 순액(net) 계정이 없어(총액만 공시) net_interest_income/net_fee_income/
+  // other_operating_result 3종이 실제로 MISSING이다 — 커버리지 %가 삼성증권·NH투자증권보다
+  // 낮게 나오는 것이 정상이다(카탈로그 조작이 아니라 실제 계정명 편차).
   FIN_SECURITIES: {
     pnl: [
+      { key: "net_interest_income", label: "순이자손익", sourceAvailable: true, chart: "stacked", unit: "KRW" },
+      { key: "net_fee_income", label: "순수수료손익", sourceAvailable: true, chart: "stacked", unit: "KRW" },
+      { key: "other_operating_result", label: "기타영업손익", sourceAvailable: true, chart: "stacked", unit: "KRW" },
+      { key: "interest_revenue", label: "이자수익(총)", sourceAvailable: true, chart: "none", unit: "KRW" },
+      { key: "fee_income_gross", label: "수수료수익(총)", sourceAvailable: true, chart: "none", unit: "KRW" },
       { key: "operating_income", label: "영업이익", sourceAvailable: true, chart: "none", unit: "KRW" },
       { key: "net_income", label: "당기순이익", sourceAvailable: true, chart: "none", unit: "KRW" },
     ],
@@ -96,6 +105,11 @@ export const PROFILE_CATALOG: ProfileCatalog = {
   },
   FIN_INSURANCE: {
     pnl: [
+      { key: "insurance_result", label: "보험손익", sourceAvailable: true, chart: "stacked", unit: "KRW" },
+      { key: "investment_result", label: "투자손익", sourceAvailable: true, chart: "stacked", unit: "KRW" },
+      { key: "insurance_revenue_gross", label: "보험서비스수익(총)", sourceAvailable: true, chart: "none", unit: "KRW" },
+      { key: "insurance_expense_gross", label: "보험서비스비용(총)", sourceAvailable: true, chart: "none", unit: "KRW" },
+      { key: "investment_income_gross", label: "투자서비스수익(총)", sourceAvailable: true, chart: "none", unit: "KRW" },
       { key: "operating_income", label: "영업이익", sourceAvailable: true, chart: "none", unit: "KRW" },
       { key: "net_income", label: "당기순이익", sourceAvailable: true, chart: "none", unit: "KRW" },
     ],
@@ -190,4 +204,28 @@ export function summarizePnlCoverage(profile: ProfileId, resolutions: Record<str
 export function pnlKeysOnlyIn(sourceProfile: ProfileId, targetProfile: ProfileId): string[] {
   const targetKeys = new Set(PROFILE_CATALOG[targetProfile].pnl.map((m) => m.key));
   return PROFILE_CATALOG[sourceProfile].pnl.map((m) => m.key).filter((k) => !targetKeys.has(k));
+}
+
+function coverageFor(profile: ProfileId, keys: string[], resolutions: Record<string, Resolution | undefined>): PnlCoverage {
+  const missing: CoverageItem[] = [];
+  let hit = 0;
+  for (const key of keys) {
+    const metric = findProfileMetric(profile, key);
+    if (!metric) continue;
+    const state = resolveDisplay(profile, key, resolutions[key]);
+    if (state === "OK" || state === "ZERO_BY_FACT") hit++;
+    else missing.push({ key, label: metric.label, state });
+  }
+  return { total: keys.length, hit, missing };
+}
+
+/**
+ * T10 — 카드/종목 상세 화면의 "커버리지 %" 배지용. `summarizePnlCoverage`(T7, /compare/pnl 전용,
+ * pnl만 집계)와 달리 stability 후보까지 합쳐 계산한다. 금융 프로필의 stability는 대부분
+ * `sourceAvailable:false`(BIS·NPL·NCR·K-ICS — DART 미제공)라서 손익만 보면 감춰지는 "금융이
+ * 비금융보다 커버리지가 구조적으로 낮다"는 완료판정 조건이 여기서 드러난다.
+ */
+export function summarizeCoverage(profile: ProfileId, resolutions: Record<string, Resolution | undefined>): PnlCoverage {
+  const keys = [...countableKeys(profile), ...PROFILE_CATALOG[profile].stability.map((m) => m.key)];
+  return coverageFor(profile, keys, resolutions);
 }

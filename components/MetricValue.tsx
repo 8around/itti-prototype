@@ -15,7 +15,17 @@ import type { DisplayState } from "@/lib/normalize/types";
 export type MetricValueProps = {
   state: DisplayState;
   value?: number | null;
-  unit?: "KRW" | "PCT" | "X";
+  /**
+   * "WON" — T10 추가. EPS/DPS 등 주당 값은 catalog.ts상 unit:"KRW"로 선언돼 있지만(원 단위
+   * 후보 자체는 KRW 도메인이 맞다) 억원 단위로 환산하면 안 되는 값이다("-1,544억원"처럼 4자리
+   * 정수 EPS가 조 단위로 부풀려 표시되는 오표기가 된다). 호출부가 이 값들을 MetricValue에 넘길
+   * 때만 "WON"을 지정해 억 변환 없이 "원"으로 그대로 표기한다 — SourcePanel의 unit(KRW 그대로)과
+   * 다를 수 있다(SourcePanel의 정규화 탭은 원본 크기가 1억 미만이면 억원 변환 단계 자체를
+   * 생략하는 별도 가드가 있어 안전하다).
+   */
+  /** "SHARES" — T10 추가. 발행주식총수/자기주식수(stockTotqySttus, catalog.ts상 unit:"X")를 "728,002,365배"로
+   *  오표기하지 않고 "728,002,365주"로 표기한다. */
+  unit?: "KRW" | "PCT" | "X" | "WON" | "SHARES";
   basis?: "연결" | "별도";
   tier?: "T1" | "T2" | "T0";
   /** 상태를 보충 설명하는 대괄호 주석 — "무배당 확인", "분모 음수", "금융 프로필", "DART 미제공" 등. */
@@ -30,6 +40,10 @@ function formatValue(value: number, unit: MetricValueProps["unit"]): string {
       // "배"는 증감 표기가 아니라 X 단위 자체의 기본 표기(브리프 "포맷: … 배수는 배") — %p처럼
       // 범위 밖이 아니다. 컨트롤러 판정: 리뷰 픽스 라운드 1.
       return `${value.toLocaleString("ko-KR")}배`;
+    case "WON":
+      return `${Math.round(value).toLocaleString("ko-KR")}원`;
+    case "SHARES":
+      return `${Math.round(value).toLocaleString("ko-KR")}주`;
     case "KRW":
     default:
       return `${Math.round(value).toLocaleString("ko-KR")}억원`;
