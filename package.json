@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "resolve-corp-codes": "tsx scripts/resolve-corp-codes.ts",
-    "snapshot:fetch": "tsx scripts/snapshot-fetch.ts"
+    "snapshot:fetch": "tsx scripts/snapshot-fetch.ts",
+    "snapshot:build": "tsx scripts/snapshot-build.ts",
+    "test": "vitest run"
   },
   "dependencies": {
     "next": "16.3.0",

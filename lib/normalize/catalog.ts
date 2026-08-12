@@ -1,0 +1,102 @@
+/**
+ * T4 범위의 지표 후보 카탈로그. `account_id` 기준 매핑 + 폴백 배열로 구성하고,
+ * `account_nm`은 표시용으로만 쓴다 (§1.5 판정). 정규화 매핑은 이 파일에만 있다 — 프로토타입
+ * 규모상 DB+Admin으로 빼지 않고 하드코딩했다(운영 전환 시 이관 대상).
+ */
+
+import type { MetricCandidate } from "./types";
+
+export const ACNT_ALL_CANDIDATES: MetricCandidate[] = [
+  { key: "revenue", label: "매출액", accountIds: ["ifrs-full_Revenue"], sjDivPriority: ["IS", "CIS"], unit: "KRW", sourceAvailable: true, source: "acntAll" },
+  { key: "gross_profit", label: "매출총이익", accountIds: ["ifrs-full_GrossProfit"], sjDivPriority: ["IS", "CIS"], unit: "KRW", sourceAvailable: true, source: "acntAll" },
+  {
+    key: "operating_income",
+    label: "영업이익",
+    // 금융업(KB금융 등)은 dart_OperatingIncomeLoss 행이 없고 ifrs-full_ProfitLossFromOperatingActivities만 있다 (#46).
+    accountIds: ["dart_OperatingIncomeLoss", "ifrs-full_ProfitLossFromOperatingActivities"],
+    sjDivPriority: ["IS", "CIS"],
+    unit: "KRW",
+    sourceAvailable: true,
+    source: "acntAll",
+  },
+  {
+    key: "net_income",
+    label: "당기순이익",
+    // IS/CIS/CF 3중복 (#35) — sjDivPriority 순서로 dedupe.
+    accountIds: ["ifrs-full_ProfitLoss"],
+    sjDivPriority: ["IS", "CIS", "CF"],
+    unit: "KRW",
+    sourceAvailable: true,
+    source: "acntAll",
+  },
+  { key: "total_assets", label: "자산총계", accountIds: ["ifrs-full_Assets"], sjDivPriority: ["BS"], unit: "KRW", sourceAvailable: true, source: "acntAll" },
+  { key: "total_liabilities", label: "부채총계", accountIds: ["ifrs-full_Liabilities"], sjDivPriority: ["BS"], unit: "KRW", sourceAvailable: true, source: "acntAll" },
+  { key: "total_equity", label: "자본총계", accountIds: ["ifrs-full_Equity"], sjDivPriority: ["BS"], unit: "KRW", sourceAvailable: true, source: "acntAll" },
+  {
+    key: "equity_attributable_to_owners",
+    label: "지배주주지분",
+    accountIds: ["ifrs-full_EquityAttributableToOwnersOfParent"],
+    sjDivPriority: ["BS"],
+    unit: "KRW",
+    sourceAvailable: true,
+    source: "acntAll",
+  },
+  { key: "operating_cf", label: "영업활동현금흐름", accountIds: ["ifrs-full_CashFlowsFromUsedInOperatingActivities"], sjDivPriority: ["CF"], unit: "KRW", sourceAvailable: true, source: "acntAll" },
+  { key: "investing_cf", label: "투자활동현금흐름", accountIds: ["ifrs-full_CashFlowsFromUsedInInvestingActivities"], sjDivPriority: ["CF"], unit: "KRW", sourceAvailable: true, source: "acntAll" },
+  { key: "financing_cf", label: "재무활동현금흐름", accountIds: ["ifrs-full_CashFlowsFromUsedInFinancingActivities"], sjDivPriority: ["CF"], unit: "KRW", sourceAvailable: true, source: "acntAll" },
+  {
+    key: "capex",
+    label: "설비투자(CAPEX)",
+    // ★ CAPEX 스파이크 결정 (task-T4-report.md 참조): 유형자산 취득만 포함, 무형자산 취득 제외
+    // (KRX 관행). 삼성전자 2024 CFS 실측 account_id: ifrs-full_PurchaseOfPropertyPlantAndEquipmentClassifiedAsInvestingActivities
+    // (51,406,355,000,000원). 무형자산 취득 포함 시 대안 ID:
+    // ifrs-full_PurchaseOfIntangibleAssetsClassifiedAsInvestingActivities (2,335,284,000,000원) — 클라이언트 확인 필요.
+    accountIds: ["ifrs-full_PurchaseOfPropertyPlantAndEquipmentClassifiedAsInvestingActivities"],
+    sjDivPriority: ["CF"],
+    unit: "KRW",
+    sourceAvailable: true,
+    source: "acntAll",
+  },
+  {
+    key: "eps_basic",
+    label: "기본주당이익",
+    // 헬릭스미스는 BasicEarningsLossPerShare 행이 없고 …FromContinuingOperations만 있다 (#34).
+    accountIds: ["ifrs-full_BasicEarningsLossPerShare", "ifrs-full_BasicEarningsLossPerShareFromContinuingOperations"],
+    sjDivPriority: ["IS", "CIS"],
+    unit: "KRW",
+    sourceAvailable: true,
+    source: "acntAll",
+  },
+];
+
+export const SINGL_INDX_CANDIDATES: MetricCandidate[] = [
+  { key: "roe", label: "ROE", accountIds: ["M211550"], sjDivPriority: [], unit: "PCT", sourceAvailable: true, source: "singlIndx", idxClCode: "M210000" },
+  { key: "debt_ratio", label: "부채비율", accountIds: ["M221100"], sjDivPriority: [], unit: "PCT", sourceAvailable: true, source: "singlIndx", idxClCode: "M220000" },
+  {
+    key: "dividend_payout_indx",
+    label: "배당성향(%, DART 산출)",
+    // 브리프의 T4 지표 목록엔 없으나 완료판정 테스트케이스("카카오 배당성향 -26.858")가 이 값을
+    // 요구해 추가했다 — alotMatter 기반 dividend_payout_fallback과는 별개 원천이다.
+    accountIds: ["M451000"],
+    sjDivPriority: [],
+    unit: "PCT",
+    sourceAvailable: true,
+    source: "singlIndx",
+    idxClCode: "M240000",
+  },
+];
+
+export const ALOT_MATTER_CANDIDATES: MetricCandidate[] = [
+  { key: "eps_alotmatter", label: "주당순이익(배당공시 idx3)", accountIds: ["eps"], sjDivPriority: [], unit: "KRW", sourceAvailable: true, source: "alotMatter" },
+  { key: "dps_common", label: "주당현금배당금(보통주, idx11)", accountIds: ["dps_common"], sjDivPriority: [], unit: "KRW", sourceAvailable: true, source: "alotMatter" },
+  { key: "dividend_yield_common", label: "현금배당수익률(보통주, idx7)", accountIds: ["yield_common"], sjDivPriority: [], unit: "PCT", sourceAvailable: true, source: "alotMatter" },
+  { key: "payout", label: "현금배당성향(idx6)", accountIds: ["payout"], sjDivPriority: [], unit: "PCT", sourceAvailable: true, source: "alotMatter" },
+];
+
+export const STOCK_TOTQY_CANDIDATES: MetricCandidate[] = [
+  { key: "shares_outstanding", label: "발행주식총수", accountIds: ["istc_totqy"], sjDivPriority: ["합계"], unit: "X", sourceAvailable: true, source: "stockTotqy", stockTotqyField: "istc_totqy" },
+  { key: "treasury_shares", label: "자기주식수", accountIds: ["tesstk_co"], sjDivPriority: ["합계"], unit: "X", sourceAvailable: true, source: "stockTotqy", stockTotqyField: "tesstk_co" },
+];
+
+/** 4Q 역산 대상 — IS/CIS 흐름 계정만(#39). BS 항목(자산총계 등)은 시점 데이터라 제외한다. */
+export const Q4_DERIVABLE_KEYS = ["revenue", "operating_income", "net_income"] as const;
