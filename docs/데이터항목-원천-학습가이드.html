@@ -1,0 +1,1246 @@
+<title>재무 7셋 데이터 해부</title>
+<style>
+/* ── 토큰: app/globals.css 프로젝트 디자인 시스템 승계 ────────────────────
+   라이트를 :root에 완전히 정의하고, 다크는 토큰만 재정의한다. */
+:root {
+  --paper: #ffffff;
+  --wash: #f4f7f4;
+  --sunk: #eaf0eb;
+  --line: #dfe7e1;
+  --line-soft: #eef3ef;
+  --ink: #16241d;
+  --ink-2: #33463b;
+  --gray: #5b6b62;
+  --gray-2: #8b9a91;
+  --green: #2e7d32;
+  --green-bg: #edf4ee;
+  --green-bd: #c4dcc7;
+  --warn: #c62828;
+  --warn-bg: #fcedec;
+  --warn-bd: #f0cfcc;
+  --amber: #a06a00;
+  --amber-bg: #fdf4e3;
+  --amber-bd: #ecd9b0;
+  --blue: #1565c0;
+  --blue-bg: #e9f0fa;
+  --code-bg: #f2f5f2;
+  --shadow: 0 1px 2px rgba(22, 36, 29, .05), 0 8px 24px -12px rgba(22, 36, 29, .12);
+  --sans: "Pretendard Variable", Pretendard, "Apple SD Gothic Neo", "Noto Sans KR", system-ui, -apple-system, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", "JetBrains Mono", Menlo, "Cascadia Code", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #131b17;
+    --wash: #182119;
+    --sunk: #1e2823;
+    --line: #2b3a32;
+    --line-soft: #222d27;
+    --ink: #dfe9e1;
+    --ink-2: #b6c6bb;
+    --gray: #93a599;
+    --gray-2: #6e8177;
+    --green: #6fc177;
+    --green-bg: #1a2b1e;
+    --green-bd: #2f4d36;
+    --warn: #ef8078;
+    --warn-bg: #2c1c1b;
+    --warn-bd: #4d302c;
+    --amber: #e0a951;
+    --amber-bg: #2a2318;
+    --amber-bd: #4a3d26;
+    --blue: #7fb2f0;
+    --blue-bg: #17222e;
+    --code-bg: #1c2620;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px -12px rgba(0, 0, 0, .6);
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #131b17;
+  --wash: #182119;
+  --sunk: #1e2823;
+  --line: #2b3a32;
+  --line-soft: #222d27;
+  --ink: #dfe9e1;
+  --ink-2: #b6c6bb;
+  --gray: #93a599;
+  --gray-2: #6e8177;
+  --green: #6fc177;
+  --green-bg: #1a2b1e;
+  --green-bd: #2f4d36;
+  --warn: #ef8078;
+  --warn-bg: #2c1c1b;
+  --warn-bd: #4d302c;
+  --amber: #e0a951;
+  --amber-bg: #2a2318;
+  --amber-bd: #4a3d26;
+  --blue: #7fb2f0;
+  --blue-bg: #17222e;
+  --code-bg: #1c2620;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px -12px rgba(0, 0, 0, .6);
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--wash);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.72;
+  -webkit-font-smoothing: antialiased;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── 셸: 좌측 고정 목차 + 본문 ─────────────────────────────────────────── */
+.shell { display: grid; grid-template-columns: 232px minmax(0, 1fr); gap: 0; max-width: 1180px; margin: 0 auto; }
+@media (max-width: 940px) { .shell { grid-template-columns: minmax(0, 1fr); } }
+
+.rail {
+  position: sticky; top: 0; align-self: start; height: 100vh; overflow-y: auto;
+  padding: 30px 22px 40px; border-right: 1px solid var(--line);
+  display: flex; flex-direction: column; gap: 22px;
+}
+@media (max-width: 940px) {
+  .rail { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--line); padding: 22px 20px; }
+}
+.railmark { display: flex; flex-direction: column; gap: 2px; }
+.railmark b { font-size: 13.5px; font-weight: 800; letter-spacing: -.01em; }
+.railmark span { font-family: var(--mono); font-size: 10px; color: var(--gray-2); letter-spacing: .04em; }
+.rail nav { display: flex; flex-direction: column; gap: 1px; }
+.rail nav a {
+  display: flex; gap: 9px; align-items: baseline;
+  font-size: 12.5px; font-weight: 600; color: var(--gray); text-decoration: none;
+  padding: 5px 8px; border-radius: 6px; border-left: 2px solid transparent;
+}
+.rail nav a em { font-family: var(--mono); font-style: normal; font-size: 10px; color: var(--gray-2); min-width: 12px; }
+.rail nav a:hover { color: var(--green); background: var(--green-bg); }
+.rail nav a:focus-visible { outline: 2px solid var(--green); outline-offset: 1px; }
+
+main { padding: 30px 34px 110px; min-width: 0; }
+@media (max-width: 620px) { main { padding: 24px 18px 80px; } }
+
+/* ── 타이포 스케일 ────────────────────────────────────────────────────── */
+.masthead { border-bottom: 2px solid var(--ink); padding-bottom: 22px; margin-bottom: 30px; }
+.eyebrow {
+  font-family: var(--mono); font-size: 10.5px; font-weight: 600; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--green); margin: 0 0 10px;
+}
+h1 { font-size: clamp(27px, 4.4vw, 37px); font-weight: 900; line-height: 1.14; letter-spacing: -.03em; margin: 0; text-wrap: balance; }
+.lede { font-size: 15.5px; color: var(--gray); margin: 14px 0 0; max-width: 62ch; }
+.stamp { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 18px; }
+.stamp span {
+  font-family: var(--mono); font-size: 10.5px; font-weight: 600; color: var(--ink-2);
+  background: var(--paper); border: 1px solid var(--line); border-radius: 4px; padding: 3px 9px;
+}
+
+h2 {
+  font-size: 23px; font-weight: 900; letter-spacing: -.025em; line-height: 1.25;
+  margin: 62px 0 4px; padding-top: 14px; border-top: 1px solid var(--line); text-wrap: balance;
+  display: flex; align-items: baseline; gap: 11px;
+}
+h2 i { font-family: var(--mono); font-style: normal; font-size: 12px; font-weight: 700; color: var(--green); letter-spacing: 0; }
+h3 { font-size: 16.5px; font-weight: 800; letter-spacing: -.015em; margin: 34px 0 8px; text-wrap: balance; }
+h4 { font-size: 14px; font-weight: 800; margin: 22px 0 6px; color: var(--ink-2); }
+.deck { font-size: 14px; color: var(--gray); margin: 8px 0 20px; max-width: 68ch; }
+p { margin: 0 0 14px; max-width: 68ch; }
+main > section > p, main > section > ul, main > section > ol { max-width: 68ch; }
+ul, ol { margin: 0 0 14px; padding-left: 20px; }
+li { margin-bottom: 6px; }
+li::marker { color: var(--gray-2); }
+strong { font-weight: 800; }
+a { color: var(--green); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; border-radius: 2px; }
+hr { border: 0; border-top: 1px solid var(--line-soft); margin: 26px 0; }
+
+code {
+  font-family: var(--mono); font-size: .855em; background: var(--code-bg);
+  border: 1px solid var(--line-soft); border-radius: 4px; padding: .08em .36em;
+  word-break: break-word;
+}
+pre {
+  font-family: var(--mono); font-size: 12px; line-height: 1.72;
+  background: var(--sunk); border: 1px solid var(--line); border-radius: 9px;
+  padding: 15px 17px; overflow-x: auto; margin: 0 0 18px;
+}
+pre code { background: none; border: 0; padding: 0; font-size: inherit; }
+
+/* ── 표 ─────────────────────────────────────────────────────────────── */
+.tw { overflow-x: auto; margin: 0 0 20px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); }
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th, td { text-align: left; padding: 9px 13px; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+thead th {
+  background: var(--sunk); font-size: 11px; font-weight: 800; letter-spacing: .05em;
+  text-transform: uppercase; color: var(--gray); white-space: nowrap;
+  position: sticky; top: 0;
+}
+tbody tr:last-child td { border-bottom: 0; }
+td code, th code { font-size: 11.5px; white-space: nowrap; }
+.num { text-align: right; font-family: var(--mono); font-size: 12px; white-space: nowrap; }
+.muted-row td { color: var(--gray); }
+
+/* ── 콜아웃: 색이 곧 분류다 ────────────────────────────────────────────── */
+.note {
+  border-left: 3px solid var(--green); background: var(--green-bg);
+  border-radius: 0 9px 9px 0; padding: 13px 17px; margin: 0 0 20px; font-size: 13.5px;
+  max-width: 70ch;
+}
+.note.trap { border-left-color: var(--warn); background: var(--warn-bg); }
+.note.care { border-left-color: var(--amber); background: var(--amber-bg); }
+.note > :last-child { margin-bottom: 0; }
+.note p { max-width: none; }
+.note b.tag {
+  display: inline-block; font-family: var(--mono); font-size: 10px; font-weight: 700;
+  letter-spacing: .09em; text-transform: uppercase; margin-right: 7px;
+}
+.note .tag { color: var(--green); }
+.note.trap .tag { color: var(--warn); }
+.note.care .tag { color: var(--amber); }
+
+/* ── 7셋 카드 ──────────────────────────────────────────────────────────── */
+.setgrid { display: flex; flex-direction: column; gap: 14px; margin-bottom: 22px; }
+.set {
+  background: var(--paper); border: 1px solid var(--line); border-radius: 12px;
+  padding: 17px 19px; box-shadow: var(--shadow);
+  display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 3px 15px; align-items: baseline;
+}
+.set .no {
+  grid-row: span 3; font-family: var(--mono); font-size: 19px; font-weight: 700;
+  color: var(--green); line-height: 1.2;
+}
+.set h3 { margin: 0; font-size: 16px; }
+.set .q { font-size: 13px; color: var(--gray); margin: 0; }
+.set .chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 9px; }
+.set .chips span {
+  font-size: 11.5px; font-weight: 700; background: var(--sunk); border: 1px solid var(--line);
+  border-radius: 5px; padding: 2px 8px; color: var(--ink-2);
+}
+.set .chips span.hot { background: var(--green-bg); border-color: var(--green-bd); color: var(--green); }
+.set .chips span.gone { background: transparent; border-style: dashed; color: var(--gray-2); }
+.set .chart {
+  grid-column: 2; margin-top: 10px; font-family: var(--mono); font-size: 10.5px;
+  font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--gray-2);
+}
+
+/* ── displayState 배지: 실제 코드의 6종 상태 ──────────────────────────── */
+.states { display: grid; grid-template-columns: repeat(auto-fill, minmax(268px, 1fr)); gap: 11px; margin-bottom: 22px; }
+.state {
+  background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 13px 15px;
+}
+.state .badge {
+  display: inline-block; font-family: var(--mono); font-size: 10.5px; font-weight: 700;
+  letter-spacing: .05em; border-radius: 4px; padding: 2px 7px; margin-bottom: 7px;
+  border: 1px solid;
+}
+.state .shown { font-size: 14px; font-weight: 800; margin: 0 0 4px; }
+.state p { font-size: 12.5px; color: var(--gray); margin: 0; max-width: none; }
+.b-ok { color: var(--green); background: var(--green-bg); border-color: var(--green-bd); }
+.b-zero { color: var(--blue); background: var(--blue-bg); border-color: var(--blue); }
+.b-missing { color: var(--gray); background: var(--sunk); border-color: var(--line); }
+.b-na { color: var(--amber); background: var(--amber-bg); border-color: var(--amber-bd); }
+.b-profile { color: var(--ink-2); background: var(--sunk); border-color: var(--line); }
+.b-source { color: var(--warn); background: var(--warn-bg); border-color: var(--warn-bd); }
+
+/* ── API 명세 블록 ─────────────────────────────────────────────────────── */
+.api {
+  background: var(--paper); border: 1px solid var(--line); border-radius: 12px;
+  padding: 20px 22px; margin-bottom: 22px; box-shadow: var(--shadow);
+}
+.api > :last-child { margin-bottom: 0; }
+.api .head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px; margin-bottom: 3px; }
+.api .head h3 { margin: 0; }
+.api .head .star { font-size: 11px; font-weight: 800; color: var(--amber); background: var(--amber-bg); border: 1px solid var(--amber-bd); border-radius: 4px; padding: 1px 7px; }
+.api .ep {
+  font-family: var(--mono); font-size: 12px; background: var(--sunk); border: 1px solid var(--line);
+  border-radius: 7px; padding: 9px 12px; margin: 12px 0 14px; overflow-x: auto; white-space: nowrap;
+}
+.api .ep b { color: var(--green); }
+
+/* ── 깔때기 다이어그램 ─────────────────────────────────────────────────── */
+.funnel { display: flex; flex-direction: column; gap: 4px; margin: 0 0 20px; max-width: 460px; }
+.funnel div {
+  border: 1px solid var(--line); border-radius: 7px; padding: 7px 13px;
+  font-size: 13px; font-weight: 700; background: var(--paper);
+  display: flex; justify-content: space-between; gap: 12px; align-items: baseline;
+}
+.funnel div small { font-weight: 500; color: var(--gray); font-size: 11.5px; }
+.funnel div.minus { border-style: dashed; background: transparent; color: var(--gray); font-weight: 600; }
+.funnel div.key { border-color: var(--green-bd); background: var(--green-bg); color: var(--green); }
+
+.eq {
+  font-family: var(--mono); font-size: 14px; font-weight: 700; text-align: center;
+  background: var(--green-bg); border: 1px solid var(--green-bd); color: var(--green);
+  border-radius: 9px; padding: 13px; margin: 0 0 8px;
+}
+.eq small { display: block; font-family: var(--sans); font-size: 11.5px; font-weight: 600; color: var(--gray); margin-top: 3px; }
+
+footer {
+  margin-top: 62px; padding-top: 18px; border-top: 1px solid var(--line);
+  font-size: 12.5px; color: var(--gray-2);
+}
+</style>
+
+<div class="shell">
+  <aside class="rail">
+    <div class="railmark">
+      <b>재무 7셋 데이터 해부</b>
+      <span>ITTI · DART PROTOTYPE</span>
+    </div>
+    <nav>
+      <a href="#basics"><em>1</em>먼저 알아야 할 3가지</a>
+      <a href="#sets"><em>2</em>7셋이란 무엇인가</a>
+      <a href="#anatomy"><em>3</em>SET별 항목 해부</a>
+      <a href="#api"><em>4</em>원천 API 5종 명세</a>
+      <a href="#map"><em>5</em>항목 ↔ 원천 대조표</a>
+      <a href="#states"><em>6</em>값이 비는 6가지 사유</a>
+      <a href="#traps"><em>7</em>실측으로 확인된 함정</a>
+      <a href="#gaps"><em>8</em>DART로 못 얻는 것</a>
+      <a href="#appendix"><em>—</em>코드 어디를 보나</a>
+    </nav>
+  </aside>
+
+  <main>
+    <header class="masthead">
+      <p class="eyebrow">내부 학습 자료</p>
+      <h1>재무 7셋 — 항목 설명과 원천 데이터 완전 해부</h1>
+      <p class="lede">
+        화면에 그려지는 모든 숫자가 <strong>어떤 API의 어떤 필드</strong>에서 왔고, 없는 숫자는
+        <strong>왜 없는지</strong>까지 따라갈 수 있게 만든 문서. 재무 용어와 DART API를 동시에 익혀야 하는 사람이 대상이다.
+      </p>
+      <div class="stamp">
+        <span>2026-08-12</span>
+        <span>20종목</span>
+        <span>FY2023–2025 + 26Q1</span>
+        <span>스냅샷 746건 실측</span>
+      </div>
+    </header>
+
+    <div class="note">
+      <p><b class="tag">전제</b>이 문서의 모든 숫자·필드명·응답 예시는 <code>public/snapshots/</code>에 실제로 저장된 DART 응답에서 그대로 가져왔다. 추정하거나 남의 문서에서 베낀 값이 아니다.</p>
+    </div>
+
+    <!-- ═══════════ 1 ═══════════ -->
+    <section id="basics">
+      <h2><i>01</i>먼저 알아야 할 3가지</h2>
+      <p class="deck">이 셋을 모르면 이후 모든 설명이 겉돈다.</p>
+
+      <h3>① 재무제표는 3장이 한 세트다</h3>
+      <div class="tw"><table>
+        <thead><tr><th>표</th><th><code>sj_div</code></th><th>무엇을 말하나</th><th>성격</th></tr></thead>
+        <tbody>
+          <tr><td>재무상태표</td><td><code>BS</code></td><td>결산일 <strong>그 시점에</strong> 가진 것과 빚</td><td><strong>시점</strong> · 사진</td></tr>
+          <tr><td>손익계산서</td><td><code>IS</code> / <code>CIS</code></td><td>1년(또는 1분기) <strong>동안</strong> 얼마 벌었나</td><td><strong>기간</strong> · 동영상</td></tr>
+          <tr><td>현금흐름표</td><td><code>CF</code></td><td>1년 동안 현금이 실제로 얼마나 오갔나</td><td><strong>기간</strong> · 동영상</td></tr>
+        </tbody>
+      </table></div>
+      <p>
+        이 구분이 실무에서 계속 발목을 잡는다. <strong>분기 값을 만들 때 BS는 뺄셈을 하면 안 된다</strong> —
+        &ldquo;3월 31일에 가진 자산&rdquo; 빼기 &ldquo;작년 12월 31일에 가진 자산&rdquo;은 아무 의미가 없기 때문이다.
+        반면 IS·CF는 기간 값이라 뺄셈이 성립한다. 코드의 <code>QUARTER_SERIES_KEYS</code>에 매출·영업이익·순이익만
+        있고 자산총계가 없는 이유가 이것이다.
+      </p>
+
+      <h3>② <code>IS</code>와 <code>CIS</code>는 둘 중 하나만 있을 수도 있다</h3>
+      <p>
+        <code>IS</code>는 손익계산서, <code>CIS</code>는 포괄손익계산서다. 원칙적으로 둘 다 내지만
+        <strong>하나로 합쳐 <code>CIS</code>만 제출하는 회사가 많다.</strong>
+      </p>
+      <div class="note trap">
+        <p><b class="tag">실측</b>유니버스 <strong>20종목 중 15종목이 <code>IS</code> 행 0개</strong>다 — SK하이닉스·POSCO홀딩스·카카오·NAVER·헬릭스미스·신라젠·HD현대중공업·앱클론에 금융 7종 전부.</p>
+        <p style="margin-bottom:0">→ 그래서 지표를 찾을 때 <code>IS</code> 먼저, 없으면 <code>CIS</code>로 폴백한다. 코드의 <code>sjDivPriority: ["IS", "CIS"]</code>가 이 순서다.</p>
+      </div>
+
+      <h3>③ &ldquo;연결&rdquo;과 &ldquo;별도&rdquo;는 다른 회사의 숫자다</h3>
+      <div class="tw"><table>
+        <thead><tr><th></th><th><code>fs_div</code></th><th>의미</th><th>비유</th></tr></thead>
+        <tbody>
+          <tr><td><strong>연결</strong></td><td><code>CFS</code></td><td>본사 + 자회사를 하나로 합산</td><td>우리 가족 전체 수입</td></tr>
+          <tr><td><strong>별도</strong></td><td><code>OFS</code></td><td>본사 단독</td><td>내 월급만</td></tr>
+        </tbody>
+      </table></div>
+      <p>
+        기본은 연결(<code>CFS</code>)이다. 자회사가 없거나 연결재무제표를 작성하지 않는 회사는 CFS 요청 시
+        <code>status: "013"</code>(데이터 없음)이 오는데, 이때는 <strong>OFS로 재시도</strong>해야 한다.
+        이 폴백은 화면에 <code>[별도]</code> 배지로 표시된다.
+      </p>
+    </section>
+
+    <!-- ═══════════ 2 ═══════════ -->
+    <section id="sets">
+      <h2><i>02</i>7셋이란 무엇인가</h2>
+      <p class="deck">클라이언트가 확정한 재무 항목 7개 묶음. 순서 자체가 하나의 이야기다.</p>
+
+      <div class="setgrid">
+        <div class="set"><div class="no">①</div><h3>손익</h3><p class="q">얼마 벌어서 얼마 남겼나 &mdash; 성적표</p></div>
+        <div class="set"><div class="no">②</div><h3>재무상태</h3><p class="q">지금 가진 것과 빚 &mdash; 체력</p></div>
+        <div class="set"><div class="no">③</div><h3>현금흐름</h3><p class="q">장부 말고 진짜 현금이 도는가 &mdash; 거짓말 탐지기</p></div>
+        <div class="set"><div class="no">④</div><h3>수익성</h3><p class="q">밑천 대비 잘 벌었나 &mdash; ①을 ②로 나눈 것</p></div>
+        <div class="set"><div class="no">⑤</div><h3>안정성</h3><p class="q">망하지 않을 회사인가 &mdash; ②의 위험 측면</p></div>
+        <div class="set"><div class="no">⑥</div><h3>주주환원</h3><p class="q">내 1주 몫으로는 얼마인가 &mdash; 투자자 관점으로 환산</p></div>
+        <div class="set"><div class="no">⑦</div><h3>밸류에이션</h3><p class="q">지금 주가가 싼가 비싼가 &mdash; ⑥ + 시장 가격</p></div>
+      </div>
+
+      <p>
+        ①~③이 <strong>원재료</strong>(DART가 직접 주는 금액), ④~⑤가 그 원재료의 <strong>나눗셈</strong>,
+        ⑥이 <strong>주식 수로 나눈 것</strong>, ⑦이 거기에 <strong>주가를 결합</strong>한 것이다.
+        뒤로 갈수록 앞의 것에 의존하므로, <strong>앞이 비면 뒤도 빈다.</strong>
+      </p>
+
+      <h3>차트 문법 — 4가지만 기억하면 된다</h3>
+      <p class="deck">클라이언트와 합의된 규칙.</p>
+      <div class="tw"><table>
+        <thead><tr><th>데이터 성격</th><th>차트</th><th>컴포넌트</th></tr></thead>
+        <tbody>
+          <tr><td><strong>금액</strong> 추이 — 매출·영업이익·순이익·EPS</td><td>막대</td><td><code>QuarterBars</code> · <code>ZeroAxisBars</code></td></tr>
+          <tr><td><strong>성장률·비율</strong> 추이 — QoQ·YoY·ROE·부채비율·이자보상배율</td><td><strong>꺾은선</strong></td><td><code>LineChart</code></td></tr>
+          <tr><td><strong>재무상태</strong> — 자산 = 부채 + 자본</td><td><strong>누적 막대</strong></td><td><code>StackedBars</code></td></tr>
+          <tr><td><strong>현금흐름</strong> — 영업 / 투자 / 재무</td><td>상하(±) 막대</td><td><code>CashFlowDiverging</code></td></tr>
+        </tbody>
+      </table></div>
+      <p>
+        공통 규칙: 손실 구간은 기준선 아래 · 잠정치(역산값)는 점선 · 적자면 PER는 N/A ·
+        <strong>배당 0원과 데이터 없음은 다르게 표시.</strong>
+      </p>
+
+      <h3>표준 vs 금융 — 화면이 종목마다 다른 것이 정상이다</h3>
+      <p>
+        전 상장사 약 2,500개 중 <strong>금융 155개</strong>(은행·증권·보험·지주·캐피탈)는 손익 구조 자체가 다르다.
+      </p>
+      <ul>
+        <li><strong>은행엔 &ldquo;매출&rdquo;이 없다.</strong> 물건을 파는 게 아니라 돈을 빌려주고 이자를 받는다. 그래서 <code>매출 → 매출총이익 → 영업이익</code> 깔때기가 성립하지 않는다. 실제로 KB금융의 재무제표에는 <code>ifrs-full_Revenue</code> <strong>행 자체가 존재하지 않는다.</strong></li>
+        <li><strong>은행의 부채비율은 1,000%가 정상이다.</strong> 고객이 맡긴 예금이 회계상 전부 부채이기 때문이다. 일반 잣대를 대면 모든 은행이 부실기업으로 보인다.</li>
+        <li><strong>금융기관은 재무상태표를 유동/비유동으로 나누지 않는다.</strong> 유동성 순서로 배열한다.</li>
+      </ul>
+      <p>
+        7셋 중 <strong>①손익 · ②재무상태의 유동·비유동 · ⑤안정성</strong> 세 곳이 프로필에 따라 항목이 교체된다.
+        나머지 4개(현금흐름·수익성·주주환원·밸류에이션)는 표준과 금융이 같다.
+        코드에서는 <code>lib/profiles.ts</code>의 <code>PROFILE_CATALOG</code> 하나가 이 차이를 전부 만들고,
+        화면 컴포넌트는 지표 키를 하드코딩하지 않고 카탈로그를 순회할 뿐이다.
+      </p>
+    </section>
+
+    <!-- ═══════════ 3 ═══════════ -->
+    <section id="anatomy">
+      <h2><i>03</i>SET별 항목 해부</h2>
+
+      <h3>① 손익 — &ldquo;얼마 벌어서 얼마 남겼나&rdquo;</h3>
+      <p>매출에서 비용이 단계적으로 빠지며 좁아지는 <strong>깔때기</strong>다.</p>
+      <div class="funnel">
+        <div>매출액 <small>판 돈 전부</small></div>
+        <div class="minus">− 매출원가 <small>만드는 데 직접 든 돈</small></div>
+        <div>= 매출총이익 <small>제품 자체의 힘</small></div>
+        <div class="minus">− 판매비와관리비 <small>인건비·광고비·임차료</small></div>
+        <div class="key">= 영업이익 <small>본업으로 번 돈 · 가장 중요</small></div>
+        <div class="minus">± 금융·기타손익 − 법인세</div>
+        <div>= 당기순이익 <small>최종적으로 남은 돈</small></div>
+      </div>
+
+      <div class="note care">
+        <p><b class="tag">지배주주</b>지주사가 자회사 지분 60%만 가졌다면 자회사 이익의 40%는 남의 몫이다. 총액과 지배주주분은 <strong>부호까지 갈릴 수 있다</strong>:</p>
+        <ul style="margin-bottom:0">
+          <li>LG화학 2024 — 총액 <strong>+5,150억 흑자</strong>인데 지배주주 귀속은 <strong>−6,909억 적자</strong></li>
+          <li>카카오 2024 — 총액 <strong>−1,619억 적자</strong>인데 지배주주 귀속은 <strong>+553억 흑자</strong></li>
+        </ul>
+        <p style="margin:8px 0 0">그래서 화면은 두 값을 항상 병기하고, 차트의 주 지표는 <strong>지배주주</strong> 기준을 쓴다.</p>
+      </div>
+
+      <h4>단계별 이익률 — 매출 100원당 각 단계에 얼마가 남나</h4>
+      <div class="tw"><table>
+        <thead><tr><th>이익률</th><th>계산</th><th>읽는 법</th></tr></thead>
+        <tbody>
+          <tr><td>매출총이익률</td><td>매출총이익 ÷ 매출</td><td>제품 마진. 소프트웨어는 80%+, 유통은 10%대</td></tr>
+          <tr><td>영업이익률</td><td>영업이익 ÷ 매출</td><td>본업 효율. 업종 평균과 비교해야 의미가 생긴다</td></tr>
+          <tr><td>순이익률</td><td>당기순이익 ÷ 매출</td><td>최종적으로 남는 비율</td></tr>
+        </tbody>
+      </table></div>
+
+      <h4>성장률 — 두 종류를 반드시 같이 본다</h4>
+      <div class="tw"><table>
+        <thead><tr><th></th><th>계산</th><th>무엇을 보나</th><th>함정</th></tr></thead>
+        <tbody>
+          <tr><td><strong>QoQ</strong></td><td>(이번 분기 − 직전 분기) ÷ |직전 분기|</td><td>최근 흐름</td><td><strong>계절성에 속는다.</strong> 아이스크림 회사 겨울 QoQ −60%는 위기가 아니다</td></tr>
+          <tr><td><strong>YoY</strong></td><td>(이번 분기 − 작년 같은 분기) ÷ |작년 같은 분기|</td><td>계절성 뺀 진짜 성장</td><td>작년이 비정상이면 착시</td></tr>
+        </tbody>
+      </table></div>
+      <div class="note care">
+        <p><b class="tag">절대값</b>직전 분기 −100억 → 이번 분기 −200억이면 적자가 2배로 커진 것이다. 그런데 부호를 그대로 두면
+        <code>(−200 − (−100)) ÷ (−100) = +100%</code>가 되어 <strong>적자 심화가 &ldquo;성장 +100%&rdquo;로 뒤집힌다.</strong>
+        분모에 절대값을 쓰면 −100%(악화)로 올바르게 나온다.</p>
+        <p style="margin-bottom:0">부호가 아예 바뀌면(적자→흑자) %는 해석 자체가 무의미하다. 이때는 수치 대신 <strong>&ldquo;흑자전환&rdquo; / &ldquo;적자전환&rdquo;</strong>으로 표기한다.</p>
+      </div>
+
+      <h3>② 재무상태 — &ldquo;가진 것과 빚&rdquo;</h3>
+      <div class="eq">자산 = 부채 + 자본<small>가진 것 = 남의 돈 + 내 돈</small></div>
+      <p>
+        이건 <strong>회계등식</strong>이라 언제나 정확히 맞아떨어진다. 그래서 한 막대를 두 색으로 쌓으면 막대 전체
+        높이가 자산총계가 되고, 색 비율이 곧 재무구조가 된다. 파이 대신 <strong>누적 막대</strong>를 쓰는 이유는
+        <strong>구성비와 증감 추이를 동시에</strong> 볼 수 있기 때문이다.
+      </p>
+      <h4>유동 · 비유동 — 기준은 1년이다</h4>
+      <div class="tw"><table>
+        <thead><tr><th></th><th>뜻</th><th>예</th></tr></thead>
+        <tbody>
+          <tr><td>유동자산</td><td>1년 안에 현금화되는 자산</td><td>현금 · 매출채권 · 재고</td></tr>
+          <tr><td>비유동자산</td><td>1년 넘게 붙잡혀 있는 자산</td><td>공장 · 기계 · 특허</td></tr>
+          <tr><td>유동부채</td><td>1년 안에 갚아야 할 빚</td><td>매입채무 · 단기차입금</td></tr>
+          <tr><td>비유동부채</td><td>1년 넘게 여유 있는 빚</td><td>장기차입금 · 사채</td></tr>
+        </tbody>
+      </table></div>
+      <div class="note trap">
+        <p style="margin-bottom:0"><b class="tag">금융</b>금융 종목에는 이 구분이 없다. IAS 1에 따라 유동성 순서로 배열하기 때문에 KB금융·삼성생명 등에는 <code>ifrs-full_CurrentAssets</code> 행 자체가 없다. 화면에서 이 항목들이 비는 것은 &ldquo;우리가 못 읽어서&rdquo;가 아니라 &ldquo;그 회사엔 그 개념이 없어서&rdquo;이며, <strong><code>데이터 없음</code>이 아니라 <code>해당 없음</code></strong>으로 구분 표기된다.</p>
+      </div>
+
+      <h3>③ 현금흐름 — &ldquo;장부 말고 진짜 현금이 도는가&rdquo;</h3>
+      <p>
+        이익은 회계 규칙으로 만들어지지만 <strong>현금은 거짓말을 못 한다.</strong> 물건을 외상으로 팔면 매출과 이익은
+        잡히지만 현금은 아직 없다. 그래서 이익이 나는데 망하는 회사가 있다(흑자도산).
+      </p>
+      <div class="tw"><table>
+        <thead><tr><th>활동</th><th>뜻</th><th>건강한 부호</th></tr></thead>
+        <tbody>
+          <tr><td><strong>영업</strong>활동 현금흐름</td><td>본업으로 실제 들어온 현금</td><td><strong>(+)</strong> 커야 좋다</td></tr>
+          <tr><td><strong>투자</strong>활동 현금흐름</td><td>공장·설비·지분에 쓴 현금</td><td><strong>(−)</strong> 미래를 위해 쓰는 중</td></tr>
+          <tr><td><strong>재무</strong>활동 현금흐름</td><td>빚·증자·배당으로 오간 현금</td><td><strong>(−)</strong> 빚 갚고 배당 주는 중</td></tr>
+        </tbody>
+      </table></div>
+      <p>
+        건강한 모양 = <strong>영업(+) / 투자(−) / 재무(−)</strong> — <em>벌어서, 투자하고, 빚 갚는다.</em>
+        반대로 영업(−) / 재무(+)면 <em>못 벌어서 빚으로 버틴다</em>는 뜻이다.
+      </p>
+      <div class="note care">
+        <p style="margin-bottom:0"><b class="tag">FCF</b>정의가 회사마다 다르다. 우리는 <strong>&ldquo;영업CF − 유형자산 취득&rdquo;</strong>으로 통일했다. 무형자산 취득(소프트웨어·특허) 포함 여부는 KRX 관행에 맞춰 <strong>제외</strong>했다 — 삼성전자 2024 기준 유형자산 취득 51.4조, 무형자산 취득 2.3조로 값이 크게 달라진다.</p>
+      </div>
+
+      <h3>④ 수익성 — &ldquo;밑천 대비 잘 벌었나&rdquo;</h3>
+      <p>150억을 벌어도 밑천이 1,200억이면 잘한 것이고 1조면 못한 것이다. 그래서 <strong>비율</strong>로 본다.</p>
+      <div class="tw"><table>
+        <thead><tr><th>지표</th><th>계산</th><th>질문</th><th>비교 기준</th></tr></thead>
+        <tbody>
+          <tr><td><strong>ROE</strong></td><td>당기순이익 ÷ 자본</td><td>주주 돈 100원으로 몇 원 벌어주나</td><td>은행 예금 약 3%</td></tr>
+          <tr><td><strong>ROA</strong></td><td>당기순이익 ÷ 자산</td><td>빚까지 포함한 전 재산 대비로는</td><td>ROE보다 항상 작거나 같다</td></tr>
+          <tr><td>영업이익률</td><td>영업이익 ÷ 매출</td><td>본업 마진</td><td>업종 평균</td></tr>
+          <tr><td>순이익률</td><td>당기순이익 ÷ 매출</td><td>최종 마진</td><td>업종 평균</td></tr>
+        </tbody>
+      </table></div>
+      <div class="note trap">
+        <p style="margin-bottom:0"><b class="tag">주의</b>ROA를 우리가 직접 계산하는 이유 — DART가 주는 <code>M212000</code>은 이름이 &ldquo;총자산영업이익률&rdquo;로 <strong>분자가 영업이익</strong>이다. ROA(분자 = 당기순이익)와 다른 지표라 그대로 쓰면 틀린다.</p>
+      </div>
+
+      <h3>⑤ 안정성 — &ldquo;망하지 않을 회사인가&rdquo;</h3>
+      <p>잘 버는 것과 별개로, 빚이 과하면 위기 때 먼저 무너진다.</p>
+      <div class="tw"><table>
+        <thead><tr><th>지표</th><th>계산</th><th>임계선</th><th>읽는 법</th></tr></thead>
+        <tbody>
+          <tr><td><strong>부채비율</strong></td><td>부채 ÷ 자본 × 100</td><td class="num">100%</td><td>낮을수록 안전. 200% 넘으면 주의(업종별 차이 큼)</td></tr>
+          <tr><td><strong>유동비율</strong></td><td>유동자산 ÷ 유동부채 × 100</td><td class="num">100%</td><td>100% 미만 = 1년 내 갚을 빚이 1년 내 만들 현금보다 많다</td></tr>
+          <tr><td><strong>순차입금</strong></td><td>총차입금 − 현금성자산</td><td class="num">0</td><td><strong>음수면 순현금</strong> — 빚보다 현금이 많다</td></tr>
+          <tr><td><strong>이자보상배율</strong></td><td>영업이익 ÷ 이자비용</td><td class="num">1배</td><td><strong>1배 미만 = 벌어서 이자도 못 낸다</strong></td></tr>
+        </tbody>
+      </table></div>
+      <p>임계선이 의미의 전부인 지표라서 차트에 <strong>붉은 점선으로 기준선을 같이 긋는다.</strong></p>
+
+      <div class="note trap">
+        <p><b class="tag">순차입금</b>&ldquo;차입금&rdquo;이 단일 계정이 아니다. 회사마다 <code>단기차입금</code> / <code>유동성장기부채</code> / <code>사채</code> / <code>장기차입금</code> / <code>차입부채</code> / <code>전환사채</code>로 쪼개 놓고, <code>account_id</code>조차 제각각이다 — <code>ifrs-full_ShorttermBorrowings</code>, <code>ifrs-full_Borrowings</code>, <code>ifrs-full_LoansReceived</code>, <code>ifrs-full_CurrentBorrowingsAndCurrentPortionOfNoncurrentBorrowings</code> …</p>
+        <p>→ 이 항목만은 &ldquo;첫 번째로 찾은 것 하나&rdquo;를 쓰는 폴백 체인이 아니라 <strong>15개 후보를 전부 훑어 존재하는 것을 모두 합산</strong>한다. 어떤 계정이 실제로 잡혔는지는 화면 출처 패널에 전부 노출되므로 과소 집계 여부를 눈으로 검증할 수 있다.</p>
+        <p style="margin-bottom:0">20종목 중 <strong>17종목에서 값이 나온다.</strong> 나머지 3곳은 차입 계정이 하나도 안 잡혀 <code>데이터 없음</code>이다 — 근거 없이 0원으로 채우지 않는다.</p>
+      </div>
+
+      <div class="note trap">
+        <p style="margin-bottom:0"><b class="tag">이자비용</b>순수한 &ldquo;이자비용&rdquo;(<code>ifrs-full_InterestExpense</code>) 행 없이 <strong>금융비용</strong>(<code>ifrs-full_FinanceCosts</code> — 이자 + 환차손 + 파생손실 등)만 공시하는 회사가 많다. 삼성전자가 그렇다. 이자비용 → 금융비용 순으로 폴백하되 <strong>어느 계정을 분모로 썼는지를 계산식에 반드시 남긴다.</strong> 금융비용을 분모로 쓰면 이자보상배율이 실제보다 낮게 나오기 때문이다.</p>
+      </div>
+
+      <div class="note trap">
+        <p style="margin-bottom:0"><b class="tag">금융</b>금융 종목에는 이 4개가 전부 <code>해당 없음</code>이다. 대신 BIS비율(은행·지주) / NCR 순자본비율(증권) / K-ICS(보험)를 본다. 전부 &ldquo;충격을 흡수할 자본이 충분한가&rdquo;를 재는 같은 목적의 자로, 업권마다 이름과 계산이 다를 뿐이다. <strong>그런데 이 셋은 DART OpenAPI가 제공하지 않는다</strong> → <code>원천 미확보</code>로 정직하게 표기한다.</p>
+      </div>
+
+      <h3>⑥ 주주환원 — &ldquo;내 1주 몫으로 보면&rdquo;</h3>
+      <p>회사 전체 숫자를 <strong>주식 수로 나눠</strong> 투자자 1주 관점으로 바꾼 것들이다.</p>
+      <div class="tw"><table>
+        <thead><tr><th>지표</th><th>계산</th><th>질문</th></tr></thead>
+        <tbody>
+          <tr><td><strong>EPS</strong> 주당순이익</td><td>당기순이익 ÷ 주식 수</td><td>내 1주가 얼마 벌어줬나</td></tr>
+          <tr><td><strong>BPS</strong> 주당순자산</td><td>지배주주지분 ÷ 발행주식총수</td><td>지금 청산하면 1주당 얼마 받나</td></tr>
+          <tr><td><strong>DPS</strong> 주당배당금</td><td>— 공시값</td><td>1주당 현금으로 얼마 돌려주나</td></tr>
+          <tr><td>배당성향</td><td>배당총액 ÷ 순이익</td><td>번 돈의 몇 %를 나눠줬나</td></tr>
+          <tr><td>자기주식</td><td>— 공시값</td><td>회사가 사들여 보유 중인 자사주</td></tr>
+        </tbody>
+      </table></div>
+      <div class="note">
+        <p style="margin-bottom:0"><b class="tag">암기</b><strong>E</strong>가 들어가면 Earnings(번 돈), <strong>B</strong>는 Book value(장부상 순자산), <strong>D</strong>는 Dividend(배당). 단위로도 구분된다 — <strong>원</strong>=주당 금액, <strong>%</strong>=수익률, <strong>배</strong>=가격 비교.</p>
+      </div>
+      <div class="note trap">
+        <p><b class="tag">0원 ≠ 없음</b>무배당 회사도 DART는 <code>status: "000"</code>(정상)으로 응답하고 배당 행의 값만 <code>-</code>로 온다. 즉 <strong>응답 status로는 무배당 여부를 판정할 수 없다.</strong> 화면은 두 경우를 다른 상태로 표시한다 — <code>0원 [무배당 확인]</code> vs <code>데이터 없음</code>.</p>
+        <p style="margin-bottom:0"><strong>배당성향이 두 개인 이유</strong> — DART 산출지표(<code>M451000</code>)와 우리가 배당공시에서 계산한 값(배당총액 ÷ 지배주주 귀속 순이익)의 산출 기준이 달라 값이 어긋날 수 있다. 특히 적자 기업은 분모가 음수라 음수 배당성향이 나온다. 두 값의 부호가 다르거나 10%p 이상 벌어지면 화면에 &ldquo;산출 기준 상이&rdquo; 배지를 자동으로 붙인다.</p>
+      </div>
+
+      <h3>⑦ 밸류에이션 — &ldquo;지금 가격이 싼가 비싼가&rdquo;</h3>
+      <p>지금까지는 <strong>회사의 실력</strong>만 봤다. 여기서 처음으로 <strong>시장이 매긴 가격(주가)</strong>이 등장한다.</p>
+      <div class="tw"><table>
+        <thead><tr><th>지표</th><th>계산</th><th>질문</th><th>상태</th></tr></thead>
+        <tbody>
+          <tr class="muted-row"><td>종가</td><td>— 시세</td><td>오늘 1주 가격</td><td>미확보</td></tr>
+          <tr class="muted-row"><td>시가총액</td><td>종가 × 발행주식총수</td><td>이 회사를 통째로 사면 얼마</td><td>미확보</td></tr>
+          <tr class="muted-row"><td><strong>PER</strong></td><td>종가 ÷ EPS</td><td>몇 년치 벌이 가격인가 (낮을수록 쌈)</td><td>미확보</td></tr>
+          <tr class="muted-row"><td><strong>PBR</strong></td><td>종가 ÷ BPS</td><td>청산가치보다 비싼가 (1배 미만 = 이하)</td><td>미확보</td></tr>
+          <tr><td>배당수익률</td><td>DPS ÷ 종가</td><td>예금이라 치면 이자 몇 %인가</td><td><strong>확보</strong></td></tr>
+        </tbody>
+      </table></div>
+      <div class="note trap">
+        <p><b class="tag">유일한 공백</b><strong>7셋 중 이 항목만 DART로 채울 수 없다.</strong> DART OpenAPI는 <strong>공시 서류</strong>를 제공하는 시스템이지 <strong>시세</strong>를 제공하지 않는다. 위 5개 중 4개의 분자가 전부 주가라서, 시세 API를 별도로 연동하기 전에는 원리적으로 계산이 불가능하다. 화면은 근거 없는 숫자를 채우지 않고 <code>원천 미확보</code>로 비워 둔다.</p>
+        <p><strong>예외: 배당수익률만 채워진다.</strong> 원래는 주가가 필요하지만 DART 배당공시(<code>alotMatter</code>)가 <strong>회사가 이미 계산해 둔 값</strong>을 그대로 실어 주기 때문이다.</p>
+        <p style="margin-bottom:0"><strong>적자 회사의 PER는 마이너스가 된다.</strong> 숫자로는 계산되지만 의미가 없다(음수 PER를 &ldquo;몇 년치 벌이&rdquo;로 해석할 수 없다). 그래서 계산값 대신 <strong>N/A</strong>로 표시하는 규칙을 둔다.</p>
+      </div>
+    </section>
+
+    <!-- ═══════════ 4 ═══════════ -->
+    <section id="api">
+      <h2><i>04</i>원천 API 5종 완전 명세</h2>
+
+      <h3>공통 사항</h3>
+      <div class="tw"><table>
+        <tbody>
+          <tr><th style="width:150px">제공처</th><td>금융감독원 전자공시시스템 DART — OpenAPI</td></tr>
+          <tr><th>개발자 포털</th><td><a href="https://opendart.fss.or.kr/">opendart.fss.or.kr</a></td></tr>
+          <tr><th>API 명세서</th><td><a href="https://opendart.fss.or.kr/guide/main.do?apiGrpCd=DS003">guide/main.do?apiGrpCd=DS003</a> (그룹별 DS001~DS006)</td></tr>
+          <tr><th>인증키 발급</th><td><a href="https://opendart.fss.or.kr/uss/umt/EgovMberInsertView.do">uss/umt/EgovMberInsertView.do</a></td></tr>
+          <tr><th>Base URL</th><td><code>https://opendart.fss.or.kr/api</code></td></tr>
+          <tr><th>인증</th><td>모든 요청에 <code>crtfc_key</code>(40자 hex) 쿼리 파라미터 필수</td></tr>
+          <tr><th>일일 한도</th><td class="num">20,000회 <span style="font-family:var(--sans)">— 우리 전체 수집 746회 = <strong>3.7%</strong></span></td></tr>
+          <tr><th>응답 형식</th><td><code>.json</code> 또는 <code>.xml</code> (엔드포인트 이름 뒤에 붙임)</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>가장 중요한 함정 — 모든 에러가 HTTP 200으로 온다</h3>
+<pre><code>HTTP/1.1 200 OK          ← 이걸 믿으면 안 된다
+{ "status": "013", "message": "조회된 데이타가 없습니다." }
+                ↑ 진짜 상태는 여기</code></pre>
+      <p>
+        <code>res.ok</code>로 판정하면 전부 성공으로 보인다. <strong>반드시 <code>body.status</code>를 봐야 한다.</strong>
+        그리고 <code>status !== "000"</code>이면 <strong><code>list</code> 키 자체가 응답에 없다</strong> →
+        <code>body.list ?? []</code> 필수.
+      </p>
+      <div class="tw"><table>
+        <thead><tr><th>status</th><th>의미</th><th>우리 처리</th></tr></thead>
+        <tbody>
+          <tr><td><code>000</code></td><td>정상</td><td>진행</td></tr>
+          <tr><td><code>010</code></td><td>등록되지 않은 키</td><td>즉시 중단</td></tr>
+          <tr><td><code>011</code></td><td>사용할 수 없는 키</td><td>즉시 중단</td></tr>
+          <tr><td><code>012</code></td><td>접근할 수 없는 IP</td><td>즉시 중단</td></tr>
+          <tr><td><code>013</code></td><td><strong>조회된 데이터 없음</strong></td><td><strong>에러가 아니다.</strong> CFS면 OFS로 폴백, 아니면 정상 기록</td></tr>
+          <tr><td><code>020</code></td><td>요청 제한 초과(일 20,000회)</td><td><strong>전체 수집 즉시 중단</strong></td></tr>
+          <tr><td><code>100</code></td><td>필드 부적정</td><td>즉시 중단 — 파라미터 버그</td></tr>
+          <tr><td><code>800</code> <code>900</code></td><td>시스템 점검 / 정의되지 않은 오류</td><td>백오프 후 재시도</td></tr>
+        </tbody>
+      </table></div>
+
+      <h4>우리가 저장하는 응답 봉투</h4>
+      <p>DART 응답을 그대로 쓰지 않고 <strong>호출 메타데이터를 씌워</strong> <code>public/snapshots/*.json</code>에 저장한다.</p>
+<pre><code>{
+  "requestUrl": "https://opendart.fss.or.kr/api/fnlttSinglAcntAll.json
+                 ?crtfc_key=***MASKED***&amp;corp_code=00126380
+                 &amp;bsns_year=2024&amp;reprt_code=11011&amp;fs_div=CFS",
+  "status":    "000",          // 판정된 상태
+  "message":   "정상",
+  "fetchedAt": "2026-08-12T…", // 언제 호출했나
+  "elapsedMs": 310,            // 얼마나 걸렸나
+  "bytes":     206099,         // 응답 크기
+  "body":      { /* DART 원본 응답 그대로 */ }
+}</code></pre>
+      <div class="note care">
+        <p style="margin-bottom:0"><b class="tag">보안</b><code>crtfc_key</code>는 항상 <code>***MASKED***</code>로 치환해서 저장한다. 스냅샷은 공개 URL로 노출되므로 키가 새어 나가면 안 된다. 마스킹된 URL을 복사해 키만 넣으면 누구나 동일 응답을 재현할 수 있다 — 이것이 화면 출처 패널의 &ldquo;검증 가능성&rdquo;의 근거다. API 키는 서버 측 Route Handler에만 존재하고 <code>NEXT_PUBLIC_</code> 접두사는 절대 쓰지 않는다.</p>
+      </div>
+
+      <!-- API 1 -->
+      <div class="api">
+        <div class="head"><h3 style="margin:0">API ① <code>company</code> — 기업 개황</h3></div>
+        <p class="deck" style="margin:6px 0 0">회사가 어떤 회사인지. 종목당 1회만 호출하면 된다.</p>
+        <div class="ep">GET <b>https://opendart.fss.or.kr/api/company.json</b></div>
+        <p style="font-size:13px"><a href="https://opendart.fss.or.kr/guide/detail.do?apiGrpCd=DS001&amp;apiId=2019002">공식 명세 →</a></p>
+
+        <h4>Request</h4>
+        <div class="tw"><table>
+          <thead><tr><th>파라미터</th><th>필수</th><th>설명</th><th>예</th></tr></thead>
+          <tbody>
+            <tr><td><code>crtfc_key</code></td><td>✅</td><td>인증키</td><td>40자 hex</td></tr>
+            <tr><td><code>corp_code</code></td><td>✅</td><td><strong>DART 고유번호 8자리</strong> — 종목코드가 아니다</td><td><code>00126380</code></td></tr>
+          </tbody>
+        </table></div>
+        <div class="note trap">
+          <p style="margin-bottom:0"><b class="tag">고유번호</b><code>corp_code</code>는 종목코드(<code>005930</code>)와 <strong>다른 번호</strong>다. 매핑표는 별도 엔드포인트 <code>corpCode.xml</code>에서 받는데 <strong>응답이 ZIP으로 압축돼 온다</strong>(매직바이트 <code>PK\x03\x04</code>). 에러일 때만 XML이 오므로 매직바이트로 분기해야 한다. 또 비상장사의 <code>stock_code</code>는 빈 문자열이 아니라 <strong>공백 1개</strong>라 <code>.trim()</code> 후 판정해야 한다.</p>
+        </div>
+
+        <h4>Response — <code>list</code> 배열이 아니라 최상위에 필드가 평평하게 온다</h4>
+<pre><code>{
+  "status": "000",  "message": "정상",
+  "corp_code": "00126380",
+  "corp_name": "삼성전자(주)",
+  "corp_name_eng": "SAMSUNG ELECTRONICS CO,.LTD",
+  "stock_name": "삼성전자",
+  "stock_code": "005930",
+  "ceo_nm": "전영현, 노태문",
+  "corp_cls": "Y",
+  "jurir_no": "1301110006246",
+  "bizr_no": "1248100998",
+  "adres": "경기도 수원시 영통구  삼성로 129 (매탄동)",
+  "hm_url": "www.samsung.com/sec",   "ir_url": "",
+  "phn_no": "02-2255-0114",          "fax_no": "031-200-7538",
+  "induty_code": "264",
+  "est_dt": "19690113",
+  "acc_mt": "12"
+}</code></pre>
+        <div class="tw"><table>
+          <thead><tr><th>필드</th><th>우리가 쓰는 용도</th></tr></thead>
+          <tbody>
+            <tr><td><code>corp_cls</code></td><td>시장 구분 — <code>Y</code> 유가증권 · <code>K</code> 코스닥 · <code>N</code> 코넥스 · <code>E</code> 기타</td></tr>
+            <tr><td><strong><code>induty_code</code></strong></td><td>표준산업분류(KSIC). <strong>앞 2자리</strong>로 금융/비금융을 1차 자동 판정 (<code>64</code>·<code>65</code>·<code>66</code> = 금융)</td></tr>
+            <tr><td><strong><code>acc_mt</code></strong></td><td><strong>결산월.</strong> 대부분 <code>12</code>지만 비12월 결산 회사가 있어 시계열 해석이 달라진다</td></tr>
+            <tr><td><code>ceo_nm</code> <code>est_dt</code></td><td>화면 개요 표시</td></tr>
+          </tbody>
+        </table></div>
+        <div class="note care">
+          <p style="margin-bottom:0"><b class="tag">KSIC</b><code>induty_code</code>는 <strong>자릿수가 가변</strong>이다(위 예시는 3자리 <code>264</code>). 앞 2자리만 잘라 쓰되 zero-fill 하면 안 된다. 그리고 KSIC 앞 2자리로는 <strong>금융/비금융 판정까지만</strong> 자동화된다 — 은행·증권·보험·지주 세분류는 깨끗하게 갈리지 않아 <strong>사람이 확정</strong>해야 한다. 그래서 <code>universe.json</code>은 자동 판정(<code>KSIC_AUTO</code>)과 수동 확정(<code>MANUAL</code>)을 둘 다 기록한다.</p>
+        </div>
+      </div>
+
+      <!-- API 2 -->
+      <div class="api">
+        <div class="head"><h3 style="margin:0">API ② <code>fnlttSinglAcntAll</code> — 단일회사 전체 재무제표</h3><span class="star">주력</span></div>
+        <p class="deck" style="margin:6px 0 0"><strong>7셋 원재료의 대부분이 여기서 나온다.</strong> 재무상태표·손익계산서·현금흐름표의 전 계정을 준다.</p>
+        <div class="ep">GET <b>https://opendart.fss.or.kr/api/fnlttSinglAcntAll.json</b></div>
+        <p style="font-size:13px"><a href="https://opendart.fss.or.kr/guide/detail.do?apiGrpCd=DS003&amp;apiId=2019020">공식 명세 →</a></p>
+
+        <h4>Request</h4>
+        <div class="tw"><table>
+          <thead><tr><th>파라미터</th><th>필수</th><th>설명</th><th>허용값</th></tr></thead>
+          <tbody>
+            <tr><td><code>crtfc_key</code></td><td>✅</td><td>인증키</td><td></td></tr>
+            <tr><td><code>corp_code</code></td><td>✅</td><td>고유번호 8자리</td><td></td></tr>
+            <tr><td><code>bsns_year</code></td><td>✅</td><td>사업연도 4자리</td><td><code>2015</code> 이후</td></tr>
+            <tr><td><code>reprt_code</code></td><td>✅</td><td>보고서 종류</td><td>아래 표</td></tr>
+            <tr><td><code>fs_div</code></td><td>✅</td><td>재무제표 구분</td><td><code>CFS</code> 연결 · <code>OFS</code> 별도</td></tr>
+          </tbody>
+        </table></div>
+        <p style="font-size:13px;color:var(--gray)"><code>fs_div</code>를 빠뜨리면 <code>status: "100"</code>(필드 부적정)이 온다. 필수로 강제해야 한다.</p>
+
+        <h4><code>reprt_code</code> — 이 4개의 의미가 분기 시계열의 전부다</h4>
+        <div class="tw"><table>
+          <thead><tr><th>코드</th><th>보고서</th><th><code>thstrm_amount</code></th><th><code>thstrm_add_amount</code></th></tr></thead>
+          <tbody>
+            <tr><td><code>11013</code></td><td>1분기보고서</td><td><strong>Q1 단독</strong></td><td>누적 — Q1과 동일</td></tr>
+            <tr><td><code>11012</code></td><td>반기보고서</td><td><strong>Q2 단독</strong></td><td>누적 Q1+Q2</td></tr>
+            <tr><td><code>11014</code></td><td>3분기보고서</td><td><strong>Q3 단독</strong></td><td>누적 Q1+Q2+Q3</td></tr>
+            <tr><td><code>11011</code></td><td>사업보고서(연간)</td><td><strong>연간 전체</strong></td><td><strong>없음</strong> <code>""</code></td></tr>
+          </tbody>
+        </table></div>
+
+        <h4>삼성전자 2025 매출액 실측 (원)</h4>
+        <div class="tw"><table>
+          <thead><tr><th></th><th class="num"><code>thstrm_amount</code></th><th class="num"><code>thstrm_add_amount</code></th></tr></thead>
+          <tbody>
+            <tr><td><code>11013</code></td><td class="num">79,140,503,000,000</td><td class="num">79,140,503,000,000</td></tr>
+            <tr><td><code>11012</code></td><td class="num">74,566,317,000,000</td><td class="num">153,706,820,000,000</td></tr>
+            <tr><td><code>11014</code></td><td class="num">86,061,747,000,000</td><td class="num">239,768,567,000,000</td></tr>
+            <tr><td><code>11011</code></td><td class="num">333,605,938,000,000</td><td class="num">""</td></tr>
+          </tbody>
+        </table></div>
+        <p style="font-size:13px;color:var(--gray)">검산: 153,706,820 − 79,140,503 = 74,566,317 ✅ (백만원 단위)</p>
+
+        <div class="note">
+          <p><b class="tag">핵심</b><strong>Q1~Q3는 역산할 필요가 없다.</strong> <code>thstrm_amount</code>가 이미 단일분기 값이다. <strong>4분기만 DART가 단독 보고서를 내지 않아</strong> <code>연간(11011) − 3Q누적(11014)</code>으로 역산해야 한다.</p>
+          <p>삼성전자 2025 Q4 = 333,605,938 − 239,768,567 = <strong>93,837,371백만원.</strong> 역산값은 화면에 <strong>점선 + &ldquo;잠정&rdquo; 칩</strong>으로 구분 표시한다.</p>
+          <p style="margin-bottom:0">다만 단일분기 자리에 누적을 넣어 공시하는 회사가 있을 수 있어, 우리는 <strong>누적 차분을 교차검증으로 병행</strong>하고 어긋나면 계산식에 경고를 남긴다.</p>
+        </div>
+
+        <h4>Response — 삼성전자 2024 연결 기준 213행</h4>
+<pre><code>{
+  "status": "000",  "message": "정상",
+  "list": [
+    {
+      "rcept_no": "20250311001085",
+      "reprt_code": "11011",  "bsns_year": "2024",
+      "corp_code": "00126380",
+      "sj_div": "BS",  "sj_nm": "재무상태표",
+      "account_id": "ifrs-full_Assets",
+      "account_nm": "자산총계",
+      "account_detail": "-",
+      "thstrm_nm": "제 56 기",  "thstrm_amount": "514531948000000",
+      "frmtrm_nm": "제 55 기",  "frmtrm_amount": "455905980000000",
+      "bfefrmtrm_nm": "제 54 기", "bfefrmtrm_amount": "448424507000000",
+      "ord": "7",  "currency": "KRW"
+    }
+  ]
+}</code></pre>
+        <div class="tw"><table>
+          <thead><tr><th>필드</th><th>의미</th><th>주의</th></tr></thead>
+          <tbody>
+            <tr><td><code>rcept_no</code></td><td>접수번호</td><td><strong>앞 8자리가 접수일</strong>(YYYYMMDD) — 화면의 &ldquo;기준일&rdquo;이 이 값</td></tr>
+            <tr><td><code>sj_div</code></td><td>재무제표 구분</td><td><code>BS</code> <code>IS</code> <code>CIS</code> <code>CF</code> <code>SCE</code>(자본변동표)</td></tr>
+            <tr><td><strong><code>account_id</code></strong></td><td><strong>표준 계정 코드</strong></td><td><strong>이 값으로 매칭한다</strong></td></tr>
+            <tr><td><code>account_nm</code></td><td>계정 이름</td><td><strong>표시용으로만.</strong> 회사마다 다르다</td></tr>
+            <tr><td><code>account_detail</code></td><td>세부 항목</td><td><strong><code>"-"</code>인 행이 본표 합계행</strong></td></tr>
+            <tr><td><code>thstrm_amount</code></td><td>당기 금액</td><td>문자열. 콤마 없음(이 API 한정)</td></tr>
+            <tr><td><code>thstrm_add_amount</code></td><td>당기 누계</td><td>분기보고서에만 존재</td></tr>
+            <tr><td><code>frmtrm_amount</code></td><td>전기 금액</td><td>연간보고서에서 전년도 값을 바로 얻을 수 있다</td></tr>
+            <tr><td><code>ord</code> <code>currency</code></td><td>표시 순서 · 통화</td><td><code>KRW</code></td></tr>
+          </tbody>
+        </table></div>
+
+        <div class="note trap">
+          <p><b class="tag">매칭</b><strong><code>account_nm</code>(계정 이름)으로 매칭하면 안 된다.</strong> 같은 개념을 회사마다 다르게 쓴다 — &ldquo;매출액&rdquo; / &ldquo;수익(매출액)&rdquo; / &ldquo;영업수익&rdquo;. <strong><code>account_id</code>(표준 계정 코드)로 매칭</strong>해야 한다.</p>
+          <p>그런데 <code>account_id</code>만으로도 부족하다. 같은 개념에 다른 표준 코드를 쓰는 회사가 있다:</p>
+          <ul>
+            <li><strong>영업이익</strong> — 대부분 <code>dart_OperatingIncomeLoss</code>인데, 금융업은 이 행이 없고 <code>ifrs-full_ProfitLossFromOperatingActivities</code>만 있다</li>
+            <li><strong>EPS</strong> — 대부분 <code>ifrs-full_BasicEarningsLossPerShare</code>인데, 헬릭스미스는 이 행이 없고 <code>ifrs-full_BasicEarningsLossPerShareFromContinuingOperations</code>만 있다</li>
+          </ul>
+          <p style="margin-bottom:0">→ 그래서 지표마다 <strong><code>account_id</code> 폴백 체인(배열)</strong>을 둔다. 몇 번째 후보에서 잡혔는지는 화면 출처 패널의 &ldquo;폴백 이력&rdquo; 탭에 전부 기록된다.</p>
+        </div>
+        <div class="note trap">
+          <p style="margin-bottom:0"><b class="tag">중복</b><code>ifrs-full_ProfitLoss</code>(당기순이익)는 <code>IS</code>·<code>CIS</code>·<code>CF</code> 세 곳에 중복으로 나온다. <code>sj_div</code> 우선순위(<code>IS</code> → <code>CIS</code> → <code>CF</code>)로 첫 HIT만 채택해 중복을 제거한다.</p>
+        </div>
+
+        <h4>금액 문자열 파싱 — 아래 값은 전부 <code>null</code>이다</h4>
+        <div class="tw"><table>
+          <thead><tr><th>원본 값</th><th>의미</th></tr></thead>
+          <tbody>
+            <tr><td><code>""</code> 빈 문자열</td><td>값 없음</td></tr>
+            <tr><td><code>"-"</code></td><td>해당 없음</td></tr>
+            <tr><td><code>"#########"</code></td><td>자릿수 초과 — 엑셀식 오버플로</td></tr>
+          </tbody>
+        </table></div>
+        <p style="margin-bottom:0">
+          <code>Number()</code>에 그냥 넣으면 <code>"-"</code>는 <code>NaN</code>, <code>""</code>는 <strong>0</strong>이 되어
+          <strong>근거 없는 0</strong>을 만든다. 반드시 파싱 전에 걸러야 한다.
+        </p>
+      </div>
+
+      <!-- API 3 -->
+      <div class="api">
+        <div class="head"><h3 style="margin:0">API ③ <code>fnlttSinglIndx</code> — 단일회사 주요 재무지표</h3></div>
+        <p class="deck" style="margin:6px 0 0">DART가 <strong>이미 계산해 둔 비율 지표</strong>를 준다. 우리가 나눗셈할 필요가 없다.</p>
+        <div class="ep">GET <b>https://opendart.fss.or.kr/api/fnlttSinglIndx.json</b></div>
+        <p style="font-size:13px"><a href="https://opendart.fss.or.kr/guide/detail.do?apiGrpCd=DS003&amp;apiId=2022001">공식 명세 →</a></p>
+
+        <h4>Request</h4>
+        <div class="tw"><table>
+          <thead><tr><th>파라미터</th><th>필수</th><th>설명</th><th>허용값</th></tr></thead>
+          <tbody>
+            <tr><td><code>crtfc_key</code> <code>corp_code</code> <code>bsns_year</code> <code>reprt_code</code></td><td>✅</td><td>위와 동일</td><td></td></tr>
+            <tr><td><code>idx_cl_code</code></td><td>✅</td><td><strong>지표 분류</strong></td><td><code>M210000</code> 수익성 · <code>M220000</code> 안정성 · <code>M230000</code> 성장성 · <code>M240000</code> 활동성</td></tr>
+          </tbody>
+        </table></div>
+        <div class="note trap">
+          <p style="margin-bottom:0"><b class="tag">호출량</b><code>idx_cl_code</code>는 <strong>콤마로 다중 지정이 불가능하다.</strong> 4개 분류를 전부 받으려면 <strong>4번 개별 호출</strong>해야 한다. 우리 호출량의 가장 큰 덩어리(20종목 × 3년 × 4분류 = <strong>240회</strong>)가 이것이다.</p>
+        </div>
+
+        <h4>Response</h4>
+<pre><code>{
+  "status": "000",  "message": "정상",
+  "list": [
+    {
+      "reprt_code": "11011",  "bsns_year": "2024",
+      "corp_code": "00126380",  "stock_code": "005930",
+      "stlm_dt": "2024-12-31",
+      "idx_cl_code": "M210000",  "idx_cl_nm": "수익성지표",
+      "idx_code": "M211550",     "idx_nm": "ROE",
+      "idx_val": "8.997"
+    }
+  ]
+}</code></pre>
+        <div class="note trap">
+          <p style="margin-bottom:0"><b class="tag">결측</b><code>idx_val</code> 값이 없으면 <strong>키 자체가 응답에서 사라진다.</strong> <code>row.idx_val</code>이 <code>undefined</code>가 되므로 옵셔널 접근이 필수다. 그리고 값이 있어도 <code>"#########"</code>일 수 있다.</p>
+        </div>
+
+        <h4>우리가 쓰는 <code>idx_code</code> — 삼성전자 2024 실측값</h4>
+        <div class="tw"><table>
+          <thead><tr><th>분류</th><th><code>idx_code</code></th><th>지표</th><th class="num">실측값</th><th>7셋</th></tr></thead>
+          <tbody>
+            <tr><td><code>M210000</code></td><td><code>M211200</code></td><td>순이익률</td><td class="num">11.451</td><td>① ④</td></tr>
+            <tr><td><code>M210000</code></td><td><code>M211300</code></td><td>매출총이익률</td><td class="num">37.993</td><td>①</td></tr>
+            <tr><td><code>M210000</code></td><td><strong><code>M211550</code></strong></td><td><strong>ROE</strong></td><td class="num">8.997</td><td>④</td></tr>
+            <tr><td><code>M220000</code></td><td><code>M221000</code></td><td>자기자본비율</td><td class="num">78.167</td><td>⑤</td></tr>
+            <tr><td><code>M220000</code></td><td><strong><code>M221100</code></strong></td><td><strong>부채비율</strong></td><td class="num">27.932</td><td>⑤</td></tr>
+            <tr><td><code>M220000</code></td><td><strong><code>M221200</code></strong></td><td><strong>유동비율</strong></td><td class="num">243.299</td><td>⑤</td></tr>
+            <tr class="muted-row"><td><code>M220000</code></td><td><code>M221600</code></td><td>이자보상배율</td><td class="num">결측</td><td>⑤</td></tr>
+            <tr><td><code>M230000</code></td><td><code>M231000</code></td><td>매출액증가율(YoY)</td><td class="num">16.195</td><td>①</td></tr>
+            <tr><td><code>M230000</code></td><td><code>M231200</code></td><td>매출총이익증가율(YoY)</td><td class="num">45.529</td><td>①</td></tr>
+            <tr><td><code>M230000</code></td><td><code>M231400</code></td><td>영업이익증가율(YoY)</td><td class="num">398.341</td><td>①</td></tr>
+            <tr><td><code>M230000</code></td><td><code>M231800</code></td><td>순이익증가율(YoY)</td><td class="num">122.452</td><td>①</td></tr>
+            <tr><td><code>M240000</code></td><td><code>M451000</code></td><td>배당성향(%)</td><td class="num">31.674</td><td>⑥</td></tr>
+          </tbody>
+        </table></div>
+
+        <h4>20종목 실측 결측률 — 2024년 기준</h4>
+        <div class="tw"><table>
+          <thead><tr><th>지표</th><th class="num">값 있음</th><th>비고</th></tr></thead>
+          <tbody>
+            <tr><td>순이익률 <code>M211200</code></td><td class="num">14 / 20</td><td>금융 6종 결측</td></tr>
+            <tr><td>매출총이익률 <code>M211300</code></td><td class="num">10 / 20</td><td>매출총이익 개념이 없는 회사</td></tr>
+            <tr><td>유동비율 <code>M221200</code></td><td class="num">13 / 20</td><td>금융은 유동 구분 자체가 없음</td></tr>
+            <tr><td><strong>이자보상배율 <code>M221600</code></strong></td><td class="num"><strong>1 / 20</strong></td><td><strong>사실상 못 쓴다 → 자체 계산이 주력</strong></td></tr>
+          </tbody>
+        </table></div>
+        <div class="note care">
+          <p style="margin-bottom:0"><b class="tag">폴백</b>그래서 <strong>&ldquo;DART 산출값 우선, 결측이면 자체 계산&rdquo;</strong> 폴백을 둔다. 순이익률·매출총이익률·이자보상배율 3개가 이 구조다. 어느 경로로 나온 값인지는 화면 계산식에 명시된다 — <code>DART 산출지표 M211200 값을 그대로 사용</code> vs <code>순이익률(%) = … ÷ … × 100 (DART 산출지표 결측 → 자체 계산)</code>. 실측 결과 이자보상배율은 <strong>20종목 중 19종목이 자체 계산 경로</strong>를 탄다.</p>
+        </div>
+      </div>
+
+      <!-- API 4 -->
+      <div class="api">
+        <div class="head"><h3 style="margin:0">API ④ <code>alotMatter</code> — 배당에 관한 사항</h3></div>
+        <div class="ep">GET <b>https://opendart.fss.or.kr/api/alotMatter.json</b></div>
+        <p style="font-size:13px"><a href="https://opendart.fss.or.kr/guide/detail.do?apiGrpCd=DS002&amp;apiId=2019005">공식 명세 →</a></p>
+        <p><strong>Request</strong> — <code>crtfc_key</code> <code>corp_code</code> <code>bsns_year</code> <code>reprt_code</code></p>
+
+        <div class="note">
+          <p style="margin-bottom:0"><b class="tag">효율</b><strong>1회 호출로 3개년을 얻는다.</strong> 응답의 각 행이 <code>thstrm</code>(당기) / <code>frmtrm</code>(전기) / <code>lwfr</code>(전전기) 3개 컬럼을 갖기 때문이다. 그래서 20종목 × 1회 = 20회만 호출한다. <strong>반드시 <code>reprt_code=11011</code>(사업보고서)</strong>을 써야 한다 — 분기보고서는 기간 기준이 뒤섞인다.</p>
+        </div>
+
+        <h4>Response — 삼성전자 <code>bsns_year=2025</code> 실측 15행 전체</h4>
+        <div class="tw"><table>
+          <thead><tr><th class="num">#</th><th><code>se</code> 구분</th><th><code>stock_knd</code></th><th class="num">thstrm ’25</th><th class="num">frmtrm ’24</th><th class="num">lwfr ’23</th></tr></thead>
+          <tbody>
+            <tr><td class="num">0</td><td>주당액면가액(원)</td><td><code>-</code></td><td class="num">100</td><td class="num">100</td><td class="num">100</td></tr>
+            <tr><td class="num">1</td><td><strong>(연결)당기순이익(백만원)</strong></td><td><code>-</code></td><td class="num">44,260,956</td><td class="num">33,621,363</td><td class="num">14,473,401</td></tr>
+            <tr><td class="num">2</td><td>(별도)당기순이익(백만원)</td><td><code>-</code></td><td class="num">33,686,601</td><td class="num">23,582,565</td><td class="num">25,397,099</td></tr>
+            <tr><td class="num">3</td><td><strong>(연결)주당순이익(원)</strong></td><td><code>-</code></td><td class="num">6,605</td><td class="num">4,950</td><td class="num">2,131</td></tr>
+            <tr><td class="num">4</td><td><strong>현금배당금총액(백만원)</strong></td><td><code>-</code></td><td class="num">11,107,906</td><td class="num">9,810,767</td><td class="num">9,809,438</td></tr>
+            <tr class="muted-row"><td class="num">5</td><td>주식배당금총액(백만원)</td><td><code>-</code></td><td class="num">-</td><td class="num">-</td><td class="num">-</td></tr>
+            <tr><td class="num">6</td><td><strong>(연결)현금배당성향(%)</strong></td><td><code>-</code></td><td class="num">25.10</td><td class="num">29.20</td><td class="num">67.80</td></tr>
+            <tr><td class="num">7</td><td><strong>현금배당수익률(%)</strong></td><td>보통주</td><td class="num">1.50</td><td class="num">2.70</td><td class="num">1.90</td></tr>
+            <tr><td class="num">8</td><td>현금배당수익률(%)</td><td>우선주</td><td class="num">1.90</td><td class="num">3.30</td><td class="num">2.40</td></tr>
+            <tr class="muted-row"><td class="num">9</td><td>주식배당수익률(%)</td><td>보통주</td><td class="num">-</td><td class="num">-</td><td class="num">-</td></tr>
+            <tr class="muted-row"><td class="num">10</td><td>주식배당수익률(%)</td><td>우선주</td><td class="num">-</td><td class="num">-</td><td class="num">-</td></tr>
+            <tr><td class="num">11</td><td><strong>주당 현금배당금(원)</strong></td><td>보통주</td><td class="num">1,668</td><td class="num">1,446</td><td class="num">1,444</td></tr>
+            <tr><td class="num">12</td><td>주당 현금배당금(원)</td><td>우선주</td><td class="num">1,669</td><td class="num">1,447</td><td class="num">1,445</td></tr>
+            <tr class="muted-row"><td class="num">13</td><td>주당 주식배당(주)</td><td>보통주</td><td class="num">-</td><td class="num">-</td><td class="num">-</td></tr>
+            <tr class="muted-row"><td class="num">14</td><td>주당 주식배당(주)</td><td>우선주</td><td class="num">-</td><td class="num">-</td><td class="num">-</td></tr>
+          </tbody>
+        </table></div>
+        <p style="font-size:13px;color:var(--gray)">기타 필드 <code>rcept_no</code> <code>corp_cls</code> <code>corp_code</code> <code>corp_name</code> <code>stlm_dt</code></p>
+
+        <div class="note trap">
+          <p><b class="tag">주식종류</b><code>stock_knd</code>를 신뢰하면 안 된다. 셀트리온처럼 <strong>전 행이 <code>"-"</code>인데 실제로는 배당이 있는</strong> 회사가 있다. 보통주/우선주 구분은 <code>stock_knd</code> 필터가 아니라 <strong>행 위치(인덱스)</strong>로 판정하고 <code>se</code> 라벨로 이중 검증한다.</p>
+          <p style="margin-bottom:0"><strong>행 구성이 연도에 따라 다르다</strong> — 2015년은 14행, 2016년은 <code>(개별)</code>, 2017년 이후는 <code>(별도)</code> 표기를 쓴다. 인덱스만 믿으면 과거 데이터에서 깨진다.</p>
+        </div>
+        <div class="note trap">
+          <p><b class="tag">무배당</b>무배당 회사도 <code>status: "000"</code>이 온다. 배당 행의 값만 <code>-</code>로 올 뿐이다. 즉 <strong>응답 status로는 무배당인지 데이터 없음인지 판정할 수 없다.</strong></p>
+          <p style="margin-bottom:0"><strong>적자 기업의 배당성향은 <code>"-"</code>로 온다.</strong> 이때 <code>현금배당금총액(#4) ÷ 순이익(#1)</code>로 직접 계산하되, <strong>순이익이 음수면 계산하지 않고 <code>N/A [분모 음수]</code></strong>로 표시한다.</p>
+        </div>
+      </div>
+
+      <!-- API 5 -->
+      <div class="api">
+        <div class="head"><h3 style="margin:0">API ⑤ <code>stockTotqySttus</code> — 주식의 총수 현황</h3></div>
+        <p class="deck" style="margin:6px 0 0">EPS·BPS의 <strong>분모</strong>(주식 수)와 자기주식 수를 준다.</p>
+        <div class="ep">GET <b>https://opendart.fss.or.kr/api/stockTotqySttus.json</b></div>
+        <p style="font-size:13px"><a href="https://opendart.fss.or.kr/guide/detail.do?apiGrpCd=DS002&amp;apiId=2020002">공식 명세 →</a></p>
+        <p><strong>Request</strong> — <code>crtfc_key</code> <code>corp_code</code> <code>bsns_year</code> <code>reprt_code</code></p>
+
+        <h4>Response — 삼성전자 2024 실측</h4>
+<pre><code>{
+  "rcept_no": "20250311001085",
+  "corp_cls": "Y",  "corp_code": "00126380",  "corp_name": "삼성전자",
+  "se": "보통주",
+  "isu_stock_totqy":        "20,000,000,000",
+  "now_to_isu_stock_totqy":  "7,780,466,850",
+  "now_to_dcrs_stock_totqy": "1,810,684,300",
+  "redc": "-",  "profit_incnr": "1,810,684,300",
+  "rdmstk_repy": "-",  "etc": "-",
+  "istc_totqy":     "5,969,782,550",
+  "tesstk_co":         "29,700,000",
+  "distb_stock_co": "5,940,082,550",
+  "stlm_dt": "2024-12-31"
+}</code></pre>
+        <div class="tw"><table>
+          <thead><tr><th>필드</th><th>의미</th><th>용도</th></tr></thead>
+          <tbody>
+            <tr><td><code>se</code></td><td>구분</td><td><code>보통주</code> · <code>우선주</code> · <code>합계</code> · <strong><code>비고</code></strong></td></tr>
+            <tr class="muted-row"><td><code>isu_stock_totqy</code></td><td>발행할 주식의 총수 — 정관상 한도</td><td>사용 안 함</td></tr>
+            <tr><td><strong><code>istc_totqy</code></strong></td><td><strong>현재 발행주식 총수</strong></td><td><strong>BPS 분모</strong></td></tr>
+            <tr><td><strong><code>tesstk_co</code></strong></td><td><strong>자기주식 수</strong></td><td>⑥ 주주환원</td></tr>
+            <tr><td><code>distb_stock_co</code></td><td>유통주식 수 = <code>istc_totqy</code> − <code>tesstk_co</code></td><td>참고</td></tr>
+          </tbody>
+        </table></div>
+        <div class="note trap">
+          <p><b class="tag">필터</b><code>se === "비고"</code> 행을 반드시 제외해야 한다. 이 행은 주식 수가 아니라 설명 텍스트를 담고 있어, 필터하지 않으면 파싱이 깨진다.</p>
+          <p style="margin-bottom:0"><strong>이 API의 숫자에는 콤마가 들어 있다</strong>(<code>"5,969,782,550"</code>). 반면 <code>fnlttSinglAcntAll</code>은 콤마가 없다. <strong>API마다 반대</strong>라서 공통 파싱 함수로 콤마를 제거해야 한다.</p>
+        </div>
+      </div>
+
+      <h3>우리 호출 매트릭스 전체</h3>
+      <div class="tw"><table>
+        <thead><tr><th>엔드포인트</th><th>조합</th><th class="num">호출 수</th></tr></thead>
+        <tbody>
+          <tr><td><code>company</code></td><td>20종목 × 1</td><td class="num">20</td></tr>
+          <tr><td><code>fnlttSinglAcntAll</code></td><td>20종목 × 4연도(2023~2026) × 4보고서 × CFS</td><td class="num">320</td></tr>
+          <tr><td><code>fnlttSinglAcntAll</code> OFS 폴백</td><td>CFS가 <code>013</code>인 건만 재시도</td><td class="num">86</td></tr>
+          <tr><td><code>fnlttSinglIndx</code></td><td>20종목 × 3연도 × 4분류</td><td class="num">240</td></tr>
+          <tr><td><code>alotMatter</code></td><td>20종목 × 1 — 3개년 커버</td><td class="num">20</td></tr>
+          <tr><td><code>stockTotqySttus</code></td><td>20종목 × 3연도</td><td class="num">60</td></tr>
+          <tr><td><strong>합계</strong></td><td><strong>26.6MB · 약 22초</strong></td><td class="num"><strong>746</strong></td></tr>
+        </tbody>
+      </table></div>
+      <p>일일 한도 20,000회 대비 <strong>3.7%</strong>. 동시성 4, 요청 간 150ms로 페이싱한다.</p>
+      <div class="note">
+        <p style="margin-bottom:0"><b class="tag">전략</b>재무 데이터는 <strong>분기당 1회 갱신되는 저빈도 데이터</strong>다. 실시간 호출의 정보 가치가 0에 수렴하는 반면 데모 중 화면이 비는 리스크는 치명적이라, <strong>빌드타임 스냅샷 + 온디맨드 라이브 검증</strong> 구조를 쓴다. 화면의 &ldquo;지금 다시 호출&rdquo; 버튼이 라이브 응답과 스냅샷을 비교해 주므로 스키마 변경 감지 카나리 역할까지 겸한다.</p>
+      </div>
+    </section>
+
+    <!-- ═══════════ 5 ═══════════ -->
+    <section id="map">
+      <h2><i>05</i>항목 ↔ 원천 매핑 대조표</h2>
+      <p class="deck"><strong>계산</strong> 열이 비어 있으면 DART가 준 값을 그대로 쓴 것이고, 채워져 있으면 우리가 만든 값이다.</p>
+
+      <h3>① 손익</h3>
+      <div class="tw"><table>
+        <thead><tr><th>항목</th><th>API</th><th><code>account_id</code> / <code>idx_code</code></th><th><code>sj_div</code></th><th>계산</th></tr></thead>
+        <tbody>
+          <tr><td>매출액</td><td>AcntAll</td><td><code>ifrs-full_Revenue</code></td><td>IS→CIS</td><td></td></tr>
+          <tr><td>매출총이익</td><td>AcntAll</td><td><code>ifrs-full_GrossProfit</code></td><td>IS→CIS</td><td></td></tr>
+          <tr><td>영업이익</td><td>AcntAll</td><td><code>dart_OperatingIncomeLoss</code> → <code>ifrs-full_ProfitLossFromOperatingActivities</code></td><td>IS→CIS</td><td></td></tr>
+          <tr><td>당기순이익(지배)</td><td>AcntAll</td><td><code>ifrs-full_ProfitLossAttributableToOwnersOfParent</code></td><td>IS→CIS</td><td></td></tr>
+          <tr><td>당기순이익(총액)</td><td>AcntAll</td><td><code>ifrs-full_ProfitLoss</code></td><td>IS→CIS→CF</td><td></td></tr>
+          <tr><td>매출총이익률</td><td>SinglIndx</td><td><code>M211300</code></td><td></td><td>결측 시 매출총이익 ÷ 매출 × 100</td></tr>
+          <tr><td>영업이익률</td><td>—</td><td></td><td></td><td>영업이익 ÷ 매출 × 100</td></tr>
+          <tr><td>순이익률</td><td>SinglIndx</td><td><code>M211200</code></td><td></td><td>결측 시 당기순이익 ÷ 매출 × 100</td></tr>
+          <tr><td>매출액증가율(YoY)</td><td>SinglIndx</td><td><code>M231000</code></td><td></td><td>자체 계산도 병기</td></tr>
+          <tr><td><strong>QoQ 성장률</strong></td><td>AcntAll</td><td>분기 시계열</td><td>IS→CIS</td><td>(당분기 − 직전분기) ÷ |직전분기| × 100</td></tr>
+          <tr><td><strong>YoY 성장률(분기)</strong></td><td>AcntAll</td><td>분기 시계열</td><td>IS→CIS</td><td>(당분기 − 4분기전) ÷ |4분기전| × 100</td></tr>
+          <tr><td>4분기 단독값</td><td>AcntAll</td><td></td><td></td><td><code>11011.thstrm_amount − 11014.thstrm_add_amount</code></td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>② 재무상태</h3>
+      <div class="tw"><table>
+        <thead><tr><th>항목</th><th>API</th><th><code>account_id</code></th><th><code>sj_div</code></th></tr></thead>
+        <tbody>
+          <tr><td>자산총계</td><td>AcntAll</td><td><code>ifrs-full_Assets</code></td><td>BS</td></tr>
+          <tr><td>부채총계</td><td>AcntAll</td><td><code>ifrs-full_Liabilities</code></td><td>BS</td></tr>
+          <tr><td>자본총계</td><td>AcntAll</td><td><code>ifrs-full_Equity</code></td><td>BS</td></tr>
+          <tr><td>지배주주지분</td><td>AcntAll</td><td><code>ifrs-full_EquityAttributableToOwnersOfParent</code></td><td>BS</td></tr>
+          <tr><td>유동자산</td><td>AcntAll</td><td><code>ifrs-full_CurrentAssets</code></td><td>BS</td></tr>
+          <tr><td>비유동자산</td><td>AcntAll</td><td><code>ifrs-full_NoncurrentAssets</code></td><td>BS</td></tr>
+          <tr><td>유동부채</td><td>AcntAll</td><td><code>ifrs-full_CurrentLiabilities</code></td><td>BS</td></tr>
+          <tr><td>비유동부채</td><td>AcntAll</td><td><code>ifrs-full_NoncurrentLiabilities</code></td><td>BS</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>③ 현금흐름</h3>
+      <div class="tw"><table>
+        <thead><tr><th>항목</th><th>API</th><th><code>account_id</code> @CF</th><th>계산</th></tr></thead>
+        <tbody>
+          <tr><td>영업활동현금흐름</td><td>AcntAll</td><td><code>ifrs-full_CashFlowsFromUsedInOperatingActivities</code></td><td></td></tr>
+          <tr><td>투자활동현금흐름</td><td>AcntAll</td><td><code>ifrs-full_CashFlowsFromUsedInInvestingActivities</code></td><td></td></tr>
+          <tr><td>재무활동현금흐름</td><td>AcntAll</td><td><code>ifrs-full_CashFlowsFromUsedInFinancingActivities</code></td><td></td></tr>
+          <tr><td>CAPEX</td><td>AcntAll</td><td><code>ifrs-full_PurchaseOfPropertyPlantAndEquipmentClassifiedAsInvestingActivities</code></td><td></td></tr>
+          <tr><td><strong>FCF</strong></td><td>—</td><td></td><td>영업CF − CAPEX</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>④ 수익성</h3>
+      <div class="tw"><table>
+        <thead><tr><th>항목</th><th>API</th><th><code>idx_code</code></th><th>계산</th></tr></thead>
+        <tbody>
+          <tr><td>ROE</td><td>SinglIndx</td><td><code>M211550</code></td><td></td></tr>
+          <tr><td><strong>ROA</strong></td><td>—</td><td></td><td>당기순이익(총액) ÷ 자산총계 × 100 — <code>M212000</code>은 분자가 영업이익이라 못 쓴다</td></tr>
+          <tr><td>영업이익률</td><td>—</td><td></td><td>영업이익 ÷ 매출 × 100</td></tr>
+          <tr><td>순이익률</td><td>SinglIndx</td><td><code>M211200</code></td><td>결측 시 자체 계산</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>⑤ 안정성</h3>
+      <div class="tw"><table>
+        <thead><tr><th>항목</th><th>API</th><th>코드</th><th>계산</th></tr></thead>
+        <tbody>
+          <tr><td>부채비율</td><td>SinglIndx</td><td><code>M221100</code></td><td></td></tr>
+          <tr><td>유동비율</td><td>SinglIndx</td><td><code>M221200</code></td><td></td></tr>
+          <tr><td>자기자본비율</td><td>SinglIndx</td><td><code>M221000</code></td><td></td></tr>
+          <tr><td><strong>순차입금</strong></td><td>AcntAll</td><td>차입 계정 <strong>15개 후보 합산</strong> @BS</td><td>Σ차입금 − 현금및현금성자산 − 단기금융상품</td></tr>
+          <tr><td><strong>이자보상배율</strong></td><td>SinglIndx→AcntAll</td><td><code>M221600</code> → <code>ifrs-full_InterestExpense</code> → <code>ifrs-full_FinanceCosts</code></td><td>영업이익 ÷ 이자비용 — 20종목 중 19종목이 자체 계산</td></tr>
+          <tr class="muted-row"><td>BIS / NCR / K-ICS</td><td>❌</td><td></td><td><strong>DART 미제공</strong></td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>⑥ 주주환원</h3>
+      <div class="tw"><table>
+        <thead><tr><th>항목</th><th>API</th><th>위치</th><th>계산</th></tr></thead>
+        <tbody>
+          <tr><td>EPS(재무제표)</td><td>AcntAll</td><td><code>ifrs-full_BasicEarningsLossPerShare</code> → <code>…FromContinuingOperations</code> @IS→CIS</td><td></td></tr>
+          <tr><td>EPS(배당공시)</td><td>alotMatter</td><td>행 #3 (연결)주당순이익(원)</td><td></td></tr>
+          <tr><td><strong>BPS</strong></td><td>—</td><td></td><td>지배주주지분 ÷ 발행주식총수 — <strong>DART 미제공, 자체 계산</strong></td></tr>
+          <tr><td>DPS(보통주)</td><td>alotMatter</td><td>행 #11 주당 현금배당금(원)</td><td></td></tr>
+          <tr><td>배당성향(지표)</td><td>SinglIndx</td><td><code>M451000</code></td><td></td></tr>
+          <tr><td>배당성향(fallback)</td><td>alotMatter</td><td>행 #4 ÷ 행 #1</td><td>순이익 음수면 <code>N/A</code></td></tr>
+          <tr><td>발행주식총수</td><td>stockTotqySttus</td><td><code>istc_totqy</code></td><td></td></tr>
+          <tr><td>자기주식수</td><td>stockTotqySttus</td><td><code>tesstk_co</code></td><td></td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>⑦ 밸류에이션</h3>
+      <div class="tw"><table>
+        <thead><tr><th>항목</th><th>API</th><th>상태</th></tr></thead>
+        <tbody>
+          <tr><td>배당수익률</td><td>alotMatter 행 #7</td><td><strong>확보</strong></td></tr>
+          <tr class="muted-row"><td>종가 · 시가총액 · PER · PBR</td><td>—</td><td><strong>원천 미확보</strong> — DART는 시세를 제공하지 않는다</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- ═══════════ 6 ═══════════ -->
+    <section id="states">
+      <h2><i>06</i>값이 비는 6가지 사유</h2>
+      <p class="deck">
+        빈칸을 전부 &ldquo;데이터 없음&rdquo;으로 뭉뚱그리면 <strong>&ldquo;우리가 못 읽은 것&rdquo;과 &ldquo;원래 없는 것&rdquo;이 섞여서</strong>
+        어디를 고쳐야 하는지 알 수 없게 된다. 그래서 6가지 상태를 타입 레벨에서 분리한다.
+      </p>
+
+      <div class="states">
+        <div class="state">
+          <span class="badge b-ok">OK</span>
+          <p class="shown">1,234억원 [연결]</p>
+          <p>정상. 값이 있고 근거가 추적된다.</p>
+        </div>
+        <div class="state">
+          <span class="badge b-zero">ZERO_BY_FACT</span>
+          <p class="shown">0원 [무배당 확인]</p>
+          <p><strong>실제로 0이라고 확인됨.</strong> 배당을 안 준 회사.</p>
+        </div>
+        <div class="state">
+          <span class="badge b-missing">MISSING</span>
+          <p class="shown" style="color:var(--gray)">데이터 없음</p>
+          <p><strong>우리가 못 읽음.</strong> 폴백 체인 보강 대상 — 이것만이 고쳐야 할 신호다.</p>
+        </div>
+        <div class="state">
+          <span class="badge b-na">NA_NEGATIVE_BASE</span>
+          <p class="shown">N/A [분모 음수]</p>
+          <p>분모가 0 이하라 비율 정의 불가. 적자 기업의 배당성향 등.</p>
+        </div>
+        <div class="state">
+          <span class="badge b-profile">NOT_IN_PROFILE</span>
+          <p class="shown">해당 없음 [금융 프로필]</p>
+          <p><strong>그 회사엔 그 개념이 없음.</strong> 은행의 유동비율 등.</p>
+        </div>
+        <div class="state">
+          <span class="badge b-source">SOURCE_NOT_AVAILABLE</span>
+          <p class="shown">원천 미확보 [DART 미제공]</p>
+          <p><strong>DART가 제공하지 않음.</strong> 시세·BIS·NCR·K-ICS.</p>
+        </div>
+      </div>
+
+      <div class="note care">
+        <p style="margin-bottom:0"><b class="tag">핵심</b><code>ZERO_BY_FACT</code> vs <code>MISSING</code>이 특히 중요하다. 배당을 안 준 회사(0원)와 배당 데이터를 못 읽은 경우는 투자 판단이 완전히 달라진다. 클라이언트가 명시적으로 요구한 구분이다. <strong>그리고 <code>MISSING</code>만이 우리가 고쳐야 할 신호다</strong> — 나머지 5개는 정상 동작이다.</p>
+      </div>
+
+      <p>각 지표의 화면 출처 패널에는 <strong>몇 번째 후보에서 잡혔는지, 어떤 후보가 왜 실패했는지</strong>가 전부 기록된다.</p>
+<pre><code>1) ifrs-full_Revenue @IS  → NO_ROW
+2) ifrs-full_Revenue @CIS → NO_ROW
+→ 미존재. 금융 프로필이므로 순이자손익으로 대체</code></pre>
+    </section>
+
+    <!-- ═══════════ 7 ═══════════ -->
+    <section id="traps">
+      <h2><i>07</i>실측으로 확인된 함정</h2>
+      <p class="deck">유니버스 20종목은 <strong>각 종목이 최소 하나의 함정을 실증하도록</strong> 고른 것이다.</p>
+      <div class="tw"><table>
+        <thead><tr><th class="num">#</th><th>함정</th><th>실증 종목</th><th>대응</th></tr></thead>
+        <tbody>
+          <tr><td class="num">1</td><td>모든 에러가 HTTP 200</td><td>전체</td><td><code>body.status</code> 판정</td></tr>
+          <tr><td class="num">2</td><td><code>status != 000</code>이면 <code>list</code> 키 자체가 없음</td><td>전체</td><td><code>body.list ?? []</code></td></tr>
+          <tr><td class="num">3</td><td>금액 콤마 유무가 API마다 반대</td><td>AcntAll vs stockTotqy</td><td>공통 파싱 함수</td></tr>
+          <tr><td class="num">4</td><td><code>"#########"</code> / <code>""</code> / <code>"-"</code> → <code>null</code></td><td>전체</td><td>파싱 전 필터</td></tr>
+          <tr><td class="num">5</td><td><code>induty_code</code> 자릿수 가변</td><td>전체</td><td>앞 2자리, zero-fill 금지</td></tr>
+          <tr><td class="num">6</td><td><code>IS</code> 0행 — CIS만 존재</td><td><strong>20종목 중 15종목</strong></td><td><code>sj_div</code> 폴백</td></tr>
+          <tr><td class="num">7</td><td><code>account_nm</code>이 회사마다 다름</td><td>전체</td><td><code>account_id</code>로 매칭</td></tr>
+          <tr><td class="num">8</td><td><code>account_id</code>도 회사마다 다름</td><td>헬릭스미스(EPS) · 금융(영업이익)</td><td>폴백 체인 배열</td></tr>
+          <tr><td class="num">9</td><td><code>ifrs-full_ProfitLoss</code> IS/CIS/CF 3중복</td><td>전체</td><td><code>sj_div</code> 우선순위 dedupe</td></tr>
+          <tr><td class="num">10</td><td>CFS <code>013</code> → OFS 재시도 필수</td><td>앱클론 등</td><td>자동 폴백</td></tr>
+          <tr><td class="num">11</td><td>연간엔 <code>thstrm_add_amount</code> 없음</td><td>전체</td><td>4Q 역산</td></tr>
+          <tr><td class="num">12</td><td>4분기 단독값 미제공</td><td>전체</td><td>연간 − 3Q누적</td></tr>
+          <tr><td class="num">13</td><td><code>idx_val</code> 결측 시 <strong>키가 사라짐</strong></td><td>전체</td><td>옵셔널 접근</td></tr>
+          <tr><td class="num">14</td><td><code>idx_cl_code</code> 콤마 다중지정 불가</td><td>전체</td><td>4회 개별 호출</td></tr>
+          <tr><td class="num">15</td><td><code>alotMatter.stock_knd</code> 신뢰 불가</td><td>셀트리온</td><td>행 위치 판정</td></tr>
+          <tr><td class="num">16</td><td>무배당도 <code>status=000</code></td><td>헬릭스미스</td><td>status로 판정 금지</td></tr>
+          <tr><td class="num">17</td><td>적자 기업 배당성향 <code>"-"</code></td><td>카카오</td><td>fallback 계산</td></tr>
+          <tr><td class="num">18</td><td><code>stockTotqySttus</code> <code>se="비고"</code> 행</td><td>전체</td><td>필터</td></tr>
+          <tr><td class="num">19</td><td><code>ifrs-full_Revenue</code> <strong>행 자체가 없음</strong></td><td>KB금융 등 금융 7종</td><td>프로필 분기</td></tr>
+          <tr><td class="num">20</td><td>유동/비유동 구분 없음</td><td>금융 7종</td><td><code>NOT_IN_PROFILE</code></td></tr>
+          <tr><td class="num">21</td><td>순이익 총액과 지배주주분의 <strong>부호가 갈림</strong></td><td>LG화학 · 카카오</td><td>두 값 병기</td></tr>
+          <tr><td class="num">22</td><td>차입금 계정이 회사마다 파편화</td><td>전체</td><td>15개 후보 합산</td></tr>
+          <tr><td class="num">23</td><td>순수 이자비용 행 없이 금융비용만</td><td>삼성전자 등</td><td>폴백 + 계정명 노출</td></tr>
+          <tr><td class="num">24</td><td>2023년 분기보고서 미제출</td><td>7~8종목</td><td>시계열 구멍 그대로 표시</td></tr>
+          <tr><td class="num">25</td><td>2026 반기·3분기·연간 미공시</td><td>전체 — 2026-08 기준</td><td>정상 기록</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- ═══════════ 8 ═══════════ -->
+    <section id="gaps">
+      <h2><i>08</i>DART로 못 얻는 것</h2>
+      <p class="deck">정직하게 선을 긋는 것이 이 프로토타입의 핵심 산출물 중 하나다.</p>
+      <div class="tw"><table>
+        <thead><tr><th>필요한 것</th><th>왜 DART에 없나</th><th>조달 방안</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>종가 · 시가총액 · PER · PBR</strong></td>
+            <td>DART는 <strong>공시 서류</strong> 시스템이지 시세 시스템이 아니다</td>
+            <td>시세 API 별도 연동. <strong>공공데이터포털 <code>금융위원회_주식시세정보</code></strong> 권장 — 무료이며 이용허락범위가 &ldquo;제한 없음&rdquo;이라 <strong>상업적 재배포가 가능</strong>하다. (KRX Data Marketplace 무료 계정은 약관상 비상업적 이용·제3자 제공 금지라 상업 서비스에 쓸 수 없다)</td>
+          </tr>
+          <tr>
+            <td><strong>BIS비율 · NPL · NCR · K-ICS</strong></td>
+            <td>금융 감독 지표라 사업보고서 본문(텍스트)에만 있고 정형 API가 없다</td>
+            <td>금융통계정보시스템(FISIS) 또는 사업보고서 원문 파싱</td>
+          </tr>
+          <tr>
+            <td><strong>사업부문별 매출</strong><br><span style="color:var(--gray);font-size:12px">삼성 DX/DS/SDC/Harman</span></td>
+            <td>사업보고서 본문 표에만 있고 정형 API가 없다</td>
+            <td>사업보고서 원문 파싱 또는 수기 입력</td>
+          </tr>
+          <tr>
+            <td><strong>업종 오버레이 지표</strong><br><span style="color:var(--gray);font-size:12px">가동률·ASP·MAU·수주잔고·임상 파이프라인</span></td>
+            <td>재무제표 항목이 아니다</td>
+            <td>클라이언트가 정리해 전달하는 영역</td>
+          </tr>
+          <tr>
+            <td><strong>증권사 추정치(컨센서스)</strong></td>
+            <td>공시가 아니라 애널리스트 리포트</td>
+            <td>유료 데이터 벤더</td>
+          </tr>
+        </tbody>
+      </table></div>
+
+      <div class="note care">
+        <p style="margin-bottom:0"><b class="tag">오버레이</b>공통 7셋은 &ldquo;무엇이 일어났나&rdquo;(영업이익 +67%)까지만 말해 준다. <strong>&ldquo;왜&rdquo;는 업종마다 다른 장사 지표</strong>가 말해 준다. 삼성 리레이팅의 원인은 ROE가 아니라 &ldquo;메모리 단가 +14%, 반도체 부문 66→130조&rdquo;다. 제조업은 가동률·CAPEX·ASP·재고회전, 바이오는 R&amp;D/매출·현금소진율·런웨이·임상 단계, 소프트웨어는 MAU·구독 비중, 건설은 수주잔고를 본다. 이 층은 7셋 <strong>위에 얹는(overlay)</strong> 별개 축이다.</p>
+      </div>
+    </section>
+
+    <!-- ═══════════ 부록 ═══════════ -->
+    <section id="appendix">
+      <h2><i>—</i>코드에서 어디를 보면 되나</h2>
+      <div class="tw"><table>
+        <thead><tr><th>알고 싶은 것</th><th>파일</th></tr></thead>
+        <tbody>
+          <tr><td>어떤 엔드포인트를 허용하나</td><td><code>lib/dart/endpoints.ts</code></td></tr>
+          <tr><td>status 판정 · 키 마스킹 · 백오프</td><td><code>lib/dart/client.ts</code></td></tr>
+          <tr><td>지표 → <code>account_id</code> 매핑 전체</td><td><code>lib/normalize/catalog.ts</code></td></tr>
+          <tr><td>폴백 체인 실행기</td><td><code>lib/normalize/resolve.ts</code></td></tr>
+          <tr><td>파생 계산 — ROA·FCF·BPS·순차입금·성장률</td><td><code>lib/normalize/derive.ts</code></td></tr>
+          <tr><td>분기 시계열 조립</td><td><code>lib/normalize/quarters.ts</code></td></tr>
+          <tr><td>종목×연도 오케스트레이션</td><td><code>lib/normalize/engine.ts</code></td></tr>
+          <tr><td>프로필별 표시 항목 · 해당없음 판정</td><td><code>lib/profiles.ts</code></td></tr>
+          <tr><td>화면 조립 — 7셋</td><td><code>app/stock/[code]/page.tsx</code></td></tr>
+          <tr><td>수집 스크립트</td><td><code>scripts/snapshot-fetch.ts</code> · <code>scripts/snapshot-build.ts</code></td></tr>
+          <tr><td>원본 응답 전량</td><td><code>public/snapshots/*.json</code> — 746건</td></tr>
+        </tbody>
+      </table></div>
+
+<pre><code>pnpm snapshot:fetch --dry-run   # 호출 계획만 출력 (DART 미접촉)
+pnpm snapshot:fetch             # 실제 수집 (idempotent — 있는 파일은 건너뜀)
+pnpm snapshot:build             # 캐시된 원본에서 재정규화 — API 호출 0회
+pnpm test                       # vitest
+pnpm dev                        # /stock/005930?year=2025</code></pre>
+    </section>
+
+    <footer>
+      ITTI DART 프로토타입 · 내부 학습 자료 · 2026-08-12 · 브랜치 <code>feat/7sets-multiyear</code>
+    </footer>
+  </main>
+</div>
