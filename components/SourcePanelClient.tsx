@@ -26,10 +26,14 @@ type ProbeState =
 
 type TabId = "request" | "raw" | "fallback" | "normalize" | "derivation";
 
+/** MetricCandidate.unit(lib/normalize/types.ts)과 동일한 도메인 — 정규화 탭 표기 기준. */
+type MetricUnit = "KRW" | "PCT" | "X";
+
 interface Props {
   resolution: Resolution;
   requestId: string;
   probeParams?: Record<string, string>;
+  unit: MetricUnit;
 }
 
 const EOK = 100_000_000; // 1억
@@ -103,7 +107,7 @@ function fallbackSummaryLine(resolution: Resolution): string {
   }
 }
 
-export default function SourcePanelClient({ resolution, requestId, probeParams }: Props) {
+export default function SourcePanelClient({ resolution, requestId, probeParams, unit }: Props) {
   const anchorRef = useRef<HTMLDivElement>(null);
   const hasFetchedRef = useRef(false);
   const [snapshot, setSnapshot] = useState<SnapshotState>({ phase: "idle" });
@@ -199,7 +203,7 @@ export default function SourcePanelClient({ resolution, requestId, probeParams }
           />
         )}
         {tab === "fallback" && <FallbackTab resolution={resolution} />}
-        {tab === "normalize" && <NormalizeTab resolution={resolution} />}
+        {tab === "normalize" && <NormalizeTab resolution={resolution} unit={unit} />}
         {tab === "derivation" && resolution.derivation && <DerivationTab resolution={resolution} />}
       </div>
     </div>
@@ -333,7 +337,14 @@ function FallbackTab({ resolution }: { resolution: Resolution }) {
   );
 }
 
-function NormalizeTab({ resolution }: { resolution: Resolution }) {
+/** unit별 "콤마 정리" 단계 접미사. KRW만 억 단위 2차 변환이 있다(그 외엔 억 개념이 없다). */
+function unitSuffix(unit: MetricUnit): string {
+  if (unit === "KRW") return "원";
+  if (unit === "PCT") return "%";
+  return "";
+}
+
+function NormalizeTab({ resolution, unit }: { resolution: Resolution; unit: MetricUnit }) {
   const { hit, normalized, fsDiv } = resolution;
   if (!hit || normalized === null) {
     return <p className={styles.hint}>정규화된 원장 값 없음 — 상태: {DISPLAY_STATE_LABEL[resolution.displayState]}</p>;
@@ -341,8 +352,9 @@ function NormalizeTab({ resolution }: { resolution: Resolution }) {
 
   const parsedRaw = Number(hit.rawValue.replace(/,/g, ""));
   const hasNumber = Number.isFinite(parsedRaw);
-  const commaRaw = hasNumber ? `${parsedRaw.toLocaleString("ko-KR")}원` : hit.rawValue;
-  const showEok = hasNumber && Math.abs(parsedRaw) >= EOK;
+  const commaValue = hasNumber ? `${parsedRaw.toLocaleString("ko-KR")}${unitSuffix(unit)}` : hit.rawValue;
+  // 억 단위 2차 변환은 KRW 금액에만 의미가 있다 — PCT/X(예: 발행주식총수)에 붙이면 오표기가 된다.
+  const showEok = unit === "KRW" && hasNumber && Math.abs(parsedRaw) >= EOK;
   const eok = showEok ? `${Math.round(parsedRaw / EOK).toLocaleString("ko-KR")}억원` : null;
 
   return (
@@ -350,7 +362,7 @@ function NormalizeTab({ resolution }: { resolution: Resolution }) {
       <div className={styles.normalizeSteps}>
         <span className={styles.mono}>&quot;{hit.rawValue}&quot;</span>
         <span aria-hidden="true">→</span>
-        <span className={styles.mono}>{commaRaw}</span>
+        <span className={eok ? styles.mono : undefined}>{eok ? commaValue : <strong>{commaValue}</strong>}</span>
         {eok && (
           <>
             <span aria-hidden="true">→</span>
@@ -360,7 +372,7 @@ function NormalizeTab({ resolution }: { resolution: Resolution }) {
       </div>
       <dl className={styles.metaGrid}>
         <dt>단위</dt>
-        <dd>KRW</dd>
+        <dd>{unit}</dd>
         <dt>기준</dt>
         <dd>{fsDiv === "CFS" ? "연결(CFS)" : "별도(OFS)"}</dd>
         <dt>account_id</dt>

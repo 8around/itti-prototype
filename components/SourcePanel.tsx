@@ -20,6 +20,11 @@ export type SourcePanelSummaryMeta = {
   /** "2025.03.11" 등 사람이 읽는 기준일 표기. */
   asOf: string;
   parserVersion: string;
+  /**
+   * 정규화 탭 표기 기준(MetricCandidate.unit과 동일 도메인). KRW만 "원 → 억원" 2단 변환,
+   * PCT는 "%", X는 콤마 수치만 — 크기(≥1억) 휴리스틱으로 추정하지 않고 호출부가 명시한다.
+   */
+  unit: "KRW" | "PCT" | "X";
 };
 
 export type SourcePanelProps = {
@@ -39,7 +44,7 @@ export default function SourcePanel({ resolution, requestId, probeParams, summar
         출처 {summaryMeta.source} · 기준 {summaryMeta.basis} · 기준일 {summaryMeta.asOf} · 파서 {summaryMeta.parserVersion} · 원문 보기{" "}
         <span aria-hidden="true">›</span>
       </summary>
-      <SourcePanelClient resolution={resolution} requestId={requestId} probeParams={probeParams} />
+      <SourcePanelClient resolution={resolution} requestId={requestId} probeParams={probeParams} unit={summaryMeta.unit} />
     </details>
   );
 }

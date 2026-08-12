@@ -96,7 +96,8 @@ export default function SourcePanelDebugPage() {
     },
     {
       key: "helixmith-eps",
-      title: "③ 헬릭스미스 2024 기본주당이익 — 2차 폴백 HIT (BasicEarningsLossPerShare 행 없음)",
+      // 실측(derived.json): attempts 4건 중 4번째(2번째 후보 계정 …FromContinuingOperations @CIS)에서 HIT.
+      title: "③ 헬릭스미스 2024 기본주당이익 — 폴백 4회 시도 중 4번째(2번째 후보 계정 @CIS)에서 HIT",
       ...helixmithEps,
     },
     {
@@ -126,6 +127,8 @@ export default function SourcePanelDebugPage() {
               basis: basisLabel(c.resolution.fsDiv),
               asOf: reportDateFromSnapshot(acntAllRequestId(c.stock.corpCode, c.yearData.year, c.yearData.fsDiv)),
               parserVersion: c.resolution.parserVersion,
+              // 데모 4건 전부 catalog.ts의 revenue/eps_basic 후보 선언(unit: "KRW")과 동일한 원천.
+              unit: "KRW",
             }}
           />
         </section>
