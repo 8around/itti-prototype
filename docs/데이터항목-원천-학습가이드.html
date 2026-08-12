@@ -95,8 +95,11 @@ body {
 .shell { display: grid; grid-template-columns: 232px minmax(0, 1fr); gap: 0; max-width: 1180px; margin: 0 auto; }
 @media (max-width: 940px) { .shell { grid-template-columns: minmax(0, 1fr); } }
 
+/* height가 아니라 max-height. 이 페이지는 높이를 콘텐츠에서 재는 iframe 안에서도 렌더되는데,
+   `height: 100vh`는 "iframe 높이 ← 콘텐츠 높이 ← 100vh ← iframe 높이" 순환을 만든다.
+   max-height면 높이는 콘텐츠가 정하고 100vh는 스크롤 상한으로만 작동해 순환이 없다. */
 .rail {
-  position: sticky; top: 0; align-self: start; height: 100vh; overflow-y: auto;
+  position: sticky; top: 0; align-self: start; max-height: 100vh; overflow-y: auto;
   padding: 30px 22px 40px; border-right: 1px solid var(--line);
   display: flex; flex-direction: column; gap: 22px;
 }
@@ -292,6 +295,7 @@ footer {
       <a href="#anatomy"><em>3</em>SET별 항목 해부</a>
       <a href="#api"><em>4</em>원천 API 5종 명세</a>
       <a href="#map"><em>5</em>항목 ↔ 원천 대조표</a>
+      <a href="#viewmode"><em>5·1</em>화면 모드 2종</a>
       <a href="#states"><em>6</em>값이 비는 6가지 사유</a>
       <a href="#traps"><em>7</em>실측으로 확인된 함정</a>
       <a href="#gaps"><em>8</em>DART로 못 얻는 것</a>
@@ -312,6 +316,7 @@ footer {
         <span>20종목</span>
         <span>FY2023–2025 + 26Q1</span>
         <span>스냅샷 746건 실측</span>
+        <span>rev. 화면 모드 2종</span>
       </div>
     </header>
 
@@ -998,7 +1003,7 @@ footer {
           <tr><td>매출액</td><td>AcntAll</td><td><code>ifrs-full_Revenue</code></td><td>IS→CIS</td><td></td></tr>
           <tr><td>매출총이익</td><td>AcntAll</td><td><code>ifrs-full_GrossProfit</code></td><td>IS→CIS</td><td></td></tr>
           <tr><td>영업이익</td><td>AcntAll</td><td><code>dart_OperatingIncomeLoss</code> → <code>ifrs-full_ProfitLossFromOperatingActivities</code></td><td>IS→CIS</td><td></td></tr>
-          <tr><td>당기순이익(지배)</td><td>AcntAll</td><td><code>ifrs-full_ProfitLossAttributableToOwnersOfParent</code></td><td>IS→CIS</td><td></td></tr>
+          <tr><td>당기순이익(지배)</td><td>AcntAll</td><td><code>ifrs-full_ProfitLossAttributableToOwnersOfParent</code></td><td>IS→CIS</td><td>행이 없고 <strong>비지배지분 행도 없으면</strong> 총액 채택(함정 #26)</td></tr>
           <tr><td>당기순이익(총액)</td><td>AcntAll</td><td><code>ifrs-full_ProfitLoss</code></td><td>IS→CIS→CF</td><td></td></tr>
           <tr><td>매출총이익률</td><td>SinglIndx</td><td><code>M211300</code></td><td></td><td>결측 시 매출총이익 ÷ 매출 × 100</td></tr>
           <tr><td>영업이익률</td><td>—</td><td></td><td></td><td>영업이익 ÷ 매출 × 100</td></tr>
@@ -1086,6 +1091,26 @@ footer {
       </table></div>
     </section>
 
+    <!-- ═══════════ 5-1 ═══════════ -->
+    <section id="viewmode">
+      <h2><i>05·1</i>화면 모드 — 데이터 / 원천 추적</h2>
+      <p class="deck">같은 데이터를 두 관점으로 본다(<code>?view=</code>).</p>
+      <div class="tw"><table>
+        <thead><tr><th>모드</th><th>보이는 것</th><th>용도</th></tr></thead>
+        <tbody>
+          <tr><td><code>data</code> <strong>(기본)</strong></td><td>수치 · 차트 · <strong>결측 사유 배지</strong></td><td><strong>클라이언트 제공 화면</strong></td></tr>
+          <tr><td><code>trace</code></td><td>위에 더해 지표별 출처 collapse(요청 URL · 원본 JSON · 폴백 이력 · 정규화 · 계산식), 커버리지 %, 실증 노트, 원본 <code>company.json</code>, 프로필 판정 출처</td><td>우리가 제대로 읽고 있는지 검증</td></tr>
+        </tbody>
+      </table></div>
+      <div class="note">
+        <p style="margin-bottom:0"><b class="tag">원칙</b><strong>결측 사유 배지는 두 모드 모두에 남는다.</strong> <code>데이터 없음</code>·<code>해당 없음</code>·<code>원천 미확보</code>·<code>무배당 확인</code>은 디버깅 정보가 아니라 <em>&ldquo;근거 없는 숫자를 만들지 않는다&rdquo;</em>는 약속의 표현이라, 클라이언트에게야말로 보여야 하는 것이다. 밸류에이션을 왜 못 채우는지에 대한 설명도 같은 이유로 두 모드에 모두 남긴다.</p>
+      </div>
+      <p>
+        검증 전용 화면 4종(<code>/universe</code> · <code>/compare/pnl</code> · <code>/kitchen-sink</code> · <code>/debug</code>)은
+        전역 네비게이션의 <strong>&ldquo;개발 검증&rdquo;</strong> 접힘 메뉴로 분리돼 있다 — 경로는 그대로다.
+      </p>
+    </section>
+
     <!-- ═══════════ 6 ═══════════ -->
     <section id="states">
       <h2><i>06</i>값이 비는 6가지 사유</h2>
@@ -1169,8 +1194,21 @@ footer {
           <tr><td class="num">23</td><td>순수 이자비용 행 없이 금융비용만</td><td>삼성전자 등</td><td>폴백 + 계정명 노출</td></tr>
           <tr><td class="num">24</td><td>2023년 분기보고서 미제출</td><td>7~8종목</td><td>시계열 구멍 그대로 표시</td></tr>
           <tr><td class="num">25</td><td>2026 반기·3분기·연간 미공시</td><td>전체 — 2026-08 기준</td><td>정상 기록</td></tr>
+          <tr><td class="num">26</td><td><strong>지배주주 귀속 순이익 행이 없음</strong></td><td>신라젠 · 앱클론</td><td>비지배 행도 없으면 총액 채택 ↓</td></tr>
         </tbody>
       </table></div>
+      <h3>#26 상세 — 지배주주 귀속 순이익이 없는 회사</h3>
+      <p>
+        <code>ifrs-full_ProfitLossAttributableToOwnersOfParent</code> 행이 없는 회사가 있다(신라젠·앱클론).
+        연결 자회사에 <strong>소액주주가 없으면 나눌 것이 없어</strong> 총액 한 줄로 끝내기 때문이다 —
+        실제로 두 종목은 지배주주 행과 비지배지분 행(<code>…ToNoncontrollingInterests</code>)이 <strong>둘 다 없다.</strong>
+      </p>
+      <div class="note care">
+        <p><b class="tag">폴백</b>이 경우 총액이 곧 지배주주 몫이므로 그대로 채택하는 것이 회계적으로 정확하다.</p>
+        <p style="margin-bottom:0"><strong>단, 비지배 행이 존재하는데 지배주주 행만 없는 경우에는 폴백하지 않는다</strong> — 그때는 총액에 남의 몫이 섞여 있어 같은 값으로 쓰면 틀린다. 그런 회사는 <code>MISSING</code>으로 남겨 &ldquo;폴백 체인을 보강하라&rdquo;는 신호를 유지한다.</p>
+      </div>
+<pre><code>지배주주 귀속 행·비지배지분 행이 모두 없음 → 비지배지분이 존재하지 않는 구조로 판정,
+당기순이익 총액 −26,525,745,518을 그대로 채택</code></pre>
     </section>
 
     <!-- ═══════════ 8 ═══════════ -->
@@ -1237,7 +1275,8 @@ footer {
 pnpm snapshot:fetch             # 실제 수집 (idempotent — 있는 파일은 건너뜀)
 pnpm snapshot:build             # 캐시된 원본에서 재정규화 — API 호출 0회
 pnpm test                       # vitest
-pnpm dev                        # /stock/005930?year=2025</code></pre>
+pnpm dev                        # /stock/005930?year=2025&amp;view=data  (클라이언트 화면)
+                                #                        &amp;view=trace (원천 추적)</code></pre>
     </section>
 
     <footer>
