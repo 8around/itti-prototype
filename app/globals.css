@@ -39,12 +39,18 @@
   --orange-dk: #b26a00;
   --orange-bg: #fdf3e3;
   --prov: #f2a31e;
-  /* 차트 팔레트 토큰화 — 기존 화면들의 인라인 하드코딩(#2E7D32 #6BAF7E #E8A13A #5B8FA8 #B4CBD9)을 대체 */
-  --chart-1: #2e7d32;
-  --chart-2: #6baf7e;
-  --chart-3: #e8a13a;
-  --chart-4: #5b8fa8;
-  --chart-5: #b4cbd9;
+  /* 차트 팔레트 토큰화 — 기존 화면들의 인라인 하드코딩(#2E7D32 #6BAF7E #E8A13A #5B8FA8 #B4CBD9)을 대체
+     V0 재배치(플랜 §V0 "카테고리 팔레트 재배치"): 기존 --chart-1/2가 둘 다 초록(대비 2.61:1),
+     --chart-4/5가 둘 다 청회색(대비 1.68:1)이라 인접 카테고리가 색으로 구별되지 않았다. hue를
+     분리하고(녹색/청색/주황/보라/청록) 전 색 흰 배경 대비 ≥3:1을 만족하도록 재배치했다 — 계산
+     근거는 components/charts/chartTheme.ts(CATEGORY_PALETTE)와 task-V0-report.md 참고. 이 5개
+     값은 chartTheme.ts의 CATEGORY_PALETTE와 반드시 같은 값을 유지할 것(두 파일이 같은 값의
+     서로 다른 출처 — 하나를 바꾸면 다른 하나도 바꾼다). */
+  --chart-1: #2e7d32; /* 녹색, chartTheme.GREEN과 동일 — 대비 5.13:1 */
+  --chart-2: #1565c0; /* 청색, chartTheme.CASH_INVESTING(--down)과 동일 — 대비 5.75:1 (구 #6baf7e 2.61:1) */
+  --chart-3: #b26a00; /* 주황, chartTheme.CASH_FINANCING(--orange-dk)과 동일 — 대비 4.24:1 (구 #e8a13a 2.19:1) */
+  --chart-4: #6a4c93; /* 보라, chartTheme.CATEGORY_PALETTE[3]과 동일 — 대비 6.85:1 (구 #5b8fa8 3.54:1) */
+  --chart-5: #00796b; /* 청록, chartTheme.CATEGORY_PALETTE[4]와 동일 — 대비 5.32:1 (구 #b4cbd9 1.68:1) */
   --shadow: 0 2px 10px rgba(60, 50, 35, 0.07);
   --mono: "Pretendard", "Noto Sans KR", sans-serif;
 
@@ -132,6 +138,18 @@ a {
 }
 .siteNavList a:hover {
   color: var(--green);
+}
+
+/* V0 — 반응형 브레이크포인트 최초 도입(이전까지 전 CSS `@media` 0건). 값(640px)은
+   chartTheme.ts의 MOBILE_BREAKPOINT_PX와 동일 — V1~V3가 차트 플롯 높이(PLOT_HEIGHT ×
+   MOBILE_HEIGHT_SCALE)·라벨 폰트에 이 브레이크포인트를 적용할 때 같은 640px을 쓸 것.
+   V0은 차트 컴포넌트(.bars/.qbtrack/.zbrow 등)의 치수를 바꾸지 않는 것이 범위 경계라, 여기서는
+   그 경계 밖에 있는 헤더 내비게이션에만 적용해 패턴이 실제로 동작함을 보인다. */
+@media (max-width: 640px) {
+  .siteNav {
+    padding: 10px 14px;
+    gap: 12px;
+  }
 }
 
 /* ============================================================
@@ -281,7 +299,9 @@ a {
 }
 .qbfill {
   width: 78%;
-  background: #c5cec7;
+  /* V0 — 하드코딩 #c5cec7(흰 배경 대비 1.61:1, 양수 막대가 사실상 안 보이던 원인)을 --green(5.13:1)으로
+     치환. QuarterBars는 항상 양수 스케일(매출액·영업이익 등 절댓값 크기 비교)이라 --green이 맞다. */
+  background: var(--green);
   border-radius: 5px 5px 0 0;
   position: relative;
 }
@@ -374,7 +394,9 @@ a {
 }
 .zbf {
   width: 78%;
-  background: #c5cec7;
+  /* V0 — 하드코딩 #c5cec7(1.61:1)을 --green(5.13:1)으로 치환. 이 규칙은 .zbtop(양수 영역)의
+     기본 막대색이고, .zbbot .zbf가 아래에서 --up으로 덮어써 음수(손실)는 계속 적색으로 그려진다. */
+  background: var(--green);
   border-radius: 5px 5px 0 0;
   position: relative;
 }
@@ -514,7 +536,9 @@ a {
   left: 50%;
 }
 .fill.neg {
-  background: #a9c5e3;
+  /* V0 — 하드코딩 #a9c5e3(1.78:1)를 --down(5.75:1)으로 치환. 같은 행의 값 텍스트(.fv.down)가 이미
+     --down을 쓰고 있어(아래 .fv.down 규칙) 막대·텍스트 배색이 이제 일관된다. */
+  background: var(--down);
   right: 50%;
 }
 .flowrow .fv {
