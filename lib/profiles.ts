@@ -28,6 +28,14 @@ export type ProfileMetric = {
    * MetricCandidate.unit과 동일 도메인.
    */
   unit: "KRW" | "PCT" | "X";
+  /**
+   * v3 V5 — 계산식. **프로필별로 정의가 갈릴 때만** 여기에 적고, 그렇지 않으면 전역
+   * `METRIC_DOCS`(lib/metricDocs.ts)에 한 번만 적는다 — `metricDoc()`이 이쪽을 우선한다.
+   * 우리가 직접 계산하지 않는 직독 지표에는 채우지 않는다(있으면 거짓말이 된다).
+   */
+  formula?: string;
+  /** v3 V5 — 이 지표가 이 프로필에서 무엇을 뜻하는지. 같은 key가 프로필마다 다른 계정을 가리키는 경우가 실제로 있다. */
+  description?: string;
 };
 
 export type ProfileCatalog = Record<ProfileId, { pnl: ProfileMetric[]; stability: ProfileMetric[] }>;
@@ -57,7 +65,10 @@ export const PROFILE_CATALOG: ProfileCatalog = {
     pnl: [
       { key: "net_interest_income", label: "순이자손익", sourceAvailable: true, chart: "stacked", unit: "KRW" },
       { key: "net_fee_income", label: "순수수료손익", sourceAvailable: true, chart: "stacked", unit: "KRW" },
-      { key: "insurance_result", label: "보험서비스결과", sourceAvailable: true, chart: "stacked", unit: "KRW" },
+      // v3 V5 — 같은 `insurance_result` key가 프로필마다 다른 계정이다(sourcePanelHelpers.ts의
+      // findCandidate 주석 참조): 지주는 dart_InsuranceRevenueExpense, 보험사는
+      // ifrs-full_InsuranceServiceResult. 설명도 프로필별로 달라야 해서 항목에 직접 적는다.
+      { key: "insurance_result", label: "보험서비스결과", sourceAvailable: true, chart: "stacked", unit: "KRW", description: "지주 산하 보험 자회사의 보험수익에서 보험서비스비용을 뺀 결과(dart_InsuranceRevenueExpense)." },
       // 리뷰 픽스 1: 이익 기여형 순액 3개(위)와 달리 이 항목은 그 합계를 깎아 먹는 비용성
       // 항목이다 — 실측값이 양수여도 100% 스택에 넣으면 "수익원의 ~10%"처럼 오독된다.
       { key: "credit_loss_allowance", label: "신용손실충당금 전입액", sourceAvailable: true, chart: "deduction", unit: "KRW" },
@@ -112,7 +123,7 @@ export const PROFILE_CATALOG: ProfileCatalog = {
   },
   FIN_INSURANCE: {
     pnl: [
-      { key: "insurance_result", label: "보험손익", sourceAvailable: true, chart: "stacked", unit: "KRW" },
+      { key: "insurance_result", label: "보험손익", sourceAvailable: true, chart: "stacked", unit: "KRW", description: "보험사 본업 손익(ifrs-full_InsuranceServiceResult) — 지주 프로필의 같은 key(보험서비스결과)와 계정이 다르다." },
       { key: "investment_result", label: "투자손익", sourceAvailable: true, chart: "stacked", unit: "KRW" },
       { key: "insurance_revenue_gross", label: "보험서비스수익(총)", sourceAvailable: true, chart: "none", unit: "KRW" },
       { key: "insurance_expense_gross", label: "보험서비스비용(총)", sourceAvailable: true, chart: "none", unit: "KRW" },

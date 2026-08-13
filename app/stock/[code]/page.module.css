@@ -140,6 +140,29 @@
   color: var(--ink-2);
 }
 
+/* v3 V5 — 설명(description)이 툴팁으로 달려 있다는 신호. 점선 밑줄은 <abbr>의 관례를 따른다. */
+.fieldLabelDoc {
+  text-decoration: underline dotted var(--gray-2);
+  text-underline-offset: 3px;
+  cursor: help;
+}
+
+/* v3 V5 — 카탈로그 산식 한 줄. 라벨 문자열에 계산식을 박아 넣던 자리를 대체한다. */
+.fieldFormula {
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--gray);
+}
+
+/* v3 V5 — 이 값 고유의 잠정 사유(계정 불일치·CAPEX 부호 등). FormulaPanel의 .caveat과 같은 색 계통. */
+.fieldCaveat {
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--orange-dk);
+}
+
 .overviewGrid {
   display: grid;
   grid-template-columns: 90px 1fr;

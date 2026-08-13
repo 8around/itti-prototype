@@ -15,12 +15,16 @@ import StackedBarsAbs from "@/components/charts/StackedBarsAbs";
 import type { StackedBarsAbsBar } from "@/components/charts/StackedBarsAbs";
 import ZeroAxisBars from "@/components/charts/ZeroAxisBars";
 import type { ZeroAxisBar } from "@/components/charts/ZeroAxisBars";
+import FormulaPanel from "@/components/FormulaPanel";
+import type { FormulaEntry } from "@/components/FormulaPanel";
 import MetricValue from "@/components/MetricValue";
 import type { MetricValueProps } from "@/components/MetricValue";
 import { SourceCollapse } from "@/components/SourceCollapse";
 import SourcePanel from "@/components/SourcePanel";
 import { formatEstDt, loadCompany } from "@/lib/company";
 import { toEok } from "@/lib/format";
+import { metricDoc } from "@/lib/metricDocs";
+import type { MetricDoc } from "@/lib/metricDocs";
 import type { QuarterResolutions } from "@/lib/normalize/engine";
 import type { DisplayState, ProfileId, Resolution } from "@/lib/normalize/types";
 import { ALL_ANNUAL_YEARS, LATEST_ANNUAL_YEAR, LATEST_QUARTER_HEADER_LABEL, quarterAxisLabel } from "@/lib/period";
@@ -114,6 +118,7 @@ function FieldRow({
   profile,
   year,
   resolution,
+  docOverride,
 }: {
   label: string;
   state: DisplayState;
@@ -131,11 +136,22 @@ function FieldRow({
    *  직접 캡처하던 구조를 prop화 — 연간 화면은 LATEST_ANNUAL_YEAR를 넘긴다). */
   year: string;
   resolution?: Resolution;
+  /** v3 V5 — 프로필 카탈로그에 항목별 설명이 있으면 전역 METRIC_DOCS보다 우선한다. */
+  docOverride?: MetricDoc;
 }) {
+  // v3 V5 — 산식은 라벨 문자열에 박지 않고 카탈로그에서 읽어 값 아래 한 줄로 보여준다.
+  // 설명(description)은 라벨 툴팁으로 돌린다 — 20여 개 필드에 전부 인라인으로 깔면 V4가 줄여
+  // 놓은 세로 길이를 도로 까먹기 때문이다(자세한 논리구조는 docs/specs/2608_metric-formulas.md).
+  const doc = metricDoc(metricKey, docOverride);
+  const caveat = resolution?.derivationDetail?.caveat;
   return (
     <div className={styles.field}>
-      <div className={styles.fieldLabel}>{label}</div>
+      <div className={doc?.description ? `${styles.fieldLabel} ${styles.fieldLabelDoc}` : styles.fieldLabel} title={doc?.description}>
+        {label}
+      </div>
       <MetricValue state={state} value={value} unit={unit} basis={basis} note={note} />
+      {doc?.formula && <div className={styles.fieldFormula}>산식 {doc.formula}</div>}
+      {caveat && <div className={styles.fieldCaveat}>⚠ {caveat}</div>}
       {resolution && <SourcePanel {...buildSourcePanelProps(metricKey, corpCode, year, withDisplayState(resolution, state), panelUnit, profile)} />}
     </div>
   );
@@ -159,6 +175,7 @@ function GatedField({ profile, corpCode, year, metric, resolution }: { profile: 
       profile={profile}
       year={year}
       resolution={resolution}
+      docOverride={metric}
     />
   );
 }
@@ -284,6 +301,25 @@ function latestQuarterWindow(quarters: QuarterResolutions[], referenceKey: strin
   return quarters.slice(Math.max(0, lastIdx - maxN + 1), lastIdx + 1);
 }
 
+/* ------------------------------------------------------------------------ */
+/* v3 V5 — 산식 패널(FormulaPanel) 입력 조립. 기간 라벨은 차트 x축과 **같은 문자열**을 쓴다 —
+   패널의 "24.4Q 영업이익 …" 한 줄이 차트의 어느 막대를 가리키는지 눈으로 바로 이어져야 한다. */
+/* ------------------------------------------------------------------------ */
+
+function quarterFormulaEntries(quarters: QuarterResolutions[], resolutionKey: string, accMt: string): FormulaEntry[] {
+  return quarters.flatMap((q) => {
+    const resolution = q.resolutions[resolutionKey];
+    return resolution ? [{ periodLabel: quarterAxisLabel(q.bsnsYear, q.quarter, accMt, q.fiscalPeriodName), resolution }] : [];
+  });
+}
+
+function annualFormulaEntries(years: StockYearView[], key: string): FormulaEntry[] {
+  return years.flatMap((y) => {
+    const resolution = y.resolutions[key];
+    return resolution ? [{ periodLabel: `${y.year.slice(2)}년`, resolution }] : [];
+  });
+}
+
 /** 분기 금액 막대(ZeroAxisBars) — unit "WON"이면 억원 환산 없이 원 단위 그대로 쓴다(EPS 전용,
  *  MetricValue의 WON 관례와 동일 — 억원으로 바꾸면 "0.00001116억원"처럼 오표기된다). */
 function quarterZeroAxisBars(quarters: QuarterResolutions[], key: string, accMt: string, unit: "KRW" | "WON"): ZeroAxisBar[] {
@@ -366,7 +402,9 @@ function QuarterSourceRow({
 }) {
   const count = quarters.filter((q) => q.resolutions[resolutionKey]).length;
   return (
-    <SourceCollapse count={count}>
+    // v3 V5 — V4가 비워 둔 formulaSlot을 채운다. 산식이 없는 직독 지표(BS 등)면 FormulaPanel이
+    // 스스로 null을 반환해 슬롯이 사라지므로 호출부에서 분기할 필요가 없다.
+    <SourceCollapse count={count} formulaSlot={<FormulaPanel entries={quarterFormulaEntries(quarters, resolutionKey, accMt)} />}>
       {quarters.map((q) => (
         <QuarterTraceOnly
           key={q.period}
@@ -819,7 +857,8 @@ function CashFlowSection({ profile, corpCode, years }: { profile: ProfileId; cor
         ))}
       </SourceCollapse>
       <div className={styles.fieldList}>
-        <RawField corpCode={corpCode} profile={profile} year={LATEST_ANNUAL_YEAR} metricKey="fcf" label="잉여현금흐름(FCF = 영업CF − CAPEX)" unit="KRW" panelUnit="KRW" resolution={yLatest.resolutions.fcf} />
+        {/* v3 V5 — 라벨의 "= 영업CF − CAPEX"는 METRIC_DOCS.fcf.formula로 이관했다. */}
+        <RawField corpCode={corpCode} profile={profile} year={LATEST_ANNUAL_YEAR} metricKey="fcf" label="잉여현금흐름(FCF)" unit="KRW" panelUnit="KRW" resolution={yLatest.resolutions.fcf} />
       </div>
     </section>
   );
@@ -849,7 +888,9 @@ function ProfitabilitySection({ profile, corpCode, years }: { profile: ProfileId
 
       <div className={styles.sectionTitle}>영업이익률 추이 — 연간 3개년(FY23~25) · %</div>
       <LineChart points={marginPoints} unit="%" sign color="var(--chart-2)" />
-      <SourceCollapse count={years.filter((y) => y.resolutions.operating_margin).length}>
+      {/* 연간 축에서 산식이 있는 유일한 차트다 — 나머지(ROE·부채비율·BS·연간 CF·워터폴)는 전부
+          직독값이라 FormulaPanel이 null을 반환한다. 슬롯을 안 붙인 건 그래서다. */}
+      <SourceCollapse count={years.filter((y) => y.resolutions.operating_margin).length} formulaSlot={<FormulaPanel entries={annualFormulaEntries(years, "operating_margin")} />}>
         {years.map((y) => (
           <TraceOnly
             key={y.year}
@@ -873,7 +914,8 @@ function ProfitabilitySection({ profile, corpCode, years }: { profile: ProfileId
           profile={profile}
           year={LATEST_ANNUAL_YEAR}
           metricKey="roa"
-          label="ROA(총자산이익률(총액 기준), 계산: 당기순이익(총액)÷자산총계)"
+          // v3 V5 — 라벨에 박아 뒀던 계산식은 METRIC_DOCS.roa.formula로 이관했다(FieldRow가 값 아래 렌더).
+          label="ROA(총자산이익률, 총액 기준)"
           unit="PCT"
           panelUnit="PCT"
           resolution={yLatest.resolutions.roa}
@@ -998,7 +1040,8 @@ function ShareholderReturnSection({ profile, corpCode, years }: { profile: Profi
           profile={profile}
           year={LATEST_ANNUAL_YEAR}
           metricKey="dividend_payout_fallback"
-          label="배당성향(fallback: 배당총액÷순이익)"
+          // v3 V5 — 라벨의 "배당총액÷순이익"은 METRIC_DOCS.dividend_payout_fallback.formula로 이관.
+          label="배당성향(fallback)"
           unit="PCT"
           panelUnit="PCT"
           resolution={r.dividend_payout_fallback}
