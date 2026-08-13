@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import type { DartEnvelope } from "@/lib/dart/client";
+import { buildDerivationLine } from "@/lib/derivationText";
 import type { AttemptResult, DisplayState, Resolution } from "@/lib/normalize/types";
 
 import styles from "./SourcePanel.module.css";
@@ -398,10 +399,28 @@ function NormalizeTab({ resolution, unit }: { resolution: Resolution; unit: Metr
   );
 }
 
+/**
+ * v3 V5 — 구조화된 산식(`derivationDetail`)을 사람이 읽는 한 줄로 먼저 보여주고, 엔진이 남긴
+ * 원본 문자열은 그 아래 원문으로 남긴다.
+ *
+ * 종전에는 문자열 하나를 mono 폰트로 가공 없이 찍었다 — `Q4 = 300,870,903,000,000 −
+ * 225,082,634,000,000`처럼 원 단위 raw 숫자라 자릿수를 셀 수 없었다. 문자열을 파싱해서 고치지
+ * 않고, 엔진이 생산 시점에 함께 남긴 구조를 읽는다(`lib/derivationText.ts` — FormulaPanel과
+ * 같은 조립 함수라 두 자리의 문구가 어긋날 수 없다).
+ */
 function DerivationTab({ resolution }: { resolution: Resolution }) {
   if (!resolution.derivation) return null;
+  const detail = resolution.derivationDetail;
+  const line = detail ? buildDerivationLine(detail, resolution.normalized, resolution.displayState) : null;
   return (
     <div>
+      {line && (
+        <p className={styles.derivationLine}>
+          <strong>{line.head}</strong> {line.transition ? "—" : "="} {line.body}
+        </p>
+      )}
+      {line?.caveat && <p className={styles.derivationCaveat}>⚠ {line.caveat}</p>}
+      <p className={styles.hint}>원문(엔진 기록)</p>
       <p className={styles.mono}>{resolution.derivation}</p>
       <p className={styles.hint}>parserVersion {resolution.parserVersion}</p>
     </div>

@@ -60,6 +60,23 @@
   word-break: break-all;
 }
 
+/* v3 V5 — 파생 계산식 탭. 구조화된 산식을 사람이 읽는 문장으로 먼저 보여준다(mono 아님 — 한글이
+   섞인 문장이라 본문 폰트가 읽기 좋다). 아래 .mono 원문과 대비되도록 한 단계 진하게 둔다. */
+.derivationLine {
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--ink);
+  margin: 0 0 8px;
+}
+
+.derivationCaveat {
+  font-size: 12px;
+  line-height: 1.6;
+  font-weight: 700;
+  color: #a15c00;
+  margin: 0 0 10px;
+}
+
 .metaGrid {
   display: grid;
   grid-template-columns: 120px 1fr;

@@ -1,0 +1,82 @@
+/* v3 V5 — 산식 설명 패널. SourceCollapse.module.css의 .formulaSlot 안에 들어간다(V4가 비워 둔 자리).
+   색·간격은 전부 globals.css 토큰만 쓴다(하드코딩 색 금지 — global-constraints §3). */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.title {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--ink-2);
+  letter-spacing: 0.02em;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* 한 줄 = "무엇이 얼마 = 어떻게". 좁은 화면에서는 자연스럽게 여러 줄로 흐르게 둔다. */
+.item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 6px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+.head {
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.rel {
+  color: var(--gray-2);
+  font-weight: 700;
+}
+
+.body {
+  color: var(--gray);
+  font-weight: 600;
+}
+
+/* 잠정 사유·계정 불일치 경고 — 잠정치 색(--prov 계열)과 같은 계통으로 묶어 차트의 점선과 짝지어 읽히게 한다. */
+.caveat {
+  flex-basis: 100%;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--orange-dk);
+  background: var(--orange-bg);
+  border-radius: 6px;
+  padding: 3px 7px;
+}
+
+.prov {
+  flex-basis: 100%;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gray);
+}
+
+.hint {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--gray-2);
+  font-weight: 500;
+}
+
+@media (max-width: 640px) {
+  .item {
+    font-size: 11.5px;
+  }
+}
