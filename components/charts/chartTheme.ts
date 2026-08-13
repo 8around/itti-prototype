@@ -92,6 +92,35 @@ export const CATEGORY_PALETTE = [
 ] as const;
 
 // ============================================================
+// 색 — 축·그리드·라벨(V1 추가). V0은 막대 채움색만 다뤘고 Recharts 축/그리드/값 라벨에 쓸 색이
+// 없었다 — 여기도 리터럴 hex + `app/globals.css` 값 동기화 규칙(위 설명)을 그대로 따른다.
+// ============================================================
+
+/** CartesianGrid 가로선·0축 ReferenceLine 색. `--line`과 동일 값. MISSING과 hex는 같지만
+ * 의미가 달라(결측 채움 vs 그리드선) 별도 상수로 둔다 — 값이 갈라질 이유는 없지만 용도가 갈리면
+ * 나중에 갈라질 수 있어 이름으로 구분해둔다. */
+export const GRID_LINE = "#e3eae4";
+
+/** 축 눈금 텍스트 색. `--gray`와 동일 값. */
+export const AXIS_TEXT = "#5b6b62";
+
+/** 막대 값 라벨(숫자) 기본 텍스트 색 — 양수/확정 막대용. `--ink-2`와 동일 값. 음수는 LOSS,
+ * 잠정은 PROVISIONAL을 대신 쓴다(기존 `.qbv`/`.qbv.neg`/`.qbv.prov` 배색과 동일 원리). */
+export const VALUE_LABEL_COLOR = "#3a4a40";
+
+/** 결측("—") 텍스트·`OverlaidBars` "—"(데이터 없음) 칩 텍스트 색. `--gray-2`와 동일 값.
+ * 기존 `.qbv.missing`/`.obchip.muted`와 동일 배색. */
+export const MUTED_TEXT = "#95a29a";
+
+/** `OverlaidBars` "무배당"(ZERO_BY_FACT) 칩의 배경색. `--line-2`와 동일 값. 텍스트는 AXIS_TEXT를
+ * 함께 쓴다(기존 `.obchip` 배색과 동일). */
+export const CHIP_BG = "#eff3ef";
+
+/** 흰 배경. `--paper`와 동일 값. `OverlaidBars`의 적자 연도 배당(solo) 막대 구분 테두리 등
+ * 배경색이 필요한 자리에 쓴다. */
+export const PAPER = "#ffffff";
+
+// ============================================================
 // 치수(px) — Recharts 전환(V1~V3) 대상 상수.
 // 현재 CSS 기반 12종 컴포넌트의 82px/86px 치수는 V0에서 변경하지 않는다(범위 밖 — V1~V3 소관).
 // ============================================================

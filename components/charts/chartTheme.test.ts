@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
-import { CASH_FINANCING, CASH_INVESTING, CATEGORY_PALETTE, GREEN, LOSS, MISSING, PROVISIONAL } from "./chartTheme";
+import { AXIS_TEXT, CASH_FINANCING, CASH_INVESTING, CATEGORY_PALETTE, CHIP_BG, GREEN, GRID_LINE, LOSS, MISSING, MUTED_TEXT, PAPER, PROVISIONAL, VALUE_LABEL_COLOR } from "./chartTheme";
 
 /**
  * chartTheme.ts의 색 상수는 `app/globals.css`의 `:root` CSS 커스텀 프로퍼티와 같은 값을 리터럴
@@ -84,5 +84,30 @@ describe("chartTheme.ts <-> app/globals.css :root 색 토큰 동기화", () => {
     CATEGORY_PALETTE.forEach((color, i) => {
       expectSameHex(`--chart-${i + 1}`, color, `CATEGORY_PALETTE[${i}]`);
     });
+  });
+
+  // V1 추가 — Recharts 축/그리드/값 라벨 색.
+  it("GRID_LINE === --line", () => {
+    expectSameHex("--line", GRID_LINE, "GRID_LINE");
+  });
+
+  it("AXIS_TEXT === --gray", () => {
+    expectSameHex("--gray", AXIS_TEXT, "AXIS_TEXT");
+  });
+
+  it("VALUE_LABEL_COLOR === --ink-2", () => {
+    expectSameHex("--ink-2", VALUE_LABEL_COLOR, "VALUE_LABEL_COLOR");
+  });
+
+  it("MUTED_TEXT === --gray-2", () => {
+    expectSameHex("--gray-2", MUTED_TEXT, "MUTED_TEXT");
+  });
+
+  it("CHIP_BG === --line-2", () => {
+    expectSameHex("--line-2", CHIP_BG, "CHIP_BG");
+  });
+
+  it("PAPER === --paper", () => {
+    expectSameHex("--paper", PAPER, "PAPER");
   });
 });

@@ -1,25 +1,32 @@
-import { formatComma, NULL_PLACEHOLDER, px, signedAxisScale } from "./chartUtils";
+"use client";
+
+import type { ReactElement } from "react";
+import { Bar, BarChart, CartesianGrid, ReferenceLine, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import type { BarShapeProps } from "recharts";
+
+import { AXIS_TEXT, BAR_MAX_SIZE, GREEN, GRID_LINE, LABEL_FONT_SIZE_MIN, LOSS, PROVISIONAL, PROVISIONAL_FILL } from "./chartTheme";
+import { formatComma, NULL_PLACEHOLDER } from "./chartUtils";
+import { MissingMarker, normalizeRect, padDomain, ValueLabel, zeroInclusiveDomain } from "./rechartsPrimitives";
 
 /**
- * ZeroAxisBars — 0 기준선 발산 막대 (목업 `.zbrow/.zbtop/.zbbot/.zline`, 화면 ④ "순이익").
- * 적자 종목처럼 음수가 나올 수 있는 지표용 — 양수는 기준선 위(`.zbtop`), 음수는 아래
- * (`.zbbot`)로 그린다. 서버 컴포넌트.
+ * ZeroAxisBars — 0 기준선 발산 막대 (Recharts 재작성, V1). 목업 `.zbrow/.zbtop/.zbbot/.zline`을
+ * `BarChart` + `ReferenceLine y={0}` + 커스텀 `Bar shape`로 대체한다. 양수는 기준선 위, 음수는
+ * 아래로 그린다(승인 규칙 1) — v2까지는 `signedAxisScale`이 위/아래 영역을 수동으로 배분해 px per
+ * unit을 맞췄지만, 이제는 Recharts의 실제 선형 Y축 스케일이 그 성질을 자동으로 보장한다(선형
+ * 스케일은 정의상 전 구간에서 px/unit이 일정하다) — `signedAxisScale` 의존을 제거했다.
  *
- * v2 T3 확장: 학습가이드 `bars()` 참조 — 손실 막대가 항상 기준선 아래 그려지도록 하고(승인 규칙 2),
- * 음수 막대는 `--up`(적색) 계열로 표시해 이전의 청색(`#b9c7d8`) 배색을 교체했다(적자를 "하락" 색으로
- * 표현하던 배색 버그 수정). `provisional`(테두리 dashed + `--prov`)·`unit`(우상단 단위)·
- * `compactLabels`(라벨·값 폰트를 줄이는 컴팩트 모드) 3개 prop을 추가했다 — 전부 옵셔널이라
- * 기존 `bars: {label, value}[]` 단독 호출부(app/stock/[code]/page.tsx)는 그대로 동작한다.
- *
- * 최종 리뷰 픽스(I1): 위/아래 영역 높이를 `signedAxisScale`이 데이터에서 계산한다 — 예전의
- * 56px/26px 고정 분할은 px per unit이 위아래 2.15배 달라 손실을 절반 크기로 축소했다.
+ * 공개 props 계약은 v2와 동일하게 유지한다(`bars`/`unit`/`compactLabels`) — 호출부
+ * (`app/stock/[code]/page.tsx`)는 변경 없이 그대로 동작한다. `compactLabels`의 의미는 바뀌었다:
+ * 예전에는 라벨·값 폰트를 6.5~7px까지 줄이는 용도였지만, 전역 제약(라벨 폰트 ≥11px)이 이를
+ * 금지하므로 이제는 X축 `interval={0}`(전 라벨 강제 표시, 자동 스킵 방지)만 의미한다 — 8분기
+ * 윈도처럼 카테고리가 많을 때 라벨이 조용히 생략되는 것을 막는다.
  */
 
 export type ZeroAxisBar = {
   label: string;
   /** null이면 근거 없는 0 대신 자리 표시만 한다. */
   value: number | null;
-  /** 확정 전 잠정치(4Q 역산 등) — 막대 테두리 dashed + 주황(`--prov`)으로 구분. */
+  /** 확정 전 잠정치(4Q 역산 등) — 막대 테두리 dashed + 주황(PROVISIONAL)으로 구분. */
   provisional?: boolean;
 };
 
@@ -27,50 +34,96 @@ export type ZeroAxisBarsProps = {
   bars: ZeroAxisBar[];
   /** 우상단에 표시할 단위/구간 라벨 (예: "억원 · 최근 5분기"). */
   unit?: string;
-  /** true면 x축 라벨·값 폰트를 줄여 막대 수가 많을 때(8분기 이상 등) 겹침을 줄인다. */
+  /** true면 X축 라벨을 전부 강제 표시한다(자동 스킵 방지) — 분기 수가 많을 때(8분기 이상 등) 쓴다. */
   compactLabels?: boolean;
 };
 
-export default function ZeroAxisBars({ bars, unit, compactLabels }: ZeroAxisBarsProps) {
-  const scale = signedAxisScale(bars.map((b) => b.value));
+type Row = {
+  label: string;
+  valueForScale: number;
+  value: number | null;
+  missing: boolean;
+  negative: boolean;
+  provisional: boolean;
+};
+
+function renderBar(props: BarShapeProps): ReactElement | null {
+  const { x, y, width, height } = props;
+  const row = props.payload as Row;
+
+  if (row.missing) {
+    return (
+      <g>
+        <MissingMarker x={x} y={y} width={width} />
+        <ValueLabel x={x + width / 2} y={y} text={NULL_PLACEHOLDER} tone="missing" place="above" />
+      </g>
+    );
+  }
+
+  const { top, height: h } = normalizeRect(y, height);
+  const cx = x + width / 2;
+  const fill = row.provisional ? PROVISIONAL_FILL : row.negative ? LOSS : GREEN;
+  const stroke = row.provisional ? PROVISIONAL : undefined;
+  const tone = row.provisional ? "provisional" : row.negative ? "negative" : "default";
+  const labelText = formatComma(row.value as number);
+
+  return (
+    <g>
+      <rect
+        x={x}
+        y={top}
+        width={width}
+        height={Math.max(h, 1)}
+        rx={3}
+        fill={fill}
+        stroke={stroke}
+        strokeWidth={stroke ? 1.5 : undefined}
+        strokeDasharray={stroke ? "4 3" : undefined}
+      />
+      <ValueLabel x={cx} y={row.negative ? top + h : top} text={labelText} tone={tone} place={row.negative ? "below" : "above"} />
+    </g>
+  );
+}
+
+export default function ZeroAxisBars({ bars, unit, compactLabels }: ZeroAxisBarsProps): ReactElement {
+  const data: Row[] = bars.map((b) => ({
+    label: b.label,
+    valueForScale: b.value ?? 0,
+    value: b.value,
+    missing: b.value === null,
+    negative: (b.value ?? 0) < 0,
+    provisional: Boolean(b.provisional),
+  }));
+  const domain = padDomain(zeroInclusiveDomain(bars.map((b) => b.value)));
 
   return (
     <div data-chart="zero-axis-bars">
       {unit && <div className="qb-unit">{unit}</div>}
-      <div className={`zbrow${compactLabels ? " compact" : ""}`}>
-        {bars.map((bar) => {
-          const missing = bar.value === null;
-          const negative = !missing && (bar.value as number) < 0;
-          const height = missing ? 0 : scale.heightPx(bar.value as number);
-          return (
-            <div className="zbcol" key={bar.label}>
-              <div className="zbtop" style={{ height: px(scale.topPx) }}>
-                {!missing && !negative && (
-                  <div className={`zbf${bar.provisional ? " prov" : ""}`} style={{ height: px(height) }}>
-                    <span className={`qbv${bar.provisional ? " prov" : ""}`}>{formatComma(bar.value as number)}</span>
-                  </div>
-                )}
-                {missing && (
-                  <div className="zbf empty" style={{ height: "2px" }}>
-                    <span className="qbv missing">{NULL_PLACEHOLDER}</span>
-                  </div>
-                )}
-              </div>
-              <div className="zline" />
-              <div className="zbbot" style={{ height: px(scale.botPx) }}>
-                {negative && (
-                  <div className={`zbf${bar.provisional ? " prov" : ""}`} style={{ height: px(height) }}>
-                    <span className="qbv neg">{formatComma(bar.value as number)}</span>
-                  </div>
-                )}
-              </div>
-              <div className="qbx">
-                {bar.label}
-                {bar.provisional && <span className="pchip">잠정</span>}
-              </div>
-            </div>
-          );
-        })}
+      <div className="chart-plot chart-plot--quarterBars">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={data} margin={{ top: 24, right: 8, left: 4, bottom: 0 }} barCategoryGap="18%">
+            <CartesianGrid vertical={false} stroke={GRID_LINE} />
+            <XAxis
+              dataKey="label"
+              tick={{ fill: AXIS_TEXT, fontSize: LABEL_FONT_SIZE_MIN }}
+              tickLine={{ stroke: GRID_LINE }}
+              axisLine={{ stroke: GRID_LINE }}
+              tickMargin={6}
+              height={28}
+              interval={compactLabels ? 0 : undefined}
+            />
+            <YAxis
+              domain={domain}
+              tick={{ fill: AXIS_TEXT, fontSize: LABEL_FONT_SIZE_MIN }}
+              tickLine={{ stroke: GRID_LINE }}
+              axisLine={false}
+              tickFormatter={(v: number) => formatComma(v)}
+              width={52}
+            />
+            <ReferenceLine y={0} stroke={AXIS_TEXT} strokeOpacity={0.6} />
+            <Bar dataKey="valueForScale" shape={renderBar} isAnimationActive={false} maxBarSize={BAR_MAX_SIZE} minPointSize={2} />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );
