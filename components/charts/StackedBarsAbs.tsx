@@ -15,6 +15,15 @@ export type StackedBarsAbsSegment = {
   label: string;
   /** null이면 근거 없는 0 대신 스택·합계에서 제외한다. */
   value: number | null;
+  /**
+   * 세그먼트 색 오버라이드(CSS 색상 값 또는 `var(--token)`). 미지정 시 등장 순서 기준
+   * `CHART_PALETTE` 순환(기존 동작, 하위호환). 같은 라벨의 첫 지정값이 전 막대·범례에 적용된다
+   * (예: 재무상태 자본=`var(--green)`/부채=`var(--up)`로 대비를 준다 — 학습가이드 `stacked()`의
+   * ACCENT/NEG 배색과 동일).
+   */
+  color?: string;
+  /** 세그먼트 불투명도(0~1) 오버라이드. 미지정 시 1(불투명). 학습가이드 `stacked()`의 NEG opacity 0.55 참조. */
+  opacity?: number;
 };
 
 export type StackedBarsAbsBar = {
@@ -29,8 +38,19 @@ export type StackedBarsAbsProps = {
 
 export default function StackedBarsAbs({ bars }: StackedBarsAbsProps) {
   // 세그먼트 라벨 -> 색 매핑: 등장 순서 기준으로 고정해 전 막대에서 같은 라벨이 같은 색을 쓰게 한다.
+  // 호출부가 `color`/`opacity`를 지정하면(같은 라벨의 첫 지정값 기준) 팔레트 순환보다 우선한다.
   const allLabels = Array.from(new Set(bars.flatMap((b) => b.segments.map((s) => s.label))));
-  const colorByLabel = new Map(allLabels.map((label, i) => [label, CHART_PALETTE[i % CHART_PALETTE.length]]));
+  const colorOverrideByLabel = new Map<string, string>();
+  const opacityByLabel = new Map<string, number>();
+  for (const bar of bars) {
+    for (const seg of bar.segments) {
+      if (seg.color !== undefined && !colorOverrideByLabel.has(seg.label)) colorOverrideByLabel.set(seg.label, seg.color);
+      if (seg.opacity !== undefined && !opacityByLabel.has(seg.label)) opacityByLabel.set(seg.label, seg.opacity);
+    }
+  }
+  const colorByLabel = new Map(
+    allLabels.map((label, i) => [label, colorOverrideByLabel.get(label) ?? CHART_PALETTE[i % CHART_PALETTE.length]]),
+  );
 
   const totals = bars.map((b) => b.segments.reduce((sum, s) => sum + (s.value ?? 0), 0));
   const max = Math.max(1, ...totals);
@@ -51,7 +71,11 @@ export default function StackedBarsAbs({ bars }: StackedBarsAbsProps) {
                       <div
                         key={s.label}
                         className="sbaseg"
-                        style={{ height: `${(s.value / total) * 100}%`, background: colorByLabel.get(s.label) }}
+                        style={{
+                          height: `${(s.value / total) * 100}%`,
+                          background: colorByLabel.get(s.label),
+                          opacity: opacityByLabel.get(s.label) ?? 1,
+                        }}
                         title={`${s.label} ${formatComma(s.value)}`}
                       />
                     ))}
@@ -70,7 +94,7 @@ export default function StackedBarsAbs({ bars }: StackedBarsAbsProps) {
       <div className="leg">
         {allLabels.map((label) => (
           <span key={label}>
-            <span className="d" style={{ background: colorByLabel.get(label) }} />
+            <span className="d" style={{ background: colorByLabel.get(label), opacity: opacityByLabel.get(label) ?? 1 }} />
             {label}
           </span>
         ))}

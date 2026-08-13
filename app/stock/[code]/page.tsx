@@ -651,19 +651,22 @@ function BalanceSection({
   const latestQuarter = latestQuarterWindow(quarters, "total_assets", 1)[0];
   const latestQuarterLabel = latestQuarter ? quarterAxisLabel(latestQuarter.bsnsYear, latestQuarter.quarter, accMt, latestQuarter.fiscalPeriodName) : undefined;
 
+  // 자본=초록/부채=적색(opacity 0.55) — 학습가이드 stacked()의 ACCENT/NEG 배색과 동일(개선점 A).
+  // 이 섹션은 표준·금융 두 프로필 페이지 모두에서 공유되므로(profile 값에 따라 데이터만 달라짐)
+  // 호출부 1곳 수정으로 양쪽에 반영된다.
   const bsBars: StackedBarsAbsBar[] = years.map((y) => ({
     label: `${y.year.slice(2)}년`,
     segments: [
-      { label: "자본", value: eok(y.resolutions.total_equity) },
-      { label: "부채", value: eok(y.resolutions.total_liabilities) },
+      { label: "자본", value: eok(y.resolutions.total_equity), color: "var(--green)" },
+      { label: "부채", value: eok(y.resolutions.total_liabilities), color: "var(--up)", opacity: 0.55 },
     ],
   }));
   if (latestQuarter && latestQuarterLabel) {
     bsBars.push({
       label: `${latestQuarterLabel}(잠정)`,
       segments: [
-        { label: "자본", value: eok(latestQuarter.resolutions.total_equity) },
-        { label: "부채", value: eok(latestQuarter.resolutions.total_liabilities) },
+        { label: "자본", value: eok(latestQuarter.resolutions.total_equity), color: "var(--green)" },
+        { label: "부채", value: eok(latestQuarter.resolutions.total_liabilities), color: "var(--up)", opacity: 0.55 },
       ],
     });
   }

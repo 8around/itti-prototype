@@ -20,6 +20,12 @@ import { formatComma, NULL_PLACEHOLDER } from "./chartUtils";
  *   변환해 넘겨야 중복 정의로 인한 문구 드리프트가 없다. LineChart 자체는 `DisplayState`를 import하지
  *   않는다(차트 프리미티브를 정규화 레이어에서 계속 분리하기 위해 `state`는 일부러 순수 문자열).
  * - `unit`/`sign`: 값 라벨에 단위 접미사·양수 `+` 접두사. 음수 값은 `--up`(적색)으로 표시.
+ *
+ * 개선점 B(v2 컨트롤러 육안 검증): 전 포인트가 `state`만 있고(예: 8분기 전부 "적자지속") 그릴 수
+ * 있는 값이 0개면 선은 하나도 안 그려지지만 `baseline`(있으면)은 그대로 렌더해 차트 틀을
+ * 유지하고, 그 경우 SVG 안에 음소거 톤(`--gray-2`) 안내 문구 1줄을 추가한다(상태 칩 문구와
+ * 중복 정의하지 않음 — "표시할 수치 없음"만 말하고 흑자전환/적자전환/적자지속 자체는 언급하지
+ * 않는다). 값 포인트가 1개 이상이면 기존 동작 그대로.
  */
 
 export type LineChartPoint = {
@@ -89,6 +95,9 @@ export default function LineChart({ points, baseline, color, unit, sign }: LineC
   const baselineY = baseline ? VB_H - PAD_Y - ((baseline.value - min) / span) * (VB_H - PAD_Y * 2) : null;
 
   const strokeColor = color || "var(--green)";
+  // 그릴 수 있는 값이 0개(전부 state)면 선·점이 아예 안 그려진다 — 빈 차트로 보이지 않게
+  // baseline은 그대로 두고(이미 min/max에 반영됨) 안내 문구를 추가한다(개선점 B).
+  const hasDrawablePoints = defined.length > 0;
 
   const firstProvIdx = points.findIndex((p) => p.provisional);
   const solidEnd = firstProvIdx === -1 ? n - 1 : firstProvIdx;
@@ -146,6 +155,11 @@ export default function LineChart({ points, baseline, color, unit, sign }: LineC
             />
           );
         })}
+        {!hasDrawablePoints && (
+          <text x={VB_W / 2} y={VB_H / 2 + 3} textAnchor="middle" fontSize={8} fontWeight={700} fill="var(--gray-2)">
+            전 구간 전환 상태 — 표시할 수치 없음
+          </text>
+        )}
       </svg>
       <div className="qbrow eps">
         {points.map((p) => (
