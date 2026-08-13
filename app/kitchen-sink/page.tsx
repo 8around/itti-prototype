@@ -271,29 +271,30 @@ export default function KitchenSinkPage() {
               {
                 label: "2024",
                 segments: [
-                  { label: "자본", value: 1150 },
-                  { label: "부채", value: 750 },
+                  { label: "자본", value: 1150, color: "var(--green)" },
+                  { label: "부채", value: 750, color: "var(--up)", opacity: 0.55 },
                 ],
               },
               {
                 label: "2025",
                 segments: [
-                  { label: "자본", value: 1180 },
-                  { label: "부채", value: 780 },
+                  { label: "자본", value: 1180, color: "var(--green)" },
+                  { label: "부채", value: 780, color: "var(--up)", opacity: 0.55 },
                 ],
               },
               {
                 label: "최근",
                 segments: [
-                  { label: "자본", value: 1200 },
-                  { label: "부채", value: 800 },
+                  { label: "자본", value: 1200, color: "var(--green)" },
+                  { label: "부채", value: 800, color: "var(--up)", opacity: 0.55 },
                 ],
               },
             ]}
           />
           <div className={styles.demoNote}>
             StackedBar100(100% 정규화)과 달리 막대 높이 자체가 합계(자산)라서 기간이 갈수록 막대가 커지는 절대
-            크기 변화가 그대로 보인다 — 아래 자본, 위 부채.
+            크기 변화가 그대로 보인다 — 아래 자본, 위 부채. 세그먼트 색 지정 가능(미지정 시 기본 팔레트) — 여기선
+            종목 상세 재무상태 섹션과 동일하게 자본=초록/부채=적색(opacity 0.55)을 지정해 대비를 준 예시.
           </div>
         </div>
 
