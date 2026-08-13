@@ -42,6 +42,26 @@ export function formatDerivationResult(detail: DerivationDetail, normalized: num
   return formatKrwCompact(normalized);
 }
 
+/**
+ * `steps`는 괄호 없이 **왼쪽부터 순서대로** 접는 계약이지만, 사람은 산식을 읽을 때 곱셈·나눗셈을
+ * 먼저 계산한다. 뺄셈 뒤에 나눗셈이 오는 성장률 산식이 정확히 그 함정이다:
+ *
+ * ```
+ * 당기 10조 − 직전 6,685억 ÷ 직전 절대값 6,685억 × 100   ← 읽는 사람은 a − (b÷c)×100 으로 읽는다
+ * (당기 10조 − 직전 6,685억) ÷ 직전 절대값 6,685억 × 100 ← 실제 계산은 이것
+ * ```
+ *
+ * 그래서 **div/mul이 등장하기 전에 minus가 있으면** 그 앞부분을 괄호로 묶는다(엔진이 남기는 원본
+ * `derivation` 문자열도 같은 자리에 괄호를 갖고 있다 — 구조화 판이 그 정보를 잃지 않게 한다).
+ * 반환값은 괄호를 닫을 step 인덱스, 괄호가 필요 없으면 null.
+ */
+function parenCloseIndex(steps: DerivationStep[]): number | null {
+  const scaleAt = steps.findIndex((s) => s.op === "div" || s.op === "mul");
+  if (scaleAt <= 0) return null;
+  const hasMinusBefore = steps.slice(1, scaleAt).some((s) => s.op === "minus");
+  return hasMinusBefore ? scaleAt - 1 : null;
+}
+
 export type DerivationLine = {
   /** "24.4Q 영업이익 6조 4,927억" — 무엇이 얼마인지. */
   head: string;
@@ -69,13 +89,18 @@ export function buildDerivationLine(detail: DerivationDetail, normalized: number
     };
   }
 
+  const closeAfter = parenCloseIndex(detail.steps);
   const body = detail.steps
-    .map((step) => {
+    .map((step, i) => {
       const value = formatStepValue(step);
       const op = step.op ? `${OP_SYMBOL[step.op]} ` : "";
       // SCALAR(백분율 환산 100)는 라벨을 찍지 않는다 — "× 100"만으로 뜻이 통하고, 결과에 이미
       // %가 붙어 있어 중복이다. 라벨 자체는 JSON에 남아 있어 데이터 소비자는 그대로 읽을 수 있다.
-      return step.unit === "SCALAR" ? `${op}${value}` : `${op}${step.label} ${value}`;
+      const text = step.unit === "SCALAR" ? `${op}${value}` : `${op}${step.label} ${value}`;
+      if (closeAfter === null) return text;
+      if (i === 0) return `(${text}`;
+      if (i === closeAfter) return `${text})`;
+      return text;
     })
     .join(" ");
 

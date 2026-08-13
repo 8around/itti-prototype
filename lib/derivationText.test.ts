@@ -42,6 +42,26 @@ describe("buildDerivationLine — 산식 한 줄 조립", () => {
     expect(line.body).toBe("당기순이익(총액) 34조 4,510억 ÷ 자산총계 514조 5,310억 × 100");
   });
 
+  it("뺄셈 뒤에 나눗셈이 오면 앞부분을 괄호로 묶는다 — 괄호가 없으면 사람은 a − (b÷c)로 읽는다", () => {
+    const growth: DerivationDetail = {
+      kind: "growth",
+      resultLabel: "영업이익 YoY",
+      steps: [
+        { label: "당기 2024Q2", value: 10_443_900_000_000 },
+        { label: "전년 동분기 2023Q2", value: 668_500_000_000, op: "minus" },
+        { label: "전년 동분기 2023Q2 절대값", value: 668_500_000_000, op: "div" },
+        { label: "백분율 환산", value: 100, op: "mul", unit: "SCALAR" },
+      ],
+      unit: "PCT",
+    };
+    const line = buildDerivationLine(growth, 1462.2, "OK", "24.2Q");
+    expect(line.body).toBe("(당기 2024Q2 10조 4,439억 − 전년 동분기 2023Q2 6,685억) ÷ 전년 동분기 2023Q2 절대값 6,685억 × 100");
+  });
+
+  it("뺄셈만 있는 산식(Q4 역산·CF 차분·FCF)에는 괄호를 붙이지 않는다 — 없어도 왼쪽부터 읽으면 맞다", () => {
+    expect(buildDerivationLine(SAMSUNG_Q4, 6_492_703_000_000, "OK").body.startsWith("(")).toBe(false);
+  });
+
   it("KRW_MILLION step은 백만원으로 읽는다 — 원 단위로 착각하면 10^6배 어긋난다", () => {
     // alotMatter 원본이 백만원 단위라 29,857은 29,857백만원 = 298.57억이다.
     expect(formatStepValue({ label: "현금배당금총액", value: 29_857, unit: "KRW_MILLION" })).toBe("299억");
