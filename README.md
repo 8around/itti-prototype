@@ -8,7 +8,7 @@ Next.js App Router 위에 실증한다. 계획 문서는 `docs/specs/`에 년월
 
 ## 1. 지금 바로 실행 (이 머신)
 
-이 머신에는 **모든 준비가 끝나 있다** (node_modules 설치됨, `.env.local`에 DART 키 설정됨, 스냅샷 467건 커밋됨).
+이 머신에는 **모든 준비가 끝나 있다** (node_modules 설치됨, `.env.local`에 DART 키 설정됨, 스냅샷 746건 커밋됨).
 
 ```bash
 cd /Volumes/DYIexs/Projects/8around/itti/itti-dart-prototype
@@ -20,9 +20,9 @@ pnpm dev
 
 | 순서 | 화면 | 보여줄 것 |
 |---|---|---|
-| 1 | `/` → 종목 클릭 | 20종목 상세. 특히 **LG화학**(지배주주 적자 −6,909억) · **헬릭스미스**(EPS 폴백·무배당 0%·적자 N/A) |
+| 1 | `/` → 종목 클릭 | 20종목 상세 — 분기 막대·YoY/QoQ 꺾은선·누적 막대 등 7섹션 차트. 특히 **헬릭스미스**(손실 분기가 기준선 아래·전환 칩·무배당 0%) · **LG화학**(음수 EPS 하향 막대·적자 연도 배당 분리 표기) · **신영증권**(3월 결산 — "제N기" 분기 라벨) · **KB금융**(금융 프로필 분기 6종) |
 | 2 | 종목 상세의 아무 수치 `원문 보기 ›` | collapse 5탭 → **"지금 다시 호출"** → 라이브 DART 대조 「일치」 배지 |
-| 3 | `/kitchen-sink` | 차트 프리미티브 8종 + 6가지 데이터 상태 표기 |
+| 3 | `/kitchen-sink` | 차트 프리미티브 12종 데모 + 데이터 상태 표기 9종 |
 
 프로덕션 모드로 보려면: `pnpm build && pnpm start` (동일 포트).
 
@@ -53,10 +53,11 @@ pnpm dev
 | 명령 | 하는 일 | DART 호출 |
 |---|---|---|
 | `pnpm dev` / `pnpm build` / `pnpm start` | 개발 / 빌드(SSG 25라우트) / 프로덕션 서빙 | 0 |
-| `pnpm vitest run` | 테스트 81개 (실제 스냅샷 픽스처 기반) | 0 |
+| `pnpm vitest run` | 테스트 151개 (실제 스냅샷 픽스처 기반) | 0 |
 | `pnpm snapshot:build` | 스냅샷 → `data/derived.json` 재정규화 | **0 (오프라인)** |
 | `pnpm snapshot:fetch --dry-run` | 수집 계획만 출력 | 0 |
-| `pnpm snapshot:fetch` | 스냅샷 재수집 (기존 파일 스킵, `--force`로 무시) | ~447회 (일일 한도의 2.2%) |
+| `pnpm snapshot:fetch` | 스냅샷 재수집 (기존 파일 스킵, `--force`로 무시) | 전량 재수집 시 ~746회 (일일 한도의 ~3.7%) |
+| `pnpm snapshot:fetch --refetch-nodata` | `013`(무자료) 캐시만 재호출 (`000`은 절대 재호출 안 함) | 013 건수만큼 — **8/14 반기 마감 후 실행 예정** |
 
 **정규화 로직을 고칠 때**: 카탈로그·리졸버 수정 → `pnpm snapshot:build` → `pnpm vitest run`. DART를 다시 때릴 필요 없음.
 
@@ -92,7 +93,8 @@ pnpm dlx vercel deploy --prod       # 빌드·업로드 (이후 재배포는 이
 |---|---|---|
 | 1 | **CAPEX 정의** — 유형자산 취득만 채택(무형 +4.5% 제외). FCF 값이 갈림 | ROA 등에 "(총액 기준)" 라벨로 명시 |
 | 2 | **배당성향 두 기준** — DART 산출(카카오 −26.9%) vs 배당총액÷지배주주순이익(54.0%) | 상충 시 배지로 병기 중 |
-| 3 | **KB 손익 스택 구성** — 순액 3개 + 차감 구획(충당금) 분리가 맞는지 | v2 개편 중 — 전용 비교 화면은 제거됨. `/stock/105560`(KB금융)에서 확인 |
+| 3 | **KB 손익 스택 구성** — 순액 3개 + 차감 구획(충당금) 분리가 맞는지 | `/stock/105560`(KB금융) ② 손익 — FY2025 스택 + 분기 막대 6종(영업이익·순이자손익·순수수료손익·보험손익·지배주주순이익·EPS) |
+| 4 | **소급수정 잔차** — DART가 뒤 보고서에서 앞 분기를 재작성하면 분기 막대 합 ≠ 연간이 될 수 있음(예: LG화학 2023 매출 4,076억 차) | 무표시 — 화면 주석으로 안내할지 정책 확인 필요 |
 
 ### 4-4. 다음 주 범위에 필요한 발급 (미리 해두면 좋음)
 
@@ -105,9 +107,9 @@ app/            화면 — `/`(종목 리스트) · `/stock/[code]`(종목 상�
 lib/dart/       DART 클라이언트 (status 판정·키 마스킹·허용목록 프록시)
 lib/normalize/  정규화 엔진 — 원본→Resolution(폴백 이력·displayState 6종)
 lib/profiles.ts 프로필 카탈로그 — 이 파일만 고치면 표시 지표가 바뀜
-components/     SourcePanel(collapse)·MetricValue·charts 8종
-data/           universe.json(20종목)·derived.json(정규화 결과)·manifest.json
-public/snapshots/  DART 원본 응답 467건 (재현성 위해 커밋)
+components/     SourcePanel(collapse)·MetricValue·charts 12종(0축 막대·꺾은선·누적/그룹 막대 등)
+data/           universe.json(20종목)·derived.json(정규화 결과 — 연간 years[]+분기 quarters[])·manifest.json
+public/snapshots/  DART 원본 응답 746건 (재현성 위해 커밋)
 scripts/        snapshot-fetch / snapshot-build / resolve-corp-codes
 ```
 
