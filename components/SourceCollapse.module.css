@@ -1,0 +1,63 @@
+/* V4 — 차트당 출처 카드 접기. .srcfoot(app/globals.css)과 시각적으로 짝을 이루되, 이쪽은
+   "여러 카드 묶음"을 여닫는 상위 레벨 collapse라 톤을 한 단계 낮춘다(더 옅은 색·더 작은 패딩). */
+
+.collapse {
+  margin: 2px 0 0;
+}
+
+.summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 4px;
+  border-top: 1px dashed var(--line);
+  color: var(--gray);
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+.summary::-webkit-details-marker {
+  display: none;
+}
+
+.summary:hover {
+  color: var(--ink);
+  background: var(--wash);
+}
+
+.summary:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+
+.marker {
+  display: inline-block;
+  font-size: 9px;
+  transition: transform 0.15s ease;
+}
+
+.collapse[open] > .summary .marker {
+  transform: rotate(90deg);
+}
+
+.body {
+  padding-top: 2px;
+}
+
+/* V5(산식 레이어) 슬롯 — 지금은 formulaSlot이 항상 비어 있어 렌더되지 않지만, 클래스는
+   미리 준비해 둔다(구조를 뜯어고치지 않고 채우기만 하면 되도록). */
+.formulaSlot {
+  padding: 8px 4px;
+  border-bottom: 1px dashed var(--line);
+  margin-bottom: 6px;
+}
+
+/* page.module.css .fieldList와 동일한 그리드 — 카드 묶음 배치. */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 4px 20px;
+}

@@ -17,6 +17,7 @@ import ZeroAxisBars from "@/components/charts/ZeroAxisBars";
 import type { ZeroAxisBar } from "@/components/charts/ZeroAxisBars";
 import MetricValue from "@/components/MetricValue";
 import type { MetricValueProps } from "@/components/MetricValue";
+import { SourceCollapse } from "@/components/SourceCollapse";
 import SourcePanel from "@/components/SourcePanel";
 import { formatEstDt, loadCompany } from "@/lib/company";
 import { toEok } from "@/lib/format";
@@ -339,7 +340,13 @@ function QuarterTraceOnly({
   );
 }
 
-/** 분기 윈도 전체(최대 8개)에 대해 QuarterTraceOnly를 반복하는 공용 fieldList. */
+/**
+ * 분기 윈도 전체(최대 8개)에 대해 QuarterTraceOnly를 반복 — v3 V4부터 개별 fieldList 대신
+ * SourceCollapse 하나로 묶는다(차트당 카드 8개가 화면을 파묻는 문제, 브리프 §V4). count는
+ * quarters.length가 아니라 실제로 resolution이 있어(=카드가 렌더되는) 분기 수로 센다 —
+ * QuarterTraceOnly는 resolution이 없으면 null을 반환하므로 quarters.length를 그대로 쓰면
+ * "출처 8건"인데 실제로는 6장뿐인 과대 표기가 생긴다.
+ */
 function QuarterSourceRow({
   profile,
   corpCode,
@@ -357,8 +364,9 @@ function QuarterSourceRow({
   sourceMetricKey?: string;
   unit: "KRW" | "PCT" | "X";
 }) {
+  const count = quarters.filter((q) => q.resolutions[resolutionKey]).length;
   return (
-    <div className={styles.fieldList}>
+    <SourceCollapse count={count}>
       {quarters.map((q) => (
         <QuarterTraceOnly
           key={q.period}
@@ -371,7 +379,7 @@ function QuarterSourceRow({
           resolution={q.resolutions[resolutionKey]}
         />
       ))}
-    </div>
+    </SourceCollapse>
   );
 }
 
@@ -462,10 +470,12 @@ function PnlSection({
           손익 구조 — {LATEST_ANNUAL_YEAR} · {basisLabel(yLatest.fsDiv)} · 억원
         </div>
         <PnlWaterfall rows={chartRows} />
-        <div className={styles.fieldList}>
+        <SourceCollapse count={waterfallRows.filter((r) => r.resolution).length}>
           {waterfallRows.map(({ metric, resolution }) => (
             <TraceOnly key={metric.key} profile={profile} corpCode={corpCode} year={LATEST_ANNUAL_YEAR} metric={metric} resolution={resolution} />
           ))}
+        </SourceCollapse>
+        <div className={styles.fieldList}>
           {ratioMetrics.map((metric) => (
             <GatedField key={metric.key} profile={profile} corpCode={corpCode} year={LATEST_ANNUAL_YEAR} metric={metric} resolution={yLatest.resolutions[metric.key]} />
           ))}
@@ -552,11 +562,11 @@ function PnlSection({
         손익 구성 — {LATEST_ANNUAL_YEAR} · {basisLabel(yLatest.fsDiv)} · 억원 (워터폴 없음 — 금융 프로필은 표준 손익계정 체계를 따르지 않는다)
       </div>
       <StackedBar100 segments={segments} />
-      <div className={styles.fieldList}>
+      <SourceCollapse count={stackedMetrics.filter((m) => yLatest.resolutions[m.key]).length}>
         {stackedMetrics.map((metric) => (
           <TraceOnly key={metric.key} profile={profile} corpCode={corpCode} year={LATEST_ANNUAL_YEAR} metric={metric} resolution={yLatest.resolutions[metric.key]} />
         ))}
-      </div>
+      </SourceCollapse>
 
       {deductionMetrics.length > 0 && (
         <div className={styles.deductionBlock}>
@@ -679,7 +689,14 @@ function BalanceSection({
       <h2>③ 재무상태</h2>
       <div className={styles.sectionTitle}>자산 구성(자본+부채) — 연간 3개년(FY23~25) + 최신 분기말 · 억원 · 아래 자본 · 위 부채</div>
       <StackedBarsAbs bars={bsBars} />
-      <div className={styles.fieldList}>
+      <SourceCollapse
+        count={
+          years.filter((y) => y.resolutions.total_equity).length +
+          years.filter((y) => y.resolutions.total_liabilities).length +
+          (latestQuarter?.resolutions.total_equity ? 1 : 0) +
+          (latestQuarter?.resolutions.total_liabilities ? 1 : 0)
+        }
+      >
         {years.map((y) => (
           <TraceOnly
             key={`equity-${y.year}`}
@@ -722,7 +739,7 @@ function BalanceSection({
             />
           </>
         )}
-      </div>
+      </SourceCollapse>
       <div className={styles.fieldList}>
         <RawField corpCode={corpCode} profile={profile} year={LATEST_ANNUAL_YEAR} metricKey="total_assets" label="자산총계" unit="KRW" panelUnit="KRW" resolution={yLatest.resolutions.total_assets} />
         <RawField
@@ -763,7 +780,13 @@ function CashFlowSection({ profile, corpCode, years }: { profile: ProfileId; cor
       <h2>④ 현금흐름</h2>
       <div className={styles.sectionTitle}>현금흐름 — 연간 3개년(FY23~25) · 억원 · 위 유입 · 아래 유출</div>
       <SignedGroupedBars groups={cfGroups} seriesLabels={["영업", "투자", "재무"]} />
-      <div className={styles.fieldList}>
+      <SourceCollapse
+        count={
+          years.filter((y) => y.resolutions.operating_cf).length +
+          years.filter((y) => y.resolutions.investing_cf).length +
+          years.filter((y) => y.resolutions.financing_cf).length
+        }
+      >
         {years.map((y) => (
           <TraceOnly
             key={`op-${y.year}`}
@@ -794,6 +817,8 @@ function CashFlowSection({ profile, corpCode, years }: { profile: ProfileId; cor
             resolution={y.resolutions.financing_cf}
           />
         ))}
+      </SourceCollapse>
+      <div className={styles.fieldList}>
         <RawField corpCode={corpCode} profile={profile} year={LATEST_ANNUAL_YEAR} metricKey="fcf" label="잉여현금흐름(FCF = 영업CF − CAPEX)" unit="KRW" panelUnit="KRW" resolution={yLatest.resolutions.fcf} />
       </div>
     </section>
@@ -816,15 +841,15 @@ function ProfitabilitySection({ profile, corpCode, years }: { profile: ProfileId
       <h2>⑤ 수익성</h2>
       <div className={styles.sectionTitle}>ROE 추이 — 연간 3개년(FY23~25) · %</div>
       <LineChart points={roePoints} unit="%" sign />
-      <div className={styles.fieldList}>
+      <SourceCollapse count={years.filter((y) => y.resolutions.roe).length}>
         {years.map((y) => (
           <TraceOnly key={y.year} profile={profile} corpCode={corpCode} year={y.year} metric={{ key: "roe", label: `ROE ${y.year}`, sourceAvailable: true, unit: "PCT" }} resolution={y.resolutions.roe} />
         ))}
-      </div>
+      </SourceCollapse>
 
       <div className={styles.sectionTitle}>영업이익률 추이 — 연간 3개년(FY23~25) · %</div>
       <LineChart points={marginPoints} unit="%" sign color="var(--chart-2)" />
-      <div className={styles.fieldList}>
+      <SourceCollapse count={years.filter((y) => y.resolutions.operating_margin).length}>
         {years.map((y) => (
           <TraceOnly
             key={y.year}
@@ -835,7 +860,7 @@ function ProfitabilitySection({ profile, corpCode, years }: { profile: ProfileId
             resolution={y.resolutions.operating_margin}
           />
         ))}
-      </div>
+      </SourceCollapse>
 
       <div className={styles.fieldList}>
         {netIncomeAttrMetric && (
@@ -874,7 +899,7 @@ function StabilitySection({ profile, corpCode, years }: { profile: ProfileId; co
         <>
           <div className={styles.sectionTitle}>부채비율 추이 — 연간 3개년(FY23~25) · % · 100% 기준선</div>
           <LineChart points={debtRatioPoints} unit="%" baseline={{ value: 100, label: "100% 기준선(부채가 자본을 초과)" }} />
-          <div className={styles.fieldList}>
+          <SourceCollapse count={years.filter((y) => y.resolutions.debt_ratio).length}>
             {years.map((y) => (
               <TraceOnly
                 key={y.year}
@@ -885,7 +910,7 @@ function StabilitySection({ profile, corpCode, years }: { profile: ProfileId; co
                 resolution={y.resolutions.debt_ratio}
               />
             ))}
-          </div>
+          </SourceCollapse>
         </>
       )}
       <div className={styles.fieldList}>
@@ -921,14 +946,16 @@ function ShareholderReturnSection({ profile, corpCode, years }: { profile: Profi
       <h2>⑦ 주주환원</h2>
       <div className={styles.sectionTitle}>EPS·DPS 추이 — 연간 3개년(FY23~25) · 원 · 진한 안쪽 막대 = DPS</div>
       <OverlaidBars bars={returnBars} outerLabel="EPS(기본주당이익)" innerLabel="DPS(주당현금배당금)" />
-      <div className={styles.fieldList}>
+      <SourceCollapse
+        count={years.filter((y) => y.resolutions.eps_basic).length + years.filter((y) => y.resolutions.dps_common).length}
+      >
         {years.map((y) => (
           <TraceOnly key={`eps-${y.year}`} profile={profile} corpCode={corpCode} year={y.year} metric={{ key: "eps_basic", label: `EPS ${y.year}`, sourceAvailable: true, unit: "KRW" }} resolution={y.resolutions.eps_basic} />
         ))}
         {years.map((y) => (
           <TraceOnly key={`dps-${y.year}`} profile={profile} corpCode={corpCode} year={y.year} metric={{ key: "dps_common", label: `DPS ${y.year}`, sourceAvailable: true, unit: "KRW" }} resolution={y.resolutions.dps_common} />
         ))}
-      </div>
+      </SourceCollapse>
       <div className={styles.fieldList}>
         <RawField corpCode={corpCode} profile={profile} year={LATEST_ANNUAL_YEAR} metricKey="eps_basic" label="기본주당이익(EPS, 재무제표)" unit="WON" panelUnit="KRW" resolution={r.eps_basic} />
         <RawField corpCode={corpCode} profile={profile} year={LATEST_ANNUAL_YEAR} metricKey="eps_alotmatter" label="주당순이익(배당공시)" unit="WON" panelUnit="KRW" resolution={r.eps_alotmatter} />
