@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Fragment } from "react";
 
 import LineChart from "@/components/charts/LineChart";
 import type { LineChartPoint } from "@/components/charts/LineChart";
@@ -33,7 +34,7 @@ import {
 } from "@/lib/profiles";
 import type { ProfileMetric } from "@/lib/profiles";
 import { basisLabel, buildSourcePanelProps } from "@/lib/sourcePanelHelpers";
-import { loadStockQuarters, loadStockYearView, profileIdOf, UNIVERSE } from "@/lib/stockView";
+import { loadStockQuartersWithFinExtras, loadStockYearView, profileIdOf, UNIVERSE } from "@/lib/stockView";
 import type { StockYearView, UniverseRow } from "@/lib/stockView";
 
 import styles from "./page.module.css";
@@ -79,13 +80,19 @@ function toDisplayValue(normalized: number, unit: NonNullable<MetricValueProps["
   return unit === "KRW" ? toEok(normalized) : normalized;
 }
 
-/** 상태별 공통 보충 설명 — 종목·지표에 무관하게 항상 같은 문구를 쓴다(하드코딩 아님, 상태 기반). */
-function defaultNoteFor(state: DisplayState, profile: ProfileId): string | undefined {
+/** v2 T6 — BIS비율·NPL비율·NCR·K-ICS비율은 DART API가 통계자료로 제공하지 않지만(§1 xlsx
+ *  근거), 원문이 어디 있는지는 안다: 사업보고서 "5. 재무건전성 등 기타참고사항" 섹션(DART API
+ *  미제공 범위 밖 — 이 프로토타입은 원문 파싱을 하지 않는다, 정직하게 SOURCE_NOT_AVAILABLE
+ *  유지 + 참조 경로만 note에 남긴다). */
+const STABILITY_SOURCE_NOT_AVAILABLE_KEYS = new Set(["bis_ratio", "npl_ratio", "ncr", "kics"]);
+
+/** 상태별 공통 보충 설명 — 종목·지표에 무관하게 항상 같은 문구를 쓴다(하드코딩 아니라 상태+키 기반). */
+function defaultNoteFor(state: DisplayState, profile: ProfileId, metricKey?: string): string | undefined {
   switch (state) {
     case "NOT_IN_PROFILE":
       return `${PROFILE_LABEL[profile]} 프로필 해당 없음`;
     case "SOURCE_NOT_AVAILABLE":
-      return "DART 미제공";
+      return metricKey && STABILITY_SOURCE_NOT_AVAILABLE_KEYS.has(metricKey) ? "DART 미제공 — 사업보고서 5. 재무건전성 등 기타참고사항(원문) 참조" : "DART 미제공";
     case "NA_NEGATIVE_BASE":
       return "분모 음수";
     default:
@@ -144,7 +151,7 @@ function GatedField({ profile, corpCode, year, metric, resolution }: { profile: 
       value={value}
       unit={metric.unit}
       panelUnit={metric.unit}
-      note={defaultNoteFor(state, profile)}
+      note={defaultNoteFor(state, profile, metric.key)}
       basis={resolution ? basisLabel(resolution.fsDiv) : undefined}
       metricKey={metric.key}
       corpCode={corpCode}
@@ -518,6 +525,23 @@ function PnlSection({
     }
   }
 
+  // v2 T6 — 금융 프로필 분기 차트: 대상 6종(영업이익·순이자손익·순수수료손익·보험손익·
+  // 지배주주순이익·EPS) 전부 분기 막대 + YoY/QoQ 꺾은선. base 3종(operating_income·
+  // net_income_attributable_to_owners·eps_basic)은 quarters[]에서 프로필 게이팅 없이 이미
+  // 계산돼 있고(T2), fin 3종(net_interest_income·net_fee_income·insurance_result)은
+  // loadStockQuartersWithFinExtras가 요청 시점에 병합해 넣었다(T6 신설) — 매출액이 없는 금융
+  // 프로필에서는 "revenue" 대신 "operating_income"으로 윈도를 잡는다(STANDARD의 revenue 기준과
+  // 동일 원리 — latestQuarterWindow는 대표 키 하나로 8분기 창을 정하고 나머지는 null로 채운다).
+  const finQuarterWindow = latestQuarterWindow(quarters, "operating_income", QUARTER_WINDOW_MAX);
+  const finQuarterMetrics: { key: string; unit: "KRW" | "WON"; fallbackLabel?: string }[] = [
+    { key: "operating_income", unit: "KRW" },
+    { key: "net_interest_income", unit: "KRW" },
+    { key: "net_fee_income", unit: "KRW" },
+    { key: "insurance_result", unit: "KRW" },
+    { key: "net_income_attributable_to_owners", unit: "KRW" },
+    { key: "eps_basic", unit: "WON", fallbackLabel: "기본주당이익(EPS)" },
+  ];
+
   return (
     <section className={styles.section}>
       <h2>② 손익</h2>
@@ -554,6 +578,37 @@ function PnlSection({
           <GatedField key={metric.key} profile={profile} corpCode={corpCode} year={LATEST_ANNUAL_YEAR} metric={metric} resolution={yLatest.resolutions[metric.key]} />
         ))}
       </div>
+
+      <div className={styles.sectionTitle}>분기 손익 — 최근 {finQuarterWindow.length}분기 · 지정 6종 · 분기 막대 + YoY/QoQ 꺾은선(0% 기준선) · 적자 분기는 기준선 아래 · 잠정치(Q4 역산)는 점선</div>
+      {finQuarterMetrics.map(({ key, unit, fallbackLabel }) => {
+        // 프로필 카탈로그에 없는 항목(예: 증권의 보험손익)은 findProfileMetric이 undefined를
+        // 반환해 자동 제외된다(NOT_IN_PROFILE 게이팅) — eps_basic은 카탈로그에 없는 보편 지표라
+        // 항상 렌더한다(⑦ 주주환원 섹션과 동일 취급).
+        const metric = key === "eps_basic" ? undefined : findProfileMetric(profile, key);
+        if (key !== "eps_basic" && !metric) return null;
+        const label = metric?.label ?? fallbackLabel ?? key;
+        const displayUnit = unit === "WON" ? "원" : "억원";
+        const bars = quarterZeroAxisBars(finQuarterWindow, key, accMt, unit);
+        const yoyPoints = quarterGrowthPoints(finQuarterWindow, `yoy_${key}`, accMt);
+        const qoqPoints = quarterGrowthPoints(finQuarterWindow, `qoq_${key}`, accMt);
+        return (
+          <Fragment key={key}>
+            <div className={styles.sectionTitle}>
+              {label} — 최근 {finQuarterWindow.length}분기 · {displayUnit}
+            </div>
+            <ZeroAxisBars bars={bars} unit={displayUnit} compactLabels />
+            <QuarterSourceRow profile={profile} corpCode={corpCode} accMt={accMt} quarters={finQuarterWindow} resolutionKey={key} unit="KRW" />
+
+            <div className={styles.sectionTitle}>{label} YoY — 전년 동분기 대비 · % · 0% 기준선</div>
+            <LineChart points={yoyPoints} unit="%" sign baseline={{ value: 0, label: "0% 기준선" }} />
+            <QuarterSourceRow profile={profile} corpCode={corpCode} accMt={accMt} quarters={finQuarterWindow} resolutionKey={`yoy_${key}`} sourceMetricKey={key} unit="KRW" />
+
+            <div className={styles.sectionTitle}>{label} QoQ — 전분기 대비 · %</div>
+            <LineChart points={qoqPoints} unit="%" sign color="var(--chart-3)" />
+            <QuarterSourceRow profile={profile} corpCode={corpCode} accMt={accMt} quarters={finQuarterWindow} resolutionKey={`qoq_${key}`} sourceMetricKey={key} unit="KRW" />
+          </Fragment>
+        );
+      })}
 
       {naKeys.length > 0 && (
         <div className={styles.naBlock}>
@@ -948,7 +1003,7 @@ export default async function StockDetailPage({ params }: { params: Promise<{ co
   const profile = profileIdOf(row);
   const years = ALL_ANNUAL_YEARS.map((year) => loadStockYearView(row, year));
   const yLatest = years.find((y) => y.year === LATEST_ANNUAL_YEAR)!;
-  const quarters = loadStockQuarters(row);
+  const quarters = loadStockQuartersWithFinExtras(row);
   const coverage = summarizeCoverage(profile, yLatest.resolutions);
   const coveragePct = Math.round((coverage.hit / coverage.total) * 100);
 

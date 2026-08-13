@@ -239,8 +239,10 @@ export function resolveStockQuarter(dir: string, stock: StockRef, bsnsYear: stri
   };
 }
 
-/** "2024Q1" → "2023Q4"(연도 경계 포함), "2024Q2" → "2024Q1". QoQ 비교 대상 조회 키 생성용. */
-function previousPeriod(period: string): string {
+/** "2024Q1" → "2023Q4"(연도 경계 포함), "2024Q2" → "2024Q1". QoQ 비교 대상 조회 키 생성용.
+ *  v2 T6 — resolveFinExtrasQuarters.ts가 금융 확장 손익(fin extras) 분기 QoQ에 동일 로직을
+ *  재사용하려고 export했다(중복 정의 방지). */
+export function previousPeriod(period: string): string {
   const m = /^(\d{4})Q([1-4])$/.exec(period);
   if (!m) return period;
   const year = Number(m[1]);
