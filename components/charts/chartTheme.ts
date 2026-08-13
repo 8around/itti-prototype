@@ -142,6 +142,15 @@ export const MOBILE_BREAKPOINT_PX = 640;
 /** 모바일에서 `PLOT_HEIGHT` 각 값에 곱하는 배율(−30%). */
 export const MOBILE_HEIGHT_SCALE = 0.7;
 
+/**
+ * `.chart-plot--*`(CSS) 높이 = `PLOT_HEIGHT[name] + AXIS_RESERVE_PX`. `ResponsiveContainer`가
+ * 채우는 전체 SVG 높이 중 `PLOT_HEIGHT`만큼이 막대/선 영역이고 나머지가 `BarChart`/`LineChart`의
+ * `margin.top`(24) + `XAxis height`(28)이다 — V1은 이 52를 `app/globals.css` 주석에만 적어뒀다
+ * (리터럴 중복 + 주석 약속, 자동 가드 없음). V2에서 명명 상수로 올리고 `chartTheme.test.ts`에
+ * `.chart-plot--*` CSS 높이와의 동기화 가드를 추가한다(색 토큰과 동급의 보호).
+ */
+export const AXIS_RESERVE_PX = 52;
+
 /** Recharts `Bar`의 `maxBarSize` 상한 — 3개 이하 카테고리에서 막대가 뚱뚱한 블록이 되는 것을
  * 막는다. */
 export const BAR_MAX_SIZE = 44;

@@ -117,12 +117,31 @@ export function pixelForValue(background: { y: number; height: number }, domain:
  * "nice number" 규칙). Y축 눈금이 `1,539,544.606` 같은 지저분한 수 대신 `2,000,000`처럼 딱
  * 떨어지는 수에서 시작하게 하려고 쓴다.
  */
-function niceCeil(value: number): number {
+function niceCeilPositive(value: number): number {
   if (value <= 0) return 0;
   const exponent = Math.floor(Math.log10(value));
   const fraction = value / 10 ** exponent;
   const niceFraction = fraction <= 1 ? 1 : fraction <= 2 ? 2 : fraction <= 5 ? 5 : 10;
   return niceFraction * 10 ** exponent;
+}
+
+/** `niceCeilPositive`의 반대 방향 — 양수 값을 "보기 좋은" 이전 자리로 내림한다. */
+function niceFloorPositive(value: number): number {
+  if (value <= 0) return 0;
+  const exponent = Math.floor(Math.log10(value));
+  const fraction = value / 10 ** exponent;
+  const niceFraction = fraction >= 5 ? 5 : fraction >= 2 ? 2 : 1;
+  return niceFraction * 10 ** exponent;
+}
+
+function niceCeilSigned(value: number): number {
+  if (value === 0) return 0;
+  return value > 0 ? niceCeilPositive(value) : -niceFloorPositive(-value);
+}
+
+function niceFloorSigned(value: number): number {
+  if (value === 0) return 0;
+  return value > 0 ? niceFloorPositive(value) : -niceCeilPositive(-value);
 }
 
 /**
@@ -135,9 +154,69 @@ function niceCeil(value: number): number {
  * 확보된다(반올림 자체가 데이터보다 큰 수로 올라가므로 별도 퍼센트 패딩이 필요 없다).
  */
 export function padDomain([min, max]: [number, number]): [number, number] {
-  const top = max > 0 ? niceCeil(max) : 0;
-  const bottom = min < 0 ? -niceCeil(-min) : 0;
+  const top = max > 0 ? niceCeilPositive(max) : 0;
+  const bottom = min < 0 ? -niceCeilPositive(-min) : 0;
   return [bottom, top];
+}
+
+/**
+ * `padDomain`은 발산 막대 전용이라 하단을 항상 0으로 고정한다(0을 지나는 도메인이 전제). 꺾은선은
+ * 0을 지나지 않는 도메인이 흔하므로(ROE 8~12%처럼 전 구간 양수, 또는 threshold가 데이터에서 먼
+ * 부채비율처럼 하단이 0이 아닌 값이어야 함) 양 끝을 각각 독립적으로 내림/올림한다.
+ *
+ * `min === max`(포인트가 1개뿐이거나 전 구간 같은 값)면 0으로 나누기를 피하려고 값의 25%(0이면
+ * 최소 1)를 임시 여백으로 반영한 뒤 반올림한다.
+ */
+export function niceDomain([min, max]: [number, number]): [number, number] {
+  if (min === max) {
+    const pad = Math.max(Math.abs(min) * 0.25, 1);
+    return [niceFloorSigned(min - pad), niceCeilSigned(max + pad)];
+  }
+  return [niceFloorSigned(min), niceCeilSigned(max)];
+}
+
+export type LineRun = { startIndex: number; endIndex: number; dashed: boolean };
+
+/**
+ * 꺾은선을 실선/점선 run으로 자른다 — `chartUtils.buildLineRuns`(퇴역, V2)의 후신.
+ * **인덱스 구간**(원본 행 배열에서 항상 연속된 슬라이스)만 반환한다 — 처음엔 run마다 부분집합
+ * `data`를 가진 별도 `<Line>`을 두는 설계였지만, 실측 결과 Recharts가 `<Line>`마다 서로 다른
+ * `data`를 주면(길이가 같아도) XAxis 눈금 라벨을 `<Line>` 개수만큼 중복 렌더링하는 현상이
+ * 확인됐다(`<Line>` N개 → 라벨 N벌). 대신 **`<Line>` 하나**(전 지점을 포함하는 단일 `data`)의
+ * 커스텀 `shape` 콜백 안에서, Recharts가 계산해준 `points` 배열을 이 함수가 반환한 인덱스 구간으로
+ * 잘라 run별 `<polyline>`을 직접 그리는 방식으로 바꿨다(V1 `Bar shape` 패턴과 동일한 "그래픽
+ * 아이템 1개 + 커스텀 콜백" 구조 — `LineChart.tsx` 참고).
+ *
+ * 판정 로직은 원본과 동일: 인접 두 행을 잇는 **구간** 단위로 점선 여부를 정하고(양 끝 중 하나라도
+ * `isProvisional`이면 그 구간은 점선), 종류가 바뀌는 자리에서는 인접한 두 run이 경계 인덱스를
+ * 공유해(`run[i].endIndex === run[i+1].startIndex`) 시각적 틈이 생기지 않는다. `isDrawable`이
+ * false인 행(결측·상태 칩)에서는 run이 끊긴다.
+ */
+export function splitLineRuns<T>(rows: readonly T[], isDrawable: (row: T) => boolean, isProvisional: (row: T) => boolean): LineRun[] {
+  const runs: LineRun[] = [];
+  let startIndex = -1;
+  let endIndex = -1;
+  let dashed = false;
+  const flush = () => {
+    if (startIndex !== -1 && endIndex > startIndex) runs.push({ startIndex, endIndex, dashed });
+    startIndex = -1;
+    endIndex = -1;
+  };
+  for (let i = 0; i + 1 < rows.length; i++) {
+    if (!isDrawable(rows[i]) || !isDrawable(rows[i + 1])) {
+      flush();
+      continue;
+    }
+    const segmentDashed = isProvisional(rows[i]) || isProvisional(rows[i + 1]);
+    if (startIndex === -1 || segmentDashed !== dashed) {
+      flush();
+      startIndex = i;
+      dashed = segmentDashed;
+    }
+    endIndex = i + 1;
+  }
+  flush();
+  return runs;
 }
 
 /** 임의 부호의 (y, height)를 SVG `<rect>`에 바로 쓸 수 있는 (top-y, 양수 height)로 정규화한다.

@@ -4,7 +4,24 @@ import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
-import { AXIS_TEXT, CASH_FINANCING, CASH_INVESTING, CATEGORY_PALETTE, CHIP_BG, GREEN, GRID_LINE, LOSS, MISSING, MUTED_TEXT, PAPER, PROVISIONAL, VALUE_LABEL_COLOR } from "./chartTheme";
+import {
+  AXIS_RESERVE_PX,
+  AXIS_TEXT,
+  CASH_FINANCING,
+  CASH_INVESTING,
+  CATEGORY_PALETTE,
+  CHIP_BG,
+  GREEN,
+  GRID_LINE,
+  LOSS,
+  MISSING,
+  MOBILE_HEIGHT_SCALE,
+  MUTED_TEXT,
+  PAPER,
+  PLOT_HEIGHT,
+  PROVISIONAL,
+  VALUE_LABEL_COLOR,
+} from "./chartTheme";
 
 /**
  * chartTheme.ts의 색 상수는 `app/globals.css`의 `:root` CSS 커스텀 프로퍼티와 같은 값을 리터럴
@@ -42,6 +59,63 @@ function parseRootTokens(): Record<string, string> {
   }
   return tokens;
 }
+
+function readGlobalsCss(): string {
+  const cssPath = join(__dirname, "..", "..", "app", "globals.css");
+  return readFileSync(cssPath, "utf-8");
+}
+
+/** `.chart-plot--{name} { ... height: NNNpx ... }` 선언에서 height 값을 뽑는다. */
+function extractChartPlotHeight(css: string, name: string): number {
+  const re = new RegExp(`\\.chart-plot--${name}\\s*\\{[^}]*?height:\\s*(\\d+(?:\\.\\d+)?)px`);
+  const m = css.match(re);
+  if (!m) {
+    throw new Error(`app/globals.css에서 .chart-plot--${name}의 height 선언을 찾지 못했다 — 클래스가 삭제되거나 이름이 바뀌었을 수 있다.`);
+  }
+  return Number(m[1]);
+}
+
+/**
+ * `.chart-plot--*`를 담은 `@media (max-width: 640px) { ... }` 블록 본문만 잘라낸다. 이 파일에는
+ * 같은 미디어 쿼리 블록이 여럿 있어(`.siteNav` 등) 문구만으로는 특정할 수 없다 — 블록의
+ * 여는/닫는 중괄호는 "줄 맨 앞(들여쓰기 없음)에 오는 `}`"를 바깥쪽 닫는 중괄호로 보고(안쪽
+ * `.chart-plot--*` 규칙의 닫는 중괄호는 항상 들여써져 있어 이 구분이 안전하다) 전 블록을 순회해
+ * `.chart-plot--`를 포함한 첫 블록을 반환한다.
+ */
+function extractMobileMediaBlock(css: string): string {
+  const blockRe = /@media \(max-width:\s*640px\)\s*\{([\s\S]*?)^\}/gm;
+  let m: RegExpExecArray | null;
+  while ((m = blockRe.exec(css)) !== null) {
+    if (m[1].includes(".chart-plot--")) return m[1];
+  }
+  throw new Error("app/globals.css에서 .chart-plot--*를 포함한 @media (max-width: 640px) 블록을 찾지 못했다.");
+}
+
+describe("chartTheme.ts <-> app/globals.css .chart-plot--* 치수 동기화(V2 이월 항목 #1)", () => {
+  // V1 우려사항 #1 — 색 토큰(위 describe)과 달리 PLOT_HEIGHT/AXIS_RESERVE_PX/MOBILE_HEIGHT_SCALE는
+  // "리터럴 중복 + 주석 약속"뿐이었다. `AXIS_RESERVE_PX`를 chartTheme.ts에 명명 상수로 올리고
+  // 여기서 CSS 실측치와 동기화를 강제한다.
+  const css = readGlobalsCss();
+  const mobileCss = extractMobileMediaBlock(css);
+  const names = Object.keys(PLOT_HEIGHT) as Array<keyof typeof PLOT_HEIGHT>;
+
+  it.each(names)("데스크톱 .chart-plot--%s 높이 = PLOT_HEIGHT + AXIS_RESERVE_PX", (name) => {
+    const actual = extractChartPlotHeight(css, name);
+    const expected = PLOT_HEIGHT[name] + AXIS_RESERVE_PX;
+    expect(actual, `.chart-plot--${name} = ${actual}px 인데 PLOT_HEIGHT.${name}(${PLOT_HEIGHT[name]}) + AXIS_RESERVE_PX(${AXIS_RESERVE_PX}) = ${expected}px — 값을 바꿨다면 두 파일을 함께 고칠 것.`).toBe(
+      expected,
+    );
+  });
+
+  it.each(names)("모바일(max-width:640px) .chart-plot--%s 높이 = PLOT_HEIGHT × MOBILE_HEIGHT_SCALE + AXIS_RESERVE_PX", (name) => {
+    const actual = extractChartPlotHeight(mobileCss, name);
+    const expected = PLOT_HEIGHT[name] * MOBILE_HEIGHT_SCALE + AXIS_RESERVE_PX;
+    expect(
+      actual,
+      `모바일 .chart-plot--${name} = ${actual}px 인데 PLOT_HEIGHT.${name}(${PLOT_HEIGHT[name]}) × MOBILE_HEIGHT_SCALE(${MOBILE_HEIGHT_SCALE}) + AXIS_RESERVE_PX(${AXIS_RESERVE_PX}) = ${expected}px.`,
+    ).toBe(expected);
+  });
+});
 
 describe("chartTheme.ts <-> app/globals.css :root 색 토큰 동기화", () => {
   const tokens = parseRootTokens();
