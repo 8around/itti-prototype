@@ -19,6 +19,7 @@ import {
   STOCK_TOTQY_CANDIDATES,
 } from "./catalog";
 import { deriveFcf, deriveOperatingMargin, deriveQ4, deriveQoQ, deriveQuarterCf, deriveRoa, deriveYoY, missingResolution } from "./derive";
+import type { DerivationLabels } from "./derive";
 import type { AcntAllBody, AcntAllRow, FsDiv } from "./resolve";
 import { resolveAcntAllField, resolveFsDiv } from "./resolve";
 import type { IndxBody } from "./resolve-indx";
@@ -40,6 +41,22 @@ export interface StockRef {
   stockCode: string;
   corpCode: string;
   name: string;
+}
+
+/**
+ * v3 V5 — `reprt_code` → 사람이 읽는 보고서 이름. 산식 설명이 "2024 3분기보고서 누적"처럼 **어느
+ * 보고서에서 뺐는지**를 말할 수 있게 하는 유일한 출처다(화면·문서가 이 어휘를 그대로 쓴다).
+ */
+export const REPRT_NAME: Record<string, string> = {
+  "11011": "사업보고서",
+  "11012": "반기보고서",
+  "11013": "1분기보고서",
+  "11014": "3분기보고서",
+};
+
+/** 지표 키 → 한글 이름. 카탈로그에 없는 파생 키(q4_* 등)는 기저 키로 되짚는다. */
+function metricLabelOf(key: string): string {
+  return ACNT_ALL_CANDIDATES.find((c) => c.key === key)?.label ?? key;
 }
 
 export interface YearResolutions {
@@ -99,7 +116,11 @@ export function resolveStockYear(dir: string, stock: StockRef, year: string): Ye
     const candidate = ACNT_ALL_CANDIDATES.find((c) => c.key === key);
     if (!candidate) continue;
     const q3Res = resolveAcntAllField(candidate, q3.list, "thstrm_add_amount", q3.fsDiv, q3.fsDivFallbackApplied);
-    resolutions[`q4_${key}`] = deriveQ4(`q4_${key}`, resolutions[key], q3Res);
+    resolutions[`q4_${key}`] = deriveQ4(`q4_${key}`, resolutions[key], q3Res, {
+      result: candidate.label,
+      left: `${year} ${REPRT_NAME["11011"]} 연간`,
+      right: `${year} ${REPRT_NAME["11014"]} 누적`,
+    });
   }
 
   const fsRes = { fsDiv: annual.fsDiv, fsDivFallbackApplied: annual.fsDivFallbackApplied };
@@ -219,12 +240,20 @@ export interface QuarterResolutions {
 }
 
 /** Q4 역산 결과에 provisional 마킹 + (EPS류라면) 잠정 사유 문구를 derivation에 덧붙인다. MISSING이면 그대로 통과. */
-function finalizeQuarterFlowQ4(key: string, annualRes: Resolution, q3CumulativeRes: Resolution): Resolution {
-  const derived = deriveQ4(key, annualRes, q3CumulativeRes);
+function finalizeQuarterFlowQ4(key: string, annualRes: Resolution, q3CumulativeRes: Resolution, labels: DerivationLabels): Resolution {
+  const derived = deriveQ4(key, annualRes, q3CumulativeRes, labels);
   if (derived.displayState !== "OK") return derived;
   const withProvisional: Resolution = { ...derived, provisional: true };
   if ((QUARTER_EPS_LIKE_KEYS as readonly string[]).includes(key)) {
-    return { ...withProvisional, derivation: `${withProvisional.derivation} — 가중평균주식수 변동으로 근사치일 수 있음(잠정치)` };
+    // 계정 불일치 경고(deriveQ4)와 동시에 발생할 수 있다 — 실측 3건 중 NAVER 2023·카카오 2025
+    // eps_basic이 정확히 그 경우다. 문자열은 기존대로 " — "로 잇고, 구조화 caveat은 " · "로 합친다.
+    const detail = withProvisional.derivationDetail;
+    const epsCaveat = "가중평균주식수 변동으로 근사치일 수 있음(잠정치)";
+    return {
+      ...withProvisional,
+      derivation: `${withProvisional.derivation} — ${epsCaveat}`,
+      derivationDetail: detail ? { ...detail, caveat: detail.caveat ? `${detail.caveat} · ${epsCaveat}` : epsCaveat } : detail,
+    };
   }
   return withProvisional;
 }
@@ -264,7 +293,13 @@ export function resolveStockQuarter(
     if (quarter === 4 && q3ForQ4) {
       const annualRes = resolveAcntAllField(candidate, primary.list, "thstrm_amount", primary.fsDiv, primary.fsDivFallbackApplied);
       const q3Res = resolveAcntAllField(candidate, q3ForQ4.list, "thstrm_add_amount", q3ForQ4.fsDiv, q3ForQ4.fsDivFallbackApplied);
-      resolutions[key] = finalizeQuarterFlowQ4(key, annualRes, q3Res);
+      // 왼쪽은 sourceYear(비12월 결산이면 다음 해 사업보고서), 오른쪽은 슬롯 자신의 bsnsYear —
+      // 산식 설명이 실제로 읽은 보고서를 정확히 가리켜야 페어링 보정이 화면에서 검증 가능해진다.
+      resolutions[key] = finalizeQuarterFlowQ4(key, annualRes, q3Res, {
+        result: candidate.label,
+        left: `${sourceYear} ${REPRT_NAME["11011"]} 연간`,
+        right: `${bsnsYear} ${REPRT_NAME["11014"]} 누적`,
+      });
     } else {
       resolutions[key] = resolveAcntAllField(candidate, primary.list, "thstrm_amount", primary.fsDiv, primary.fsDivFallbackApplied);
     }
@@ -280,6 +315,7 @@ export function resolveStockQuarter(
   // CF 누적 — Q1은 그 자체가 단일분기, Q2~Q4는 인접 reprt와 차분(deriveQuarterCf).
   const priorReprtForCf = quarter === 1 ? null : QUARTER_PRIOR_REPRT_FOR_CF[quarter];
   const priorForCf = priorReprtForCf ? resolveFromReport(dir, stock.corpCode, bsnsYear, priorReprtForCf) : null;
+  const priorCfLabel = priorReprtForCf ? `${bsnsYear} ${REPRT_NAME[priorReprtForCf]} 누적` : "";
   for (const key of QUARTER_CUMULATIVE_KEYS) {
     const candidate = ACNT_ALL_CANDIDATES.find((c) => c.key === key);
     if (!candidate) continue;
@@ -289,7 +325,13 @@ export function resolveStockQuarter(
       continue;
     }
     const priorCum = resolveAcntAllField(candidate, priorForCf.list, "thstrm_amount", priorForCf.fsDiv, priorForCf.fsDivFallbackApplied);
-    const diff = deriveQuarterCf(key, `Q${quarter}(CF)`, currentCum, priorCum);
+    const diff = deriveQuarterCf(key, `Q${quarter}(CF)`, currentCum, priorCum, {
+      result: candidate.label,
+      // 왼쪽은 primary가 실제로 읽힌 sourceYear에서 온다(Q4 페어링 보정 대상). 오른쪽 직전 누적은
+      // 언제나 슬롯 자신의 bsnsYear다 — 두 값이 다를 수 있다는 사실 자체가 산식에 드러나야 한다.
+      left: `${sourceYear} ${REPRT_NAME[reprtCode]} 누적`,
+      right: priorCfLabel,
+    });
     resolutions[key] = diff.displayState === "OK" ? { ...diff, provisional: true } : diff;
   }
 
@@ -342,8 +384,13 @@ export function resolveStockQuarters(dir: string, stock: StockRef): QuarterResol
       if (!current) continue;
       const prevRes = prevQuarter?.resolutions[key] ?? missingResolution(key, current);
       const yoyRes = yoyQuarter?.resolutions[key] ?? missingResolution(key, current);
-      q.resolutions[`qoq_${key}`] = deriveQoQ(`qoq_${key}`, current, prevRes);
-      q.resolutions[`yoy_${key}`] = deriveYoY(`yoy_${key}`, current, yoyRes);
+      const label = metricLabelOf(key);
+      q.resolutions[`qoq_${key}`] = deriveQoQ(`qoq_${key}`, current, prevRes, { result: label, left: `당기 ${q.period}`, right: `직전분기 ${previousPeriod(q.period)}` });
+      q.resolutions[`yoy_${key}`] = deriveYoY(`yoy_${key}`, current, yoyRes, {
+        result: label,
+        left: `당기 ${q.period}`,
+        right: `전년 동분기 ${Number(q.bsnsYear) - 1}Q${q.quarter}`,
+      });
     }
   }
 

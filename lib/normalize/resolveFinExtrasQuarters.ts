@@ -11,7 +11,7 @@
  * 후보 목록을 어떤 reprtCode로 읽을지만 결정한다(브리프 §T1V "계정명만으로는 오매칭" 원칙은
  * 카탈로그 쪽 책임, 여기선 재확인하지 않는다).
  */
-import { detectAnnualYearOffset, previousPeriod, QUARTER_YEARS } from "./engine";
+import { detectAnnualYearOffset, previousPeriod, QUARTER_YEARS, REPRT_NAME } from "./engine";
 import { deriveQ4, deriveQoQ, deriveYoY, missingResolution } from "./derive";
 import { resolveFinExtras } from "./resolveFinExtras";
 import { extraCandidatesFor } from "./resolveProfileExtras";
@@ -67,7 +67,11 @@ function resolveFinExtrasForQuarter(
   const q3Cumulative = resolveFinExtras(dir, corpCode, bsnsYear, candidates, "11014", "thstrm_add_amount").resolutions;
   const resolutions: Record<string, Resolution> = {};
   for (const c of candidates) {
-    const derived = deriveQ4(c.key, annual[c.key], q3Cumulative[c.key]);
+    const derived = deriveQ4(c.key, annual[c.key], q3Cumulative[c.key], {
+      result: c.label,
+      left: `${annualYear} ${REPRT_NAME["11011"]} 연간`,
+      right: `${bsnsYear} ${REPRT_NAME["11014"]} 누적`,
+    });
     resolutions[c.key] = derived.displayState === "OK" ? { ...derived, provisional: true } : derived;
   }
   return resolutions;
@@ -90,6 +94,7 @@ export function resolveProfileExtrasQuarters(dir: string, profile: ProfileId, co
   }
 
   const byPeriod = new Map(quarters.map((q) => [q.period, q]));
+  const labelByKey = new Map(extraCandidatesFor(profile).map((c) => [c.key, c.label]));
   for (const q of quarters) {
     const m = /^(\d{4})Q([1-4])$/.exec(q.period)!;
     const bsnsYear = Number(m[1]);
@@ -102,8 +107,9 @@ export function resolveProfileExtrasQuarters(dir: string, profile: ProfileId, co
       if (!current) continue;
       const prevRes = prevQuarter?.resolutions[key] ?? missingResolution(key, current);
       const yoyRes = yoyQuarter?.resolutions[key] ?? missingResolution(key, current);
-      q.resolutions[`qoq_${key}`] = deriveQoQ(`qoq_${key}`, current, prevRes);
-      q.resolutions[`yoy_${key}`] = deriveYoY(`yoy_${key}`, current, yoyRes);
+      const label = labelByKey.get(key) ?? key;
+      q.resolutions[`qoq_${key}`] = deriveQoQ(`qoq_${key}`, current, prevRes, { result: label, left: `당기 ${q.period}`, right: `직전분기 ${previousPeriod(q.period)}` });
+      q.resolutions[`yoy_${key}`] = deriveYoY(`yoy_${key}`, current, yoyRes, { result: label, left: `당기 ${q.period}`, right: `전년 동분기 ${bsnsYear - 1}Q${quarterNum}` });
     }
   }
 
