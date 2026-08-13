@@ -18,7 +18,6 @@
   --green-dk: #2e7d32;
   --green-dp: #1f5c2a;
   --green-bg: #edf4ee;
-  --green-bd: #c9decb;
   --ink: #16241d;
   --ink-2: #3a4a40;
   --gray: #5b6b62;
@@ -216,62 +215,53 @@ a {
   color: var(--t0);
 }
 
-/* ---- PnlWaterfall (.wf/.wfrow) — 목업 233-239줄, 화면 ⑥ 손익 구조 ---- */
-.wf {
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 15px;
-  padding: 12px 13px 10px;
-  box-shadow: var(--shadow);
+/* ---- PnlWaterfall — V3(Recharts 재작성)에서 `.wf/.wfrow/.wl/.wbar/.wv/.wm`(목업 233-239줄
+   CSS-only 가로 막대)을 SVG 커스텀 shape(components/charts/PnlWaterfall.tsx)로 대체했다.
+   `.wf3`(라벨 | 차트 | 값 3열 flex) — 값·비율 텍스트를 처음엔 SVG margin.right 안에 직접
+   그렸지만, 킷친싱크 좁은 카드(300px대)에서 텍스트 컬럼이 막대 플롯을 짜부라뜨리는 회귀를
+   실측해 HTML 컬럼으로 옮겼다(PnlWaterfall.tsx 상단 doc 참고). */
+.wf3 {
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
 }
-.wfrow {
+.wf3-col {
+  display: flex;
+  flex-direction: column;
+  /* BarChart margin.top(24)·XAxis height(28)과 동일 리터럴 — 라벨/값 행이 SVG 쪽 막대 밴드와
+     대략 같은 세로 위치에 오도록 위아래 여백을 맞춘다(PnlWaterfall.tsx doc 참고). */
+  padding: 24px 0 28px;
+  flex: 0 0 auto;
+}
+.wf3-labels {
+  text-align: right;
+}
+.wf3-values {
+  text-align: left;
+}
+.wf3-row {
+  flex: 1;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 4px 0;
-}
-.wfrow .wl {
-  font-size: 10.5px;
+  font-size: 11px;
   font-weight: 700;
-  width: 58px;
-  flex: none;
   color: var(--ink-2);
+  white-space: nowrap;
 }
-.wfrow .wbar {
-  flex: 1;
-  height: 15px;
-  background: var(--wash);
-  border-radius: 4px;
-  overflow: hidden;
+.wf3-labels .wf3-row {
+  justify-content: flex-end;
 }
-.wfrow .wbar i {
-  display: block;
-  height: 100%;
-  background: var(--green);
-  border-radius: 4px;
-}
-.wfrow .wbar i.empty {
-  background: var(--line);
-}
-.wfrow .wv {
-  font-family: var(--mono);
-  font-size: 10px;
-  font-weight: 700;
-  width: 42px;
-  text-align: right;
-  flex: none;
-}
-.wfrow .wm {
-  font-family: var(--mono);
-  font-size: 9px;
-  font-weight: 600;
-  width: 38px;
-  text-align: right;
-  flex: none;
-  color: var(--gray);
+.wf3-chart {
+  flex: 1 1 auto;
+  min-width: 80px;
 }
 
-/* ---- QuarterBars (.qbrow/.qbfill.prov) — 목업 327-336줄, 화면 ③④ 매출액/영업이익 ---- */
+/* ---- QuarterBars — V3 정리. 종목 페이지에서 미사용(킷친싱크 데모 전용)이었고, 같은 용도의
+   `ZeroAxisBars`(V1, 0 기준선 발산 막대 — 적자를 기준선 아래로 정확히 그리는 승인 규칙 1을
+   만족)로 완전히 대체됐다는 판정에 따라 컴포넌트를 삭제했다(task-V3-report.md §"미사용 컴포넌트
+   판정" 근거). `.qbrow/.qbcol/.qbtrack/.qbfill(.prov/.empty)/.qbv(.prov/.neg/.missing)/.qbx/
+   .pchip`(목업 327-336줄)도 함께 제거 — 단 `.qb-unit`은 ZeroAxisBars가 여전히 쓰므로 남긴다. ----
+*/
 .qb-unit {
   font-family: var(--mono);
   font-size: 8.5px;
@@ -280,83 +270,6 @@ a {
   text-align: right;
   margin-bottom: 4px;
 }
-.qbrow {
-  display: flex;
-  align-items: flex-end;
-  gap: 6px;
-}
-.qbcol {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-.qbtrack {
-  height: 86px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-}
-.qbfill {
-  width: 78%;
-  /* V0 — 하드코딩 #c5cec7(흰 배경 대비 1.61:1, 양수 막대가 사실상 안 보이던 원인)을 --green(5.13:1)으로
-     치환. QuarterBars는 항상 양수 스케일(매출액·영업이익 등 절댓값 크기 비교)이라 --green이 맞다. */
-  background: var(--green);
-  border-radius: 5px 5px 0 0;
-  position: relative;
-}
-.qbfill.prov {
-  background: rgba(242, 163, 30, 0.07);
-  border: 1.5px dashed var(--prov);
-  border-bottom: none;
-  border-radius: 6px 6px 0 0;
-}
-.qbfill.empty {
-  background: var(--line);
-}
-.qbv {
-  position: absolute;
-  top: -14px;
-  left: -4px;
-  right: -4px;
-  text-align: center;
-  font-size: 8.5px;
-  font-weight: 800;
-  color: var(--ink-2);
-  white-space: nowrap;
-}
-.qbv.prov {
-  color: var(--orange-dk);
-  font-weight: 900;
-}
-/* v2 T3 — ZeroAxisBars 음수(zbbot) 값 텍스트. 막대 배색(--up)과 맞춰 예전 .qbv.down(청색)을
-   대체한다. QuarterBars는 이 클래스를 쓰지 않으므로(항상 양수 스케일) 영향 없음. */
-.qbv.neg {
-  color: var(--up);
-  font-weight: 800;
-}
-.qbv.missing {
-  color: var(--gray-2);
-  font-weight: 600;
-}
-.qbx {
-  font-size: 7.5px;
-  font-weight: 700;
-  color: var(--gray);
-  text-align: center;
-  margin-top: 5px;
-  white-space: nowrap;
-}
-.pchip {
-  font-size: 6.5px;
-  font-weight: 800;
-  background: var(--orange-bg);
-  color: var(--orange-dk);
-  padding: 1px 3px;
-  border-radius: 3px;
-  margin-left: 2px;
-}
-
 /* ---- ZeroAxisBars — V1(Recharts 재작성)에서 `.zbrow/.zbtop/.zbbot/.zbf/.zline` 등은 SVG
    커스텀 shape(components/charts/ZeroAxisBars.tsx)와 `<ReferenceLine y={0}>`로 대체되어 제거했다.
    `.zline`의 마지막 소비자였던 SignedGroupedBars도 V2에서 Recharts로 옮기며 같은 방식으로
@@ -382,6 +295,21 @@ a {
 .chart-plot--line {
   height: 232px; /* PLOT_HEIGHT.line(180) + AXIS_RESERVE_PX(52) */
 }
+/* V3 — PnlWaterfall(가로 4행 막대)·StackedBar100(가로 1행 100% 스택 막대). 둘 다 layout="vertical"
+   (값축 X)이지만 실제 XAxis(28px)를 그리므로 AXIS_RESERVE_PX(52) 공식이 그대로 성립한다. */
+.chart-plot--waterfall {
+  height: 222px; /* PLOT_HEIGHT.waterfall(170) + AXIS_RESERVE_PX(52) */
+}
+.chart-plot--stackedBar100 {
+  height: 82px; /* PLOT_HEIGHT.stackedBar100(30) + AXIS_RESERVE_PX(52) */
+}
+/* PieChart 전용 — Cartesian 축이 없어 위 AXIS_RESERVE_PX 공식이 적용되지 않는다. 값은
+   chartTheme.ts PIE_PLOT_SIZE와 동기화(chartTheme.test.ts 전용 가드, 위 공식과 별도 테스트). */
+.chart-plot--pie {
+  height: 200px; /* PIE_PLOT_SIZE(200) */
+  min-width: 160px;
+  flex: 1 1 200px;
+}
 @media (max-width: 640px) {
   /* MOBILE_BREAKPOINT_PX. 막대/선 영역만 MOBILE_HEIGHT_SCALE(0.7)로 줄이고 축/여백은 고정폭
      그대로 유지한다(라벨 폰트가 이미 11px 하한이라 축 자체를 더 줄이지 않는다). */
@@ -393,6 +321,15 @@ a {
   }
   .chart-plot--line {
     height: 178px; /* 180*0.7=126 + 52 */
+  }
+  .chart-plot--waterfall {
+    height: 171px; /* 170*0.7=119 + 52 */
+  }
+  .chart-plot--stackedBar100 {
+    height: 73px; /* 30*0.7=21 + 52 */
+  }
+  .chart-plot--pie {
+    height: 140px; /* PIE_PLOT_SIZE(200) × MOBILE_HEIGHT_SCALE(0.7) = 140 */
   }
 }
 
@@ -422,52 +359,12 @@ a {
   color: var(--ink-2);
 }
 
-/* ---- GroupedBars (.bars/.bar-a/.bar-b) — 목업 150-157줄, 화면 ⑥ 손익 추이(매출+영업이익) ---- */
-.bars {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 7px;
-  height: 82px;
-  padding: 0 2px;
-}
-.bcol {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  height: 100%;
-  justify-content: flex-end;
-}
-.bwrap {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 3px;
-}
-.bar-a {
-  width: 9px;
-  background: var(--green);
-  border-radius: 2px 2px 0 0;
-}
-.bar-b {
-  width: 9px;
-  background: var(--green-bd);
-  border-radius: 2px 2px 0 0;
-}
-.bar-a.empty,
-.bar-b.empty {
-  background: var(--line);
-}
-.blabel {
-  font-family: var(--mono);
-  font-size: 8px;
-  color: var(--gray);
-  font-weight: 600;
-}
+/* ---- GroupedBars — V3 정리. 종목 페이지에서 미사용(킷친싱크 데모 전용)이었다. 화면 ②손익은
+   매출·영업이익을 각각 별도 `ZeroAxisBars`로 그리는 현 구조(app/stock/[code]/page.tsx)로
+   완전히 대체됐다는 판정에 따라 컴포넌트를 삭제했다(task-V3-report.md 근거). `.bars/.bcol/
+   .bwrap/.bar-a/.bar-b/.blabel`(목업 150-157줄)도 함께 제거 — `.bar-b`가 쓰던 `--green-bd`
+   (#c9decb, 대비 1.42:1, V0이 이월한 항목)도 다른 소비자가 없어 `:root`에서 함께 정리했다. ----
+*/
 .leg {
   display: flex;
   flex-wrap: wrap;
@@ -486,60 +383,11 @@ a {
   vertical-align: middle;
 }
 
-/* ---- CashFlowDiverging (.flowrow/.fill.pos|.neg) — 목업 160-166줄, 화면 ⑥ 현금흐름 ---- */
-.flowrow {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  padding: 6px 0;
-}
-.flowrow .fl {
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--ink-2);
-  width: 52px;
-  flex: none;
-}
-.flowrow .track {
-  flex: 1;
-  height: 14px;
-  background: var(--wash);
-  border-radius: 4px;
-  position: relative;
-  overflow: hidden;
-}
-.flowrow .fill {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  border-radius: 4px;
-}
-.fill.pos {
-  background: var(--green);
-  left: 50%;
-}
-.fill.neg {
-  /* V0 — 하드코딩 #a9c5e3(1.78:1)를 --down(5.75:1)으로 치환. 같은 행의 값 텍스트(.fv.down)가 이미
-     --down을 쓰고 있어(아래 .fv.down 규칙) 막대·텍스트 배색이 이제 일관된다. */
-  background: var(--down);
-  right: 50%;
-}
-.flowrow .fv {
-  font-family: var(--mono);
-  font-size: 9.5px;
-  font-weight: 700;
-  width: 46px;
-  text-align: right;
-  flex: none;
-}
-/* 목업 markup은 .fv.up/.fv.down을 쓰지만 해당 CSS 규칙이 없었다(누락) — 프로젝트 컨벤션
-   (상승 --up 적색 · 하락 --down 청색)에 맞춰 여기서 추가한다. */
-.fv.up {
-  color: var(--up);
-}
-.fv.down {
-  color: var(--down);
-}
+/* ---- CashFlowDiverging — V3 정리. 종목 페이지에서 미사용(킷친싱크 데모 전용)이었고, 자체
+   doc(구 components/charts/SignedGroupedBars.tsx)이 이미 "가로·1기간만이라 세로·다기간
+   비교엔 `SignedGroupedBars`를 쓴다"고 명시한 대로 완전히 대체됐다는 판정에 따라 컴포넌트를
+   삭제했다(task-V3-report.md 근거). `.flowrow/.flowrow .fl/.track/.fill(.pos/.neg)/.fv(.up/
+   .down)`(목업 160-166줄)도 함께 제거. ---- */
 
 /* ---- LineChart — V2(Recharts 재작성)에서 `<polyline>`/`.qbrow.eps`/`.statechip`/`.qbx.neg`
    등은 SVG 커스텀 dot(components/charts/LineChart.tsx)로 대체되어 제거했다. `.cnote`는 baseline
@@ -552,59 +400,40 @@ a {
   padding-top: 7px;
   border-top: 1px solid var(--line-2);
 }
-/* ---- PieChart (.piesvg + <path> arc) — 목업 321-326줄, 화면 ③ 사업부문별 매출 비중 ---- */
-.pierow {
+/* ---- PieChart — V3(Recharts 재작성)에서 `.piesvg` + 직접 계산한 `<path>` arc(목업 321-326줄)는
+   Recharts 네이티브 `<Pie>`(components/charts/PieChart.tsx)로 대체되어 제거했다. 남는 건 SVG
+   플롯과 범례를 나란히 두는 레이아웃(`.pie-row`)뿐 — 범례 자체는 아래 `.mixlist`/`.mx`를
+   StackedBar100과 공유한다(둘 다 "색 점 + 라벨 + 값"인 세그먼트 목록이라 구조가 같다). ---- */
+.pie-row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 14px;
+  flex-wrap: wrap;
 }
-.piesvg {
-  width: 104px;
-  height: 104px;
-  flex: none;
-}
-.pieleg {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-}
-.pl {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 10.5px;
-  font-weight: 700;
-  color: var(--ink-2);
-}
-.pl i {
-  width: 9px;
-  height: 9px;
-  border-radius: 3px;
-  flex: none;
-}
-.pl b {
-  margin-left: auto;
-  font-weight: 900;
-  font-size: 11.5px;
-}
-.pl b.muted {
-  color: var(--gray-2);
-  font-weight: 700;
+.pie-row .mixlist {
+  flex: 1 1 140px;
+  min-width: 140px;
+  margin-top: 0;
 }
 
-/* ---- StackedBar100 (.mix/.mixlist) — 목업 369-375줄, 화면 ⑦ 재무상태(자산 구성 등) ---- */
-.mix {
-  display: flex;
-  height: 20px;
-  border-radius: 6px;
-  overflow: hidden;
-  margin-top: 6px;
-}
-.mix i {
-  display: block;
+/* StackedBar100·PieChart 공통 — 전 세그먼트 결측(값 근거 없음)일 때 스택/파이 대신 남기는
+   자리 표시. 근거 없는 0을 그리지 않는다는 원칙(global-constraints.md §1)의 시각적 구현. */
+.stackedBar100Empty {
   height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--line);
+  border-radius: 6px;
+  color: var(--gray-2);
+  font-weight: 700;
+  font-size: 11px;
 }
+
+/* ---- StackedBar100·PieChart 공통 범례(.mixlist/.mx) — 목업 369-375줄(StackedBar100) 유산.
+   V3에서 PieChart의 `.pieleg`/`.pl`도 이 구조로 흡수했다(색 점 + 라벨 + 값 목록이라는 형태가
+   같다) — StackedBar100은 절대값+비율(`<b>`+`<em>`) 둘 다, PieChart는 비율(`<b>`)만 쓴다. ---- */
 .mixlist {
   display: flex;
   flex-direction: column;

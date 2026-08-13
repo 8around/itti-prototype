@@ -134,7 +134,18 @@ export const PLOT_HEIGHT = {
   line: 180,
   /** 누적·오버레이 막대(StackedBarsAbs·OverlaidBars·SignedGroupedBars 등). */
   stackedOrOverlay: 200,
+  /** 손익 구조 가로 막대 목록(PnlWaterfall, V3) — 항상 4행(매출·매출총이익·영업이익·순이익)이라
+   * 세로 카테고리 4개가 라벨과 함께 여유 있게 들어가는 높이로 고정. */
+  waterfall: 170,
+  /** 금융 프로필 100% 스택 막대(StackedBar100, V3) — 막대 자체는 1행뿐이라 얇게 잡고, 축(0/50/100%)
+   * 은 AXIS_RESERVE_PX 몫으로 아래에 남긴다. */
+  stackedBar100: 30,
 } as const;
+
+/** 파이(PieChart, V3) 플롯 크기(px, 정사각) — Cartesian 축이 없는 유일한 차트라 위 PLOT_HEIGHT
+ * 레코드(AXIS_RESERVE_PX를 더하는 공식 전제)에 넣지 않고 별도 상수로 둔다. 기존 104px(얇은
+ * 슬라이스가 거의 안 보이던 원인, task-V3-brief.md 참고)보다 크게 키웠다. */
+export const PIE_PLOT_SIZE = 200;
 
 /** 모바일 브레이크포인트(px 미만이면 모바일). 현재 전 CSS `@media` 0건 — V0이 최초 도입. */
 export const MOBILE_BREAKPOINT_PX = 640;

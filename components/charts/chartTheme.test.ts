@@ -18,6 +18,7 @@ import {
   MOBILE_HEIGHT_SCALE,
   MUTED_TEXT,
   PAPER,
+  PIE_PLOT_SIZE,
   PLOT_HEIGHT,
   PROVISIONAL,
   VALUE_LABEL_COLOR,
@@ -114,6 +115,24 @@ describe("chartTheme.ts <-> app/globals.css .chart-plot--* 치수 동기화(V2 �
       actual,
       `모바일 .chart-plot--${name} = ${actual}px 인데 PLOT_HEIGHT.${name}(${PLOT_HEIGHT[name]}) × MOBILE_HEIGHT_SCALE(${MOBILE_HEIGHT_SCALE}) + AXIS_RESERVE_PX(${AXIS_RESERVE_PX}) = ${expected}px.`,
     ).toBe(expected);
+  });
+});
+
+describe("chartTheme.ts <-> app/globals.css .chart-plot--pie 치수 동기화(V3 — Cartesian 축 없어 AXIS_RESERVE_PX 공식 밖)", () => {
+  // PieChart(V3)는 유일하게 XAxis/YAxis가 없는 차트라 위 PLOT_HEIGHT 루프(AXIS_RESERVE_PX를
+  // 더하는 공식이 전제)에 넣지 않고 별도로 가드한다 — PIE_PLOT_SIZE 자체가 곧 CSS 높이다.
+  const css = readGlobalsCss();
+  const mobileCss = extractMobileMediaBlock(css);
+
+  it("데스크톱 .chart-plot--pie 높이 = PIE_PLOT_SIZE", () => {
+    const actual = extractChartPlotHeight(css, "pie");
+    expect(actual, `.chart-plot--pie = ${actual}px 인데 PIE_PLOT_SIZE = ${PIE_PLOT_SIZE}px — 값을 바꿨다면 두 파일을 함께 고칠 것.`).toBe(PIE_PLOT_SIZE);
+  });
+
+  it("모바일(max-width:640px) .chart-plot--pie 높이 = PIE_PLOT_SIZE × MOBILE_HEIGHT_SCALE", () => {
+    const actual = extractChartPlotHeight(mobileCss, "pie");
+    const expected = PIE_PLOT_SIZE * MOBILE_HEIGHT_SCALE;
+    expect(actual, `모바일 .chart-plot--pie = ${actual}px 인데 PIE_PLOT_SIZE(${PIE_PLOT_SIZE}) × MOBILE_HEIGHT_SCALE(${MOBILE_HEIGHT_SCALE}) = ${expected}px.`).toBe(expected);
   });
 });
 
