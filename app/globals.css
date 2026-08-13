@@ -359,14 +359,15 @@ a {
   display: flex;
   flex-direction: column;
 }
+/* 최종 리뷰 픽스(I1): 위/아래 높이는 CSS 고정값(예전 56px/26px)이 아니라 컴포넌트가
+   `signedAxisScale`로 계산해 인라인으로 넣는다 — 고정 분할은 px per unit이 위아래 2.15배 달라
+   손실·유출을 절반 크기로 축소했다. 컬럼 총 높이는 항상 SIGNED_AXIS_TOTAL_PX로 일정하다. */
 .zbtop {
-  height: 56px;
   display: flex;
   align-items: flex-end;
   justify-content: center;
 }
 .zbbot {
-  height: 26px;
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -698,13 +699,20 @@ a {
   border-radius: 5px;
 }
 
-/* ---- OverlaidBars (.obrow/.obouter/.obinner/.obchip) — 학습가이드 epsDiv(), SET6 EPS+배당 ----
-   같은 x·같은 바닥에서 바깥(EPS, opacity .4) 위에 안쪽(DPS, 진한색)을 겹친다. ZERO_BY_FACT(무배당
-   확인)와 null(데이터 없음)을 칩 문구로 구분한다(승인 규칙 4). */
+/* ---- OverlaidBars (.obrow/.obtop/.obbot/.obouter/.obinner/.obchip) — 학습가이드 epsDiv(),
+   SET6 EPS+배당 ---- 흑자 연도에는 같은 x·같은 바닥에서 바깥(EPS, opacity .4) 위에 안쪽(DPS,
+   진한색)을 겹친다. ZERO_BY_FACT(무배당 확인)와 null(데이터 없음)을 칩 문구로 구분한다(승인 규칙 4).
+   최종 리뷰 픽스(C2): ZeroAxisBars와 같은 2단(.obtop/.zline/.obbot) 구조로 바꿔 음수 EPS를 기준선
+   아래로 그린다 — 예전에는 0축이 없어 절대값 크기로 위로 그려 최악의 해가 최고로 보였다. */
 .obrow {
   display: flex;
   align-items: flex-end;
   gap: 8px;
+}
+/* 기준선 아래 막대가 있을 때만 값 라벨(.obbot .qbv) 자리를 아래에 확보한다 — 전부 양수인
+   차트는 예전 여백 그대로다. */
+.obrow.hasneg {
+  padding-bottom: 13px;
 }
 .obcol {
   flex: 1;
@@ -714,8 +722,12 @@ a {
   min-width: 0;
 }
 .obtrack {
-  height: 86px;
   width: 100%;
+}
+.obtop {
+  position: relative;
+}
+.obbot {
   position: relative;
 }
 .obouter {
@@ -732,6 +744,19 @@ a {
   background: var(--line);
   opacity: 1;
 }
+/* 손실 막대 — ZeroAxisBars의 .zbbot .zbf와 같은 --up(적색) 계열·아래쪽 모서리 둥글림. */
+.obouter.neg {
+  top: 0;
+  bottom: auto;
+  background: var(--up);
+  border-radius: 0 0 5px 5px;
+}
+/* 아래 막대의 값 라벨은 막대 아래쪽에 붙인다 — 기준선 위쪽은 적자 연도 배당(.obinner.solo)이
+   쓰는 자리라 위에 두면 둘이 겹쳐 둘 다 못 읽는다. */
+.obbot .qbv {
+  top: auto;
+  bottom: -13px;
+}
 .obinner {
   position: absolute;
   left: 50%;
@@ -740,6 +765,14 @@ a {
   width: 34%;
   background: var(--green);
   border-radius: 3px 3px 0 0;
+}
+/* 적자 연도 배당 — EPS 막대와 겹치지 않고 기준선 위에 홀로 선다. 겹침 막대와 헷갈리지 않도록
+   테두리를 준 좁은 막대로 구분하고, 차트 하단 주석(cnote)이 이유를 설명한다. */
+.obinner.solo {
+  width: 22%;
+  background: var(--green);
+  border: 1px solid var(--paper);
+  border-bottom: none;
 }
 .obchip {
   position: absolute;
@@ -762,9 +795,9 @@ a {
 }
 
 /* ---- SignedGroupedBars (.sgrow/.sgtop/.sgbot/.sgbar) — 학습가이드 bars() 발산 막대의 다계열
-   확장, SET3 현금흐름(영업/투자/재무 ±). ZeroAxisBars(단일 계열)와 같은 zbtop/zbbot 62:38
-   비율의 0축 분할을 쓰고, 계열 색은 CHART_PALETTE. 막대가 얇아(9px) 개별 숫자 라벨은
-   GroupedBars와 같은 이유로 생략한다(범례로 갈음). */
+   확장, SET3 현금흐름(영업/투자/재무 ±). ZeroAxisBars(단일 계열)와 같은 0축 분할(signedAxisScale)을
+   쓰고, 계열 색은 CHART_PALETTE. 막대가 얇아(9px) 개별 숫자 라벨은 GroupedBars와 같은 이유로
+   생략한다(범례로 갈음). */
 .sgrow {
   display: flex;
   gap: 10px;
@@ -775,15 +808,14 @@ a {
   flex-direction: column;
   min-width: 0;
 }
+/* 높이는 ZeroAxisBars와 같은 이유로 컴포넌트가 인라인으로 넣는다(I1). */
 .sgtop {
-  height: 56px;
   display: flex;
   align-items: flex-end;
   justify-content: center;
   gap: 3px;
 }
 .sgbot {
-  height: 26px;
   display: flex;
   align-items: flex-start;
   justify-content: center;

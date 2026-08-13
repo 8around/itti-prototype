@@ -1,16 +1,18 @@
-import { formatComma, NULL_PLACEHOLDER } from "./chartUtils";
+import { formatComma, NULL_PLACEHOLDER, px, signedAxisScale } from "./chartUtils";
 
 /**
  * ZeroAxisBars — 0 기준선 발산 막대 (목업 `.zbrow/.zbtop/.zbbot/.zline`, 화면 ④ "순이익").
  * 적자 종목처럼 음수가 나올 수 있는 지표용 — 양수는 기준선 위(`.zbtop`), 음수는 아래
- * (`.zbbot`)로 그린다. 절댓값 기준 공통 스케일. 서버 컴포넌트.
+ * (`.zbbot`)로 그린다. 서버 컴포넌트.
  *
- * v2 T3 확장: 학습가이드 `bars()` 참조 — 양수/음수 영역을 `.zbtop`(56px)/`.zbbot`(26px)로
- * 고정 분할해 손실 막대가 항상 기준선 아래 그려지도록 하고(승인 규칙 2), 음수 막대는
- * `--up`(적색) 계열로 표시해 이전의 청색(`#b9c7d8`) 배색을 교체했다(적자를 "하락" 색으로
+ * v2 T3 확장: 학습가이드 `bars()` 참조 — 손실 막대가 항상 기준선 아래 그려지도록 하고(승인 규칙 2),
+ * 음수 막대는 `--up`(적색) 계열로 표시해 이전의 청색(`#b9c7d8`) 배색을 교체했다(적자를 "하락" 색으로
  * 표현하던 배색 버그 수정). `provisional`(테두리 dashed + `--prov`)·`unit`(우상단 단위)·
  * `compactLabels`(라벨·값 폰트를 줄이는 컴팩트 모드) 3개 prop을 추가했다 — 전부 옵셔널이라
  * 기존 `bars: {label, value}[]` 단독 호출부(app/stock/[code]/page.tsx)는 그대로 동작한다.
+ *
+ * 최종 리뷰 픽스(I1): 위/아래 영역 높이를 `signedAxisScale`이 데이터에서 계산한다 — 예전의
+ * 56px/26px 고정 분할은 px per unit이 위아래 2.15배 달라 손실을 절반 크기로 축소했다.
  */
 
 export type ZeroAxisBar = {
@@ -30,7 +32,7 @@ export type ZeroAxisBarsProps = {
 };
 
 export default function ZeroAxisBars({ bars, unit, compactLabels }: ZeroAxisBarsProps) {
-  const max = Math.max(1, ...bars.map((b) => (b.value === null ? 0 : Math.abs(b.value))));
+  const scale = signedAxisScale(bars.map((b) => b.value));
 
   return (
     <div data-chart="zero-axis-bars">
@@ -39,12 +41,12 @@ export default function ZeroAxisBars({ bars, unit, compactLabels }: ZeroAxisBars
         {bars.map((bar) => {
           const missing = bar.value === null;
           const negative = !missing && (bar.value as number) < 0;
-          const heightPct = missing ? 0 : Math.round((Math.abs(bar.value as number) / max) * 100);
+          const height = missing ? 0 : scale.heightPx(bar.value as number);
           return (
             <div className="zbcol" key={bar.label}>
-              <div className="zbtop">
+              <div className="zbtop" style={{ height: px(scale.topPx) }}>
                 {!missing && !negative && (
-                  <div className={`zbf${bar.provisional ? " prov" : ""}`} style={{ height: `${heightPct}%` }}>
+                  <div className={`zbf${bar.provisional ? " prov" : ""}`} style={{ height: px(height) }}>
                     <span className={`qbv${bar.provisional ? " prov" : ""}`}>{formatComma(bar.value as number)}</span>
                   </div>
                 )}
@@ -55,9 +57,9 @@ export default function ZeroAxisBars({ bars, unit, compactLabels }: ZeroAxisBars
                 )}
               </div>
               <div className="zline" />
-              <div className="zbbot">
+              <div className="zbbot" style={{ height: px(scale.botPx) }}>
                 {negative && (
-                  <div className={`zbf${bar.provisional ? " prov" : ""}`} style={{ height: `${heightPct}%` }}>
+                  <div className={`zbf${bar.provisional ? " prov" : ""}`} style={{ height: px(height) }}>
                     <span className="qbv neg">{formatComma(bar.value as number)}</span>
                   </div>
                 )}

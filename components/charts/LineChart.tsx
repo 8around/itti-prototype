@@ -1,10 +1,14 @@
-import { formatComma, NULL_PLACEHOLDER } from "./chartUtils";
+import { buildLineRuns, formatComma, NULL_PLACEHOLDER } from "./chartUtils";
 
 /**
  * LineChart — 꺾은선 (목업 `<polyline>` + `stroke-dasharray`, 화면 ④ "EPS", 화면 ⑥ "영업이익률").
- * `provisional`이 true인 지점들(뒤쪽 연속 구간으로 가정 — 4Q 역산 등)은 주황 점선 + 큰 원형
- * 마커로 확정 구간과 구분한다. 값이 null인 지점은 선을 끊고(구간 분리) 라벨만 회색으로 표시한다.
- * 서버 컴포넌트.
+ * `provisional`이 true인 지점(4Q 역산 등)은 주황 점선 + 큰 원형 마커로 확정 구간과 구분한다.
+ * 값이 null인 지점은 선을 끊고(구간 분리) 라벨만 회색으로 표시한다. 서버 컴포넌트.
+ *
+ * 최종 리뷰 픽스(M5): 점선 판정은 **구간(인접 두 지점) 단위**다 — 예전에는 "첫 잠정 지점 이후
+ * 끝까지 전부 점선"이라 뒤쪽이 연속 구간이라고 가정했는데, 8분기 윈도에는 Q4가 둘 들어갈 수
+ * 있어(2024Q4·2025Q4) 첫 Q4 뒤의 **확정 분기까지 잠정으로 오염**된다. 지금은 양 끝 중 하나라도
+ * 잠정이면 그 구간만 점선이다.
  *
  * v2 T3 확장 (전부 옵셔널 — 기존 `points: {label,value,provisional?}[]` 단독 호출부는
  * 그대로 동작해 하위호환 유지):
@@ -58,24 +62,6 @@ const VB_H = 70;
 const MARGIN_X = 22;
 const PAD_Y = 8;
 
-type Xy = { x: number; y: number };
-
-function buildRuns(xs: number[], ys: (number | null)[], from: number, to: number): Xy[][] {
-  const runs: Xy[][] = [];
-  let current: Xy[] = [];
-  for (let i = from; i <= to; i++) {
-    const y = ys[i];
-    if (y === null) {
-      if (current.length > 1) runs.push(current);
-      current = [];
-      continue;
-    }
-    current.push({ x: xs[i], y });
-  }
-  if (current.length > 1) runs.push(current);
-  return runs;
-}
-
 export default function LineChart({ points, baseline, color, unit, sign }: LineChartProps) {
   const n = points.length;
   const xs = points.map((_, i) => (n <= 1 ? VB_W / 2 : MARGIN_X + (i * (VB_W - MARGIN_X * 2)) / (n - 1)));
@@ -99,11 +85,11 @@ export default function LineChart({ points, baseline, color, unit, sign }: LineC
   // baseline은 그대로 두고(이미 min/max에 반영됨) 안내 문구를 추가한다(개선점 B).
   const hasDrawablePoints = defined.length > 0;
 
-  const firstProvIdx = points.findIndex((p) => p.provisional);
-  const solidEnd = firstProvIdx === -1 ? n - 1 : firstProvIdx;
-  const solidRuns = buildRuns(xs, ys, 0, solidEnd);
-  const dashedRuns = firstProvIdx === -1 ? [] : buildRuns(xs, ys, Math.max(0, firstProvIdx - 1), n - 1);
-  const hasProvisional = firstProvIdx !== -1;
+  const provisionalFlags = points.map((p) => Boolean(p.provisional));
+  const runs = buildLineRuns(xs, ys, provisionalFlags);
+  const solidRuns = runs.filter((r) => !r.dashed);
+  const dashedRuns = runs.filter((r) => r.dashed);
+  const hasProvisional = provisionalFlags.some(Boolean);
 
   return (
     <div data-chart="line-chart">
@@ -122,7 +108,7 @@ export default function LineChart({ points, baseline, color, unit, sign }: LineC
         {solidRuns.map((run, ri) => (
           <polyline
             key={`solid-${ri}`}
-            points={run.map((p) => `${p.x},${p.y}`).join(" ")}
+            points={run.pts.map((p) => `${p.x},${p.y}`).join(" ")}
             fill="none"
             stroke={strokeColor}
             strokeWidth={2.2}
@@ -133,7 +119,7 @@ export default function LineChart({ points, baseline, color, unit, sign }: LineC
         {dashedRuns.map((run, ri) => (
           <polyline
             key={`dash-${ri}`}
-            points={run.map((p) => `${p.x},${p.y}`).join(" ")}
+            points={run.pts.map((p) => `${p.x},${p.y}`).join(" ")}
             fill="none"
             stroke="var(--prov)"
             strokeWidth={2.2}

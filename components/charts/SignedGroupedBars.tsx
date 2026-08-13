@@ -1,4 +1,4 @@
-import { CHART_PALETTE } from "./chartUtils";
+import { CHART_PALETTE, px, signedAxisScale } from "./chartUtils";
 
 /**
  * SignedGroupedBars — 0축 기준 n계열 × m기간 발산 막대 (학습가이드 `bars()`의 발산 막대 개념을
@@ -9,6 +9,10 @@ import { CHART_PALETTE } from "./chartUtils";
  * 얇은 막대(9px) n개가 한 기간 슬롯에 나란히 들어가므로 `GroupedBars`와 같은 이유로 막대별
  * 숫자 라벨은 표시하지 않는다(공간 부족으로 인한 겹침 방지) — 막대 높이 비교 + 범례로 값을
  * 전달한다. 서버 컴포넌트.
+ *
+ * 최종 리뷰 픽스(I1): 위/아래 영역을 `signedAxisScale`로 계산해 px per unit을 맞춘다. 라벨이 없는
+ * 차트라 높이 비교가 값을 전달하는 유일한 수단인데, 예전 56px/26px 고정 분할은 유출을 절반 크기로
+ * 줄여 그 비교 자체를 뒤집었다(삼성전자 24년 투자CF −85.38조 < 영업CF +72.98조로 보임).
  */
 
 export type SignedGroupedBarsGroup = {
@@ -23,15 +27,14 @@ export type SignedGroupedBarsProps = {
 };
 
 export default function SignedGroupedBars({ groups, seriesLabels }: SignedGroupedBarsProps) {
-  const defined = groups.flatMap((g) => g.values).filter((v): v is number => v !== null);
-  const max = Math.max(1, ...defined.map((v) => Math.abs(v)));
+  const scale = signedAxisScale(groups.flatMap((g) => g.values));
 
   return (
     <div data-chart="signed-grouped-bars">
       <div className="sgrow">
         {groups.map((g) => (
           <div className="sgcol" key={g.label}>
-            <div className="sgtop">
+            <div className="sgtop" style={{ height: px(scale.topPx) }}>
               {g.values.map((v, i) => {
                 const missing = v === null;
                 const positive = !missing && v >= 0;
@@ -40,7 +43,7 @@ export default function SignedGroupedBars({ groups, seriesLabels }: SignedGroupe
                     key={seriesLabels[i] ?? i}
                     className={`sgbar${missing ? " empty" : ""}`}
                     style={{
-                      height: missing ? "2px" : positive ? `${Math.round((Math.abs(v as number) / max) * 100)}%` : 0,
+                      height: missing ? "2px" : positive ? px(scale.heightPx(v as number)) : 0,
                       background: positive ? CHART_PALETTE[i % CHART_PALETTE.length] : undefined,
                     }}
                   />
@@ -48,7 +51,7 @@ export default function SignedGroupedBars({ groups, seriesLabels }: SignedGroupe
               })}
             </div>
             <div className="zline" />
-            <div className="sgbot">
+            <div className="sgbot" style={{ height: px(scale.botPx) }}>
               {g.values.map((v, i) => {
                 const negative = v !== null && v < 0;
                 return (
@@ -56,7 +59,7 @@ export default function SignedGroupedBars({ groups, seriesLabels }: SignedGroupe
                     key={seriesLabels[i] ?? i}
                     className="sgbar"
                     style={{
-                      height: negative ? `${Math.round((Math.abs(v as number) / max) * 100)}%` : 0,
+                      height: negative ? px(scale.heightPx(v as number)) : 0,
                       background: negative ? CHART_PALETTE[i % CHART_PALETTE.length] : undefined,
                     }}
                   />
