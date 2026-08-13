@@ -42,6 +42,82 @@ describe("deriveQ4 — 4Q 역산 (#39)", () => {
   });
 });
 
+/**
+ * 최종 리뷰 픽스(I5). 피감수(연간)와 감수(3Q 누적)는 각자 독립적으로 폴백 체인을 돌기 때문에 서로
+ * 다른 account_id에 HIT할 수 있다 — 원본에 짝이 맞는 조합이 아예 없는 실측 케이스라 MISSING으로
+ * 떨어뜨리면 멀쩡한 분기까지 사라진다. 값은 남기되 경고 + 잠정 표시로 구분한다.
+ */
+describe("deriveQ4 — 피연산자 account_id 불일치 경고(I5)", () => {
+  it("카카오 2025 eps_basic: 연간은 계속영업 EPS(1,138), 3Q 누적은 전체 EPS(1,042)라 경고 + provisional", () => {
+    const annualList = acntAll(CORP.카카오, "2025", "11011", "CFS").body.list ?? [];
+    const q3List = acntAll(CORP.카카오, "2025", "11014", "CFS").body.list ?? [];
+    const annual = resolveAcntAllField(candidate("eps_basic"), annualList, "thstrm_amount", "CFS", false);
+    const q3 = resolveAcntAllField(candidate("eps_basic"), q3List, "thstrm_add_amount", "CFS", false);
+
+    // 연간 보고서엔 전체 EPS 행이 아예 없어 폴백 체인의 2순위(계속영업)에 HIT한다 — 원본에 짝이
+    // 맞는 조합이 없는 케이스라 회피 불가.
+    expect(annual.hit?.accountId).toBe("ifrs-full_BasicEarningsLossPerShareFromContinuingOperations");
+    expect(q3.hit?.accountId).toBe("ifrs-full_BasicEarningsLossPerShare");
+
+    const q4 = deriveQ4("q4_eps_basic", annual, q3);
+    expect(q4.normalized).toBe(96);
+    expect(q4.displayState).toBe("OK");
+    expect(q4.provisional).toBe(true);
+    expect(q4.derivation).toContain("계정이 달라");
+    expect(q4.derivation).toContain("ifrs-full_BasicEarningsLossPerShareFromContinuingOperations");
+  });
+
+  it("같은 account_id에 HIT하면 경고 없이 기존 derivation 그대로 — 대다수 정상 경로 무변", () => {
+    const annualList = acntAll(CORP.삼성전자, "2024", "11011", "CFS").body.list ?? [];
+    const q3List = acntAll(CORP.삼성전자, "2024", "11014", "CFS").body.list ?? [];
+    const annual = resolveAcntAllField(candidate("revenue"), annualList, "thstrm_amount", "CFS", false);
+    const q3 = resolveAcntAllField(candidate("revenue"), q3List, "thstrm_add_amount", "CFS", false);
+
+    expect(annual.hit?.accountId).toBe(q3.hit?.accountId);
+    const q4 = deriveQ4("q4_revenue", annual, q3);
+    expect(q4.provisional).toBeUndefined();
+    expect(q4.derivation).not.toContain("주의");
+  });
+});
+
+/**
+ * 최종 리뷰 픽스(I2). `baseOf`가 provisional을 복사하지 않아 성장 resolution 2,560건 전부
+ * provisional이 없었고, 그래서 승인 규칙 3("잠정치는 점선")의 LineChart 점선이 앱 전체에서 한 번도
+ * 그려지지 않았다(킷친싱크 데모에서만 동작).
+ */
+describe("deriveQoQ/deriveYoY — 잠정 전파(I2)", () => {
+  const ok = (value: number, provisional?: boolean): Resolution => ({
+    metricKey: "operating_income",
+    attempts: [],
+    fsDiv: "CFS",
+    fsDivFallbackApplied: false,
+    normalized: value,
+    displayState: "OK",
+    parserVersion: "test",
+    ...(provisional ? { provisional: true } : {}),
+  });
+
+  it("당기가 잠정(Q4 역산)이면 QoQ도 잠정", () => {
+    expect(deriveQoQ("qoq_operating_income", ok(120, true), ok(100)).provisional).toBe(true);
+  });
+
+  it("직전 분기가 잠정이어도 잠정 — 비교 기준이 확정이 아니면 결과도 확정이 아니다", () => {
+    expect(deriveYoY("yoy_operating_income", ok(120), ok(100, true)).provisional).toBe(true);
+  });
+
+  it("둘 다 직독 확정이면 provisional을 붙이지 않는다(undefined — 직렬화에서 키 자체가 빠진다)", () => {
+    const r = deriveQoQ("qoq_operating_income", ok(120), ok(100));
+    expect(r.provisional).toBeUndefined();
+    expect(JSON.parse(JSON.stringify(r))).not.toHaveProperty("provisional");
+  });
+
+  it("숫자가 안 나오는 전환 상태(흑자전환 등)에서도 잠정 여부는 유지된다", () => {
+    const r = deriveQoQ("qoq_operating_income", ok(120, true), ok(-50));
+    expect(r.displayState).toBe("TURN_TO_PROFIT");
+    expect(r.provisional).toBe(true);
+  });
+});
+
 describe("deriveRoa / deriveOperatingMargin / deriveFcf", () => {
   it("삼성전자 2024 ROA = 당기순이익 ÷ 자산총계 × 100", () => {
     const list = acntAll(CORP.삼성전자, "2024", "11011", "CFS").body.list ?? [];

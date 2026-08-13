@@ -139,17 +139,84 @@ describe("QoQ/YoY — 전환 상태 4분면 실측(mock 금지, 실제 스냅샷
   });
 });
 
-describe("신영증권(3월 결산) — fiscalPeriodName 실측(T1V 판정5, bsns_year만으로는 기수가 어긋난다)", () => {
-  it("2024Q1(11013)은 '제 71 기 1분기말', 같은 bsns_year=2024의 연간(11011, Q4 슬롯)은 '제 70 기'", () => {
-    const quarters = resolveStockQuarters(SNAPSHOTS_DIR, { stockCode: "001720", corpCode: CORP.신영증권, name: "신영증권" });
-    const q1 = quarters.find((q) => q.period === "2024Q1")!;
-    const q4 = quarters.find((q) => q.period === "2024Q4")!;
-    expect(q1.fiscalPeriodName).toBe("제 71 기 1분기말");
-    expect(q4.fiscalPeriodName).toBe("제 70 기");
-    // 같은 "제71기"의 연간 사업보고서는 bsns_year=2025쪽에 있다(T1V 판정5) — 화면 라벨은
-    // fiscalPeriodName 원문을 쓰고, period(bsnsYear+quarter) 정렬은 이번 범위에서 보정하지 않는다.
-    const q4NextYear = quarters.find((q) => q.period === "2025Q4")!;
-    expect(q4NextYear.fiscalPeriodName).toBe("제 71 기");
+/**
+ * 최종 리뷰 픽스(C1·I3·I6). 이 describe는 원래 "2024Q4 슬롯의 fiscalPeriodName은 '제 70 기'"를
+ * 단언했는데, 그건 **버그(1년 어긋난 두 보고서를 뺀 상태)를 고정한 테스트**였다. 라벨만 보고
+ * Q4 산술은 검증하지 않아 제71기 4Q가 212.08억 대신 554.39억으로, 제72기 4Q가 +470.51억 대신
+ * −126.43억(부호 반전, 존재하지 않는 적자)으로 나오는 걸 놓쳤다 — 이제 값으로 고정한다.
+ */
+describe("신영증권(3월 결산) — Q4 역산 기수 페어링(C1)", () => {
+  const quarters = resolveStockQuarters(SNAPSHOTS_DIR, { stockCode: "001720", corpCode: CORP.신영증권, name: "신영증권" });
+  const at = (period: string) => quarters.find((q) => q.period === period)!;
+
+  it("Q4 슬롯은 같은 해가 아니라 다음 해 사업보고서와 짝지어 3Q 누적과 기수를 맞춘다", () => {
+    // 분기보고서는 제N기인데 같은 bsns_year의 사업보고서는 제N−1기다(T1V 판정5).
+    expect(at("2024Q1").fiscalPeriodName).toBe("제 71 기 1분기말");
+    expect(at("2024Q3").fiscalPeriodName).toBe("제 71 기 3분기말");
+    // 따라서 제71기 4Q의 피감수는 bsns_year=2025의 11011에 있다.
+    expect(at("2024Q4").fiscalPeriodName).toBe("제 71 기");
+    expect(at("2024Q4").sourceYear).toBe("2025");
+    expect(at("2025Q4").fiscalPeriodName).toBe("제 72 기");
+    expect(at("2025Q4").sourceYear).toBe("2026");
+  });
+
+  it("제71기 4Q 영업이익 = 212.08억(= 제71기 연간 1,361.46억 − 제71기 3Q누적 1,149.38억)", () => {
+    const q4 = at("2024Q4").resolutions.operating_income;
+    expect(q4.normalized).toBe(21_207_648_944);
+    expect(q4.displayState).toBe("OK");
+    expect(q4.provisional).toBe(true);
+  });
+
+  it("제72기 4Q 영업이익 = +470.51억 — 예전 페어링은 −126.43억으로 없는 적자를 그렸다", () => {
+    const q4 = at("2025Q4").resolutions.operating_income;
+    expect(q4.normalized).toBe(47_050_591_778);
+    expect(q4.normalized).toBeGreaterThan(0);
+  });
+
+  it("제70기 4Q = 435.85억 — 2023Q4 슬롯도 제70기 연간(bsns_year=2024)과 짝이 맞는다", () => {
+    expect(at("2023Q4").resolutions.operating_income.normalized).toBe(43_584_702_866);
+    expect(at("2023Q4").fiscalPeriodName).toBe("제 70 기");
+  });
+
+  it("제73기 연간 보고서가 아직 없는 2026Q4는 억지로 채우지 않고 MISSING", () => {
+    expect(at("2026Q4").resolutions.operating_income.displayState).toBe("MISSING");
+    expect(at("2026Q4").fiscalPeriodName).toBe("");
+  });
+
+  it("배열 순서 = 실제 회계기간 순서 — 기수가 단조 증가한다(I3: 인덱스로 '최신'을 골라도 안전)", () => {
+    const ordinals = quarters
+      .map((q) => /제\s*(\d+)\s*기/.exec(q.fiscalPeriodName))
+      .filter((m): m is RegExpExecArray => m !== null)
+      .map((m) => Number(m[1]));
+    expect(ordinals).toEqual([...ordinals].sort((a, b) => a - b));
+    expect(ordinals).toEqual([70, 70, 70, 71, 71, 71, 71, 72, 72, 72, 72, 73]);
+  });
+
+  it("재무상태 축의 '최신 분기말'이 제73기 1분기말(13.57조) — 예전에는 더 오래된 제72기말을 골랐다", () => {
+    const withAssets = quarters.filter((q) => q.resolutions.total_assets.displayState !== "MISSING");
+    const latest = withAssets[withAssets.length - 1];
+    expect(latest.period).toBe("2026Q1");
+    expect(latest.fiscalPeriodName).toBe("제 73 기 1분기말");
+    expect(latest.resolutions.total_assets.normalized).toBe(13_572_548_119_423);
+  });
+});
+
+describe("12월 결산 종목은 보정 대상이 아니다 — 분기 값 회귀 기준(C1)", () => {
+  it("삼성전자 Q4 슬롯은 같은 bsns_year 사업보고서를 그대로 쓴다(sourceYear === bsnsYear)", () => {
+    const quarters = resolveStockQuarters(SNAPSHOTS_DIR, { stockCode: "005930", corpCode: CORP.삼성전자, name: "삼성전자" });
+    for (const q of quarters) {
+      expect(q.sourceYear).toBe(q.bsnsYear);
+    }
+    expect(quarters.find((q) => q.period === "2024Q4")!.fiscalPeriodName).toBe("제 56 기");
+  });
+
+  it("삼성전자 2024 4개 분기 영업이익 실측값 고정 — Q4 역산 페어링 변경의 회귀 기준", () => {
+    const quarters = resolveStockQuarters(SNAPSHOTS_DIR, { stockCode: "005930", corpCode: CORP.삼성전자, name: "삼성전자" });
+    const oi = (p: string) => quarters.find((q) => q.period === p)!.resolutions.operating_income.normalized;
+    expect(oi("2024Q1")).toBe(6_606_009_000_000);
+    expect(oi("2024Q2")).toBe(10_443_878_000_000);
+    expect(oi("2024Q3")).toBe(9_183_371_000_000);
+    expect(oi("2024Q4")).toBe(6_492_703_000_000);
   });
 });
 

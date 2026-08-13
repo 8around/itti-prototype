@@ -50,6 +50,34 @@ describe("KB금융 — Q4 역산(연간 11011 − 3Q누적 11014.thstrm_add) + p
   });
 });
 
+/**
+ * 최종 리뷰 픽스(I6). 예전에는 Q1(누적 == 단일분기라 두 필드를 헷갈려도 값이 같다)만 절대값으로
+ * 고정하고 Q2/Q3는 QoQ 비율로 **간접** 확인했다 — `thstrm_amount`(단일 3개월)와
+ * `thstrm_add_amount`(누적)를 바꿔 읽는 회귀가 나도 Q1 테스트는 통과한다. 판별력이 있는 Q2/Q3를
+ * 절대값으로 직접 고정한다.
+ */
+describe("KB금융 — Q2/Q3 단일분기 절대값(누적과 구분되는 판별 지점)", () => {
+  const quarters = resolveProfileExtrasQuarters(SNAPSHOTS_DIR, "FIN_HOLDING", CORP.KB금융);
+  const at = (period: string) => quarters.find((q) => q.period === period)!;
+
+  it("순이자손익 2024Q2 = 3,206,237백만 · 2024Q3 = 3,164,967백만 (직독 3개월치, 누적 아님)", () => {
+    expect(at("2024Q2").resolutions.net_interest_income.normalized).toBe(3_206_237_000_000);
+    expect(at("2024Q3").resolutions.net_interest_income.normalized).toBe(3_164_967_000_000);
+  });
+
+  it("Q2/Q3는 직독값이라 provisional이 붙지 않는다(Q4 역산과 구분)", () => {
+    expect(at("2024Q2").resolutions.net_interest_income.provisional).toBeUndefined();
+    expect(at("2024Q3").resolutions.net_interest_income.provisional).toBeUndefined();
+  });
+
+  it("4개 분기 합 = 연간 순이자손익 12,826,714백만 — 누적을 단일분기로 잘못 읽으면 깨진다", () => {
+    const sum = (["2024Q1", "2024Q2", "2024Q3", "2024Q4"] as const)
+      .map((p) => at(p).resolutions.net_interest_income.normalized ?? 0)
+      .reduce((a, b) => a + b, 0);
+    expect(sum).toBe(12_826_714_000_000);
+  });
+});
+
 describe("KB금융 — QoQ 2차 패스(2024Q2 vs 2024Q1, 둘 다 직독 OK)", () => {
   const quarters = resolveProfileExtrasQuarters(SNAPSHOTS_DIR, "FIN_HOLDING", CORP.KB금융);
   const q2 = quarters.find((q) => q.period === "2024Q2")!;
@@ -89,5 +117,26 @@ describe("신영증권(FIN_SECURITIES, 3월 결산) — 순액 계정 미작성�
     const quarters = resolveProfileExtrasQuarters(SNAPSHOTS_DIR, "FIN_SECURITIES", CORP.신영증권);
     const missingCount = quarters.filter((q) => q.resolutions.net_interest_income?.displayState === "MISSING").length;
     expect(missingCount).toBeGreaterThan(0);
+  });
+});
+
+/**
+ * 최종 리뷰 픽스(C1). base 엔진(engine.ts)만 고치고 이 경로를 빠뜨리면 같은 종목 화면에서 손익
+ * 막대는 맞고 이자수익 막대는 1년 어긋난 채로 남는다 — 두 경로가 같은 보정을 쓰는지 고정한다.
+ */
+describe("신영증권 fin extras — Q4도 base 엔진과 같은 기수 페어링을 쓴다(C1)", () => {
+  const quarters = resolveProfileExtrasQuarters(SNAPSHOTS_DIR, "FIN_SECURITIES", CORP.신영증권);
+  const at = (period: string) => quarters.find((q) => q.period === period)!;
+
+  it("이자수익 제71기 4Q = 72,409,497,148 (= 제71기 연간 312,015,769,522 − 제71기 3Q누적 239,606,272,374)", () => {
+    const q4 = at("2024Q4").resolutions.interest_revenue;
+    expect(q4.normalized).toBe(72_409_497_148);
+    expect(q4.provisional).toBe(true);
+    // 같은 해 사업보고서(제70기 321,899,677,873)와 짝지으면 82,293,405,499 — 13.7% 과대.
+    expect(q4.normalized).not.toBe(82_293_405_499);
+  });
+
+  it("제73기 연간이 아직 없는 2026Q4는 MISSING", () => {
+    expect(at("2026Q4").resolutions.interest_revenue.displayState).toBe("MISSING");
   });
 });
