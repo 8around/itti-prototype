@@ -76,8 +76,8 @@ export interface ReportResolution {
  * 재사용" 방식과 결과가 동일하다(회귀 0건, engine.test.ts로 고정). 분기 축(resolveStockQuarter)은
  * reprt마다 실제로 fsDiv가 갈릴 수 있어(예: 특정 분기만 CFS 013) 독립 폴백이 반드시 필요하다.
  */
-export function resolveFromReport(dir: string, stock: StockRef, year: string, reprtCode: string): ReportResolution {
-  const reqId = (fs: FsDiv) => `fnlttSinglAcntAll__${stock.corpCode}__${year}__${reprtCode}__${fs}`;
+export function resolveFromReport(dir: string, corpCode: string, year: string, reprtCode: string): ReportResolution {
+  const reqId = (fs: FsDiv) => `fnlttSinglAcntAll__${corpCode}__${year}__${reprtCode}__${fs}`;
   const fsRes = resolveFsDiv(
     () => loadSnapshot<AcntAllBody>(dir, reqId("CFS")),
     () => loadSnapshot<AcntAllBody>(dir, reqId("OFS")),
@@ -86,7 +86,7 @@ export function resolveFromReport(dir: string, stock: StockRef, year: string, re
 }
 
 export function resolveStockYear(dir: string, stock: StockRef, year: string): YearResolutions {
-  const annual = resolveFromReport(dir, stock, year, "11011");
+  const annual = resolveFromReport(dir, stock.corpCode, year, "11011");
 
   const resolutions: Record<string, Resolution> = {};
   for (const c of ACNT_ALL_CANDIDATES) {
@@ -94,7 +94,7 @@ export function resolveStockYear(dir: string, stock: StockRef, year: string): Ye
   }
 
   // 4Q 역산 — 11014(3분기) 스냅샷을 읽어 thstrm_add_amount(누적)를 뺀다.
-  const q3 = resolveFromReport(dir, stock, year, "11014");
+  const q3 = resolveFromReport(dir, stock.corpCode, year, "11014");
   for (const key of Q4_DERIVABLE_KEYS) {
     const candidate = ACNT_ALL_CANDIDATES.find((c) => c.key === key);
     if (!candidate) continue;
@@ -142,6 +142,49 @@ const QUARTER_REPRT_BY_NUM: Record<1 | 2 | 3 | 4, "11013" | "11012" | "11014" | 
   4: "11011",
 };
 
+/** "제 71 기 3분기말" → 71. 기수를 읽을 수 없으면(빈 list, 013 응답 등) null. */
+function fiscalOrdinalOf(list: AcntAllRow[]): number | null {
+  const m = /제\s*(\d+)\s*기/.exec(list[0]?.thstrm_nm ?? "");
+  return m ? Number(m[1]) : null;
+}
+
+/**
+ * Q4 역산에 쓸 사업보고서(11011)가 어느 `bsns_year`에 있는지 — 0이면 같은 해, 1이면 다음 해.
+ *
+ * 비12월 결산 종목은 같은 `bsns_year` 안에서 분기보고서와 사업보고서의 기수가 어긋난다. 신영증권
+ * (3월 결산) 실측:
+ *
+ * ```
+ * bsns_year=2024 → 11013/11012/11014 = 제71기 1·반·3분기 / 11011 = 제70기
+ * bsns_year=2025 → 11013/11012/11014 = 제72기 1·반·3분기 / 11011 = 제71기
+ * ```
+ *
+ * 따라서 제71기 4Q = `annual(2025, 11011) − cum3(2024, 11014)`이고, 같은 해끼리 짝지으면 1년
+ * 어긋난 두 보고서를 빼게 된다(제71기 4Q 실제 212.08억이 554.39억으로, 제72기 4Q 실제 +470.51억이
+ * −126.43억으로 부호까지 뒤집혔다 — 존재하지 않는 적자 막대).
+ *
+ * **판정은 `universe.json`의 `accMt` 메타데이터가 아니라 두 스냅샷의 `thstrm_nm` 기수 비교로
+ * 내린다** — `accMt`는 우리가 관리하는 메타라 원본과 어긋날 수 있고, 기수는 원본이 직접 말해주는
+ * 사실이다. 증거가 있는 모든 연도가 만장일치로 +1일 때만 보정하고, 증거가 없거나 섞이면 0(기존
+ * 동작)을 유지한다 — 12월 결산 20종목 전수 확인 결과 3개년 전부 기수가 일치해 offset 0이다(분기
+ * 값 무변).
+ */
+export function detectAnnualYearOffset(dir: string, corpCode: string): 0 | 1 {
+  const votes: number[] = [];
+  for (const year of QUARTER_YEARS) {
+    const annualOrdinal = fiscalOrdinalOf(resolveFromReport(dir, corpCode, year, "11011").list);
+    if (annualOrdinal === null) continue;
+    let quarterOrdinal: number | null = null;
+    for (const reprtCode of ["11014", "11012", "11013"] as const) {
+      quarterOrdinal = fiscalOrdinalOf(resolveFromReport(dir, corpCode, year, reprtCode).list);
+      if (quarterOrdinal !== null) break;
+    }
+    if (quarterOrdinal === null) continue;
+    votes.push(quarterOrdinal - annualOrdinal);
+  }
+  return votes.length > 0 && votes.every((v) => v === 1) ? 1 : 0;
+}
+
 /** CF 단일분기화에 필요한 "직전 reprt" — Q1은 직전이 없다(그 자체가 누적=단일). */
 const QUARTER_PRIOR_REPRT_FOR_CF: Record<2 | 3 | 4, "11013" | "11012" | "11014"> = {
   2: "11013",
@@ -153,11 +196,21 @@ const QUARTER_PRIOR_REPRT_FOR_CF: Record<2 | 3 | 4, "11013" | "11012" | "11014">
 export const ALL_QUARTER_PERIODS: string[] = QUARTER_YEARS.flatMap((y) => ([1, 2, 3, 4] as const).map((q) => `${y}Q${q}`));
 
 export interface QuarterResolutions {
-  /** 정렬·조회 키. bsnsYear+quarter 기반이라 신영증권처럼 비12월 결산 종목의 "제N기"와 어긋날 수 있다 — fiscalPeriodName 참조. */
+  /**
+   * 정렬·조회 키. `bsnsYear`+`quarter` 기반이지만 Q4가 `detectAnnualYearOffset`으로 결산 시점
+   * 보정을 받으므로 **배열 순서 = 실제 회계기간 순서**가 보장된다. 신영증권도 2023Q1~2026Q4
+   * 슬롯이 제70기 1Q → 제73기 1Q로 단조 증가한다(라벨은 fiscalPeriodName 원문 사용).
+   */
   period: string;
   bsnsYear: string;
   quarter: 1 | 2 | 3 | 4;
   reprtCode: "11013" | "11012" | "11014" | "11011";
+  /**
+   * `reprtCode` 보고서를 실제로 읽어온 `bsns_year`. 비12월 결산 종목의 Q4는 다음 해 사업보고서를
+   * 짝으로 쓰므로 `bsnsYear`와 다르다(예: 신영증권 2024Q4 → sourceYear "2025"). SourcePanel
+   * requestId 조립에는 반드시 이 값을 써야 실제로 읽은 스냅샷을 가리킨다.
+   */
+  sourceYear: string;
   /** thstrm_nm 원문(예: "제 56 기 1분기말"). 신영증권처럼 bsns_year만으로 기수가 안 맞는 종목의 실제 라벨을 그대로 노출한다(T1V 판정5). */
   fiscalPeriodName: string;
   fsDiv: FsDiv;
@@ -183,15 +236,28 @@ function finalizeQuarterFlowQ4(key: string, annualRes: Resolution, q3CumulativeR
  * "없으면 만들지 않는다"가 아니라 "모든 (연도,분기) 조합을 항상 만들고 결측은 MISSING으로 표기한다"를
  * 택했다(연간 엔진의 기존 선례 — 신영증권 FY2023 전체 MISSING도 year 엔트리 자체는 생성됨 — 와 동일한
  * 설계 일관성, task-T2-report.md §설계결정 참조).
+ *
+ * `annualYearOffset`은 Q4 슬롯이 읽을 사업보고서의 `bsns_year` 보정값이다(`detectAnnualYearOffset`
+ * 참조 — 비12월 결산 종목만 1). 생략하면 종목별로 자동 판정하지만, 16분기를 한 번에 만드는
+ * `resolveStockQuarters`는 판정을 1회만 하고 그 결과를 넘겨 파일 I/O를 아낀다.
  */
-export function resolveStockQuarter(dir: string, stock: StockRef, bsnsYear: string, quarter: 1 | 2 | 3 | 4): QuarterResolutions {
+export function resolveStockQuarter(
+  dir: string,
+  stock: StockRef,
+  bsnsYear: string,
+  quarter: 1 | 2 | 3 | 4,
+  annualYearOffset: 0 | 1 = detectAnnualYearOffset(dir, stock.corpCode),
+): QuarterResolutions {
   const reprtCode = QUARTER_REPRT_BY_NUM[quarter];
-  const primary = resolveFromReport(dir, stock, bsnsYear, reprtCode);
+  // Q4(사업보고서)만 보정 대상 — Q1~Q3는 보고서 자체가 그 기(期)의 것이라 bsnsYear 그대로다.
+  const sourceYear = quarter === 4 ? String(Number(bsnsYear) + annualYearOffset) : bsnsYear;
+  const primary = resolveFromReport(dir, stock.corpCode, sourceYear, reprtCode);
   const fiscalPeriodName = primary.list[0]?.thstrm_nm ?? "";
   const resolutions: Record<string, Resolution> = {};
 
   // IS/CIS 흐름 — Q1~Q3 thstrm 직독, Q4 = FY.thstrm − Q3.thstrm_add(deriveQ4 재사용).
-  const q3ForQ4 = quarter === 4 ? resolveFromReport(dir, stock, bsnsYear, "11014") : null;
+  // 3Q 누적은 항상 슬롯 자신의 bsnsYear에서 읽는다 — 보정을 받은 사업보고서와 같은 기수가 된다.
+  const q3ForQ4 = quarter === 4 ? resolveFromReport(dir, stock.corpCode, bsnsYear, "11014") : null;
   for (const key of QUARTER_FLOW_KEYS) {
     const candidate = ACNT_ALL_CANDIDATES.find((c) => c.key === key);
     if (!candidate) continue;
@@ -213,7 +279,7 @@ export function resolveStockQuarter(dir: string, stock: StockRef, bsnsYear: stri
 
   // CF 누적 — Q1은 그 자체가 단일분기, Q2~Q4는 인접 reprt와 차분(deriveQuarterCf).
   const priorReprtForCf = quarter === 1 ? null : QUARTER_PRIOR_REPRT_FOR_CF[quarter];
-  const priorForCf = priorReprtForCf ? resolveFromReport(dir, stock, bsnsYear, priorReprtForCf) : null;
+  const priorForCf = priorReprtForCf ? resolveFromReport(dir, stock.corpCode, bsnsYear, priorReprtForCf) : null;
   for (const key of QUARTER_CUMULATIVE_KEYS) {
     const candidate = ACNT_ALL_CANDIDATES.find((c) => c.key === key);
     if (!candidate) continue;
@@ -232,6 +298,7 @@ export function resolveStockQuarter(dir: string, stock: StockRef, bsnsYear: stri
     bsnsYear,
     quarter,
     reprtCode,
+    sourceYear,
     fiscalPeriodName,
     fsDiv: primary.fsDiv,
     fsDivFallbackApplied: primary.fsDivFallbackApplied,
@@ -257,10 +324,11 @@ export function previousPeriod(period: string): string {
  * MISSING을 만든다.
  */
 export function resolveStockQuarters(dir: string, stock: StockRef): QuarterResolutions[] {
+  const annualYearOffset = detectAnnualYearOffset(dir, stock.corpCode);
   const quarters: QuarterResolutions[] = [];
   for (const year of QUARTER_YEARS) {
     for (const q of [1, 2, 3, 4] as const) {
-      quarters.push(resolveStockQuarter(dir, stock, year, q));
+      quarters.push(resolveStockQuarter(dir, stock, year, q, annualYearOffset));
     }
   }
 

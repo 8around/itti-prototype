@@ -20,6 +20,14 @@ function baseOf(metricKey: string, from: Resolution) {
 /**
  * Q4 역산 = 11011.thstrm_amount − 11014.thstrm_add_amount (#39).
  * BS(시점 데이터)는 호출부에서 애초에 이 함수를 쓰지 않는다 — IS/CIS 흐름 계정만 대상.
+ *
+ * 최종 리뷰 픽스(I5): 두 피연산자는 각자 독립적으로 폴백 체인을 돌기 때문에 **서로 다른
+ * `account_id`에 HIT할 수 있다**. 실측 3건 — NAVER 2023·카카오 2025 `eps_basic`(연간은
+ * `…PerShareFromContinuingOperations`(계속영업), 11014는 `…PerShare`(전체)), KB금융 2023
+ * `operating_income`(연간 `dart_OperatingIncomeLoss`, 11014엔 그 행이 없어
+ * `ifrs-full_ProfitLossFromOperatingActivities`). 원본에 짝이 맞는 조합이 아예 없는 경우라
+ * MISSING으로 떨어뜨리면 멀쩡한 분기까지 통째로 사라진다 — 값은 남기되 `derivation`에 어떤 두
+ * 계정을 뺐는지 명시하고 `provisional`로 표시해 화면에서 확정치와 구분되게 한다.
  */
 export function deriveQ4(metricKey: string, annual: Resolution, q3Cumulative: Resolution): Resolution {
   const base = baseOf(metricKey, annual);
@@ -27,12 +35,19 @@ export function deriveQ4(metricKey: string, annual: Resolution, q3Cumulative: Re
     return { ...base, normalized: null, displayState: "MISSING" };
   }
   const value = annual.normalized - q3Cumulative.normalized;
-  return {
-    ...base,
-    normalized: value,
-    displayState: "OK",
-    derivation: `Q4 = ${formatAmount(annual.normalized)} − ${formatAmount(q3Cumulative.normalized)}`,
-  };
+  const derivation = `Q4 = ${formatAmount(annual.normalized)} − ${formatAmount(q3Cumulative.normalized)}`;
+  const annualAccountId = annual.hit?.accountId;
+  const q3AccountId = q3Cumulative.hit?.accountId;
+  if (annualAccountId && q3AccountId && annualAccountId !== q3AccountId) {
+    return {
+      ...base,
+      normalized: value,
+      displayState: "OK",
+      provisional: true,
+      derivation: `${derivation} — 주의: 연간(${annualAccountId})과 3분기 누적(${q3AccountId})의 계정이 달라 두 값의 개념이 어긋날 수 있음(잠정치)`,
+    };
+  }
+  return { ...base, normalized: value, displayState: "OK", derivation };
 }
 
 function ratioMetric(
@@ -114,9 +129,14 @@ export function deriveQuarterCf(metricKey: string, label: string, current: Resol
  * QoQ/YoY 공용 계산. 승인 규칙(팀리드 브리프): 직전·당기 둘 다 양수일 때만 통상 %를 계산하고,
  * 그 외 3가지 부호 조합은 흑자전환/적자전환/적자지속 상태로 분류한다 — 그 구간은 %가 왜곡되므로
  * (분모가 0에 가깝거나 음수) 숫자를 아예 감추고 상태만 노출한다(NA_NEGATIVE_BASE와 같은 취지).
+ *
+ * 최종 리뷰 픽스(I2): 피연산자 중 하나라도 잠정치(Q4 역산·CF 차분)면 결과도 잠정치다 —
+ * `baseOf`가 이 플래그를 복사하지 않아 성장 resolution 2,560건 전부 `provisional` 부재였고,
+ * 그 결과 승인 규칙 3("잠정치는 점선")의 LineChart 점선이 앱 전체에서 한 번도 발현하지 않았다.
  */
 function deriveGrowth(kind: "QoQ" | "YoY", metricKey: string, current: Resolution, previous: Resolution): Resolution {
-  const base = baseOf(metricKey, current);
+  // undefined로 두면 JSON 직렬화에서 키 자체가 빠져 기존 산출물 형식과 어긋나지 않는다.
+  const base = { ...baseOf(metricKey, current), provisional: current.provisional || previous.provisional || undefined };
   if (current.normalized === null || previous.normalized === null) {
     return { ...base, normalized: null, displayState: "MISSING" };
   }

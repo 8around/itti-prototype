@@ -11,7 +11,7 @@
  * 후보 목록을 어떤 reprtCode로 읽을지만 결정한다(브리프 §T1V "계정명만으로는 오매칭" 원칙은
  * 카탈로그 쪽 책임, 여기선 재확인하지 않는다).
  */
-import { previousPeriod, QUARTER_YEARS } from "./engine";
+import { detectAnnualYearOffset, previousPeriod, QUARTER_YEARS } from "./engine";
 import { deriveQ4, deriveQoQ, deriveYoY, missingResolution } from "./derive";
 import { resolveFinExtras } from "./resolveFinExtras";
 import { extraCandidatesFor } from "./resolveProfileExtras";
@@ -42,8 +42,19 @@ export interface FinExtraQuarterResolutions {
  * `thstrm_amount`로 직독하고, Q4는 연간(11011)−3Q누적(11014.thstrm_add_amount)을
  * `deriveQ4`로 역산해 `provisional: true`를 붙인다 — `engine.ts`의
  * `finalizeQuarterFlowQ4`와 동일한 규약(IS/CIS 흐름 계정이므로 base 엔진과 같은 취급).
+ *
+ * 최종 리뷰 픽스(C1): 비12월 결산 종목은 Q4의 사업보고서를 `bsnsYear + annualYearOffset`에서
+ * 읽어야 3Q 누적과 같은 기수가 된다 — base 엔진(`resolveStockQuarter`)과 **동일한 보정을 여기에도
+ * 적용**한다. 한쪽만 고치면 신영증권 손익 막대는 맞고 이자수익 막대는 틀린 상태가 된다.
  */
-function resolveFinExtrasForQuarter(dir: string, profile: ProfileId, corpCode: string, bsnsYear: string, quarter: 1 | 2 | 3 | 4): Record<string, Resolution> {
+function resolveFinExtrasForQuarter(
+  dir: string,
+  profile: ProfileId,
+  corpCode: string,
+  bsnsYear: string,
+  quarter: 1 | 2 | 3 | 4,
+  annualYearOffset: 0 | 1,
+): Record<string, Resolution> {
   const candidates = extraCandidatesFor(profile);
   if (candidates.length === 0) return {};
 
@@ -51,7 +62,8 @@ function resolveFinExtrasForQuarter(dir: string, profile: ProfileId, corpCode: s
     return resolveFinExtras(dir, corpCode, bsnsYear, candidates, QUARTER_REPRT_BY_NUM[quarter], "thstrm_amount").resolutions;
   }
 
-  const annual = resolveFinExtras(dir, corpCode, bsnsYear, candidates, "11011", "thstrm_amount").resolutions;
+  const annualYear = String(Number(bsnsYear) + annualYearOffset);
+  const annual = resolveFinExtras(dir, corpCode, annualYear, candidates, "11011", "thstrm_amount").resolutions;
   const q3Cumulative = resolveFinExtras(dir, corpCode, bsnsYear, candidates, "11014", "thstrm_add_amount").resolutions;
   const resolutions: Record<string, Resolution> = {};
   for (const c of candidates) {
@@ -69,10 +81,11 @@ function resolveFinExtrasForQuarter(dir: string, profile: ProfileId, corpCode: s
 export function resolveProfileExtrasQuarters(dir: string, profile: ProfileId, corpCode: string): FinExtraQuarterResolutions[] {
   if (extraCandidatesFor(profile).length === 0) return [];
 
+  const annualYearOffset = detectAnnualYearOffset(dir, corpCode);
   const quarters: FinExtraQuarterResolutions[] = [];
   for (const year of QUARTER_YEARS) {
     for (const q of [1, 2, 3, 4] as const) {
-      quarters.push({ period: `${year}Q${q}`, resolutions: resolveFinExtrasForQuarter(dir, profile, corpCode, year, q) });
+      quarters.push({ period: `${year}Q${q}`, resolutions: resolveFinExtrasForQuarter(dir, profile, corpCode, year, q, annualYearOffset) });
     }
   }
 

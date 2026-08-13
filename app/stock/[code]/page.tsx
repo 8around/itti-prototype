@@ -331,7 +331,10 @@ function QuarterTraceOnly({
   return (
     <div className={styles.field}>
       <div className={styles.fieldLabel}>{label}</div>
-      <SourcePanel {...buildSourcePanelProps(sourceMetricKey, corpCode, quarter.bsnsYear, resolution, unit, profile, quarter.reprtCode)} />
+      {/* bsnsYear가 아니라 sourceYear를 넘긴다 — 비12월 결산 종목의 Q4는 다음 해 사업보고서를 짝으로
+          쓰므로(engine.ts detectAnnualYearOffset) bsnsYear로 조립하면 실제로 읽지 않은 스냅샷을 근거로
+          제시하게 된다. 12월 결산 종목은 두 값이 항상 같아 영향 없다. */}
+      <SourcePanel {...buildSourcePanelProps(sourceMetricKey, corpCode, quarter.sourceYear, resolution, unit, profile, quarter.reprtCode)} />
     </div>
   );
 }

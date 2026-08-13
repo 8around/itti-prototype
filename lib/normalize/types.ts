@@ -63,5 +63,8 @@ export type Resolution = {
 };
 
 /** T4에서는 OK/MISSING/ZERO_BY_FACT/NA_NEGATIVE_BASE 4종만 실제로 배정한다 (NOT_IN_PROFILE·SOURCE_NOT_AVAILABLE은 T7 소관).
- *  v2 T2 — 분기 축 + QoQ/YoY(TURN_TO_PROFIT/TURN_TO_LOSS/LOSS_CONTINUED) + provisional 필드 추가로 범프. */
-export const PARSER_VERSION = "v2t2.1";
+ *  v2 T2 — 분기 축 + QoQ/YoY(TURN_TO_PROFIT/TURN_TO_LOSS/LOSS_CONTINUED) + provisional 필드 추가로 범프.
+ *  v2 최종 리뷰 픽스 — 산출값이 실제로 바뀌는 3건이라 범프한다: ① 비12월 결산 종목 Q4 역산의
+ *  보고서 페어링 교정(C1) ② 성장(QoQ/YoY) resolution의 provisional 전파(I2) ③ Q4 피연산자
+ *  account_id 불일치 경고(I5). 12월 결산 종목의 분기 값과 years[] 연간 값 자체는 무변이다. */
+export const PARSER_VERSION = "v2t7.1";
