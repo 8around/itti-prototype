@@ -18,8 +18,10 @@ import styles from "./SourceCollapse.module.css";
  * 수조차 없어 toggle 자체가 발생하지 않는다 — 즉 바깥이 닫힌 상태에서 안쪽 fetch가 새어나갈
  * 경로가 없다(실측: task-V4-report.md).
  *
- * V5(산식 레이어)가 같은 자리를 쓴다 — `formulaSlot`에 "이 값은 이렇게 계산됐다" 패널을 넣으면
- * 되고, 이 컴포넌트의 구조(summary 문구·body 배치)는 그대로 둔다. 지금은 항상 비어 있다.
+ * V5(산식 레이어)가 같은 자리를 쓴다 — `formulaSlot`에 `FormulaPanel`("이 값은 이렇게 계산됐다")이
+ * 들어간다. 다만 **호출부 9곳 중 실제로 넘기는 곳은 2곳뿐**이다(분기 실적 · 영업이익률). 나머지
+ * 7곳은 직독 지표만 있는 차트라 넘길 산식이 없다 — 그래서 summary 문구도 슬롯 유무에 따라
+ * 갈린다(아래).
  */
 export function SourceCollapse({ count, children, formulaSlot }: { count: number; children: ReactNode; formulaSlot?: ReactNode }) {
   return (
@@ -28,7 +30,10 @@ export function SourceCollapse({ count, children, formulaSlot }: { count: number
         <span aria-hidden="true" className={styles.marker}>
           ▶
         </span>
-        출처 {count}건 · 산식 보기
+        {/* `<summary>` 텍스트가 곧 이 disclosure 컨트롤의 접근성 이름이다. 산식이 없는 7곳까지
+            "산식 보기"라고 부르면 스크린리더 사용자에게 "출처 8건 · 산식 보기, 축소됨"으로 읽히고
+            펼치면 출처 카드만 나온다 — 이름과 내용이 어긋난다. */}
+        {formulaSlot ? `출처 ${count}건 · 산식 보기` : `출처 ${count}건`}
       </summary>
       <div className={styles.body}>
         {formulaSlot && <div className={styles.formulaSlot}>{formulaSlot}</div>}
