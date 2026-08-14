@@ -2,7 +2,9 @@
 
 DART 공시 원본 값을 그대로 추적할 수 있는 20종목 재무 프로토타입.
 정규화 엔진(`data/derived.json`) · 출처 collapse(SourcePanel) · 프로필별(표준/금융) 손익 화면을
-Next.js App Router 위에 실증한다. 계획 문서는 `docs/specs/`에 년월(YYMM) 접두사로 관리한다 — [v1](docs/specs/2608_prototype-plan.md) · [v2 차트 개편](docs/specs/2608_prototype-v2-chart-refit.md).
+Next.js App Router 위에 실증한다. 계획 문서는 `docs/specs/`에 년월(YYMM) 접두사로 관리한다 — [v1](docs/specs/2608_prototype-plan.md) · [v2 차트 개편](docs/specs/2608_prototype-v2-chart-refit.md) · [v3 차트 판독성 재건](docs/specs/2608_prototype-v3-chart-quality.md).
+
+**화면의 숫자가 어떻게 나왔는지**는 [지표 산식과 논리구조](docs/specs/2608_metric-formulas.md)에 정리돼 있다 — 분기 규약(Q4 역산·CF 누적 차분) · 폴백 체인 · `displayState` 9종 · 비12월 결산 기수 페어링 · 잠정치 규칙 · 알려진 예외. 화면에서는 차트마다 접기를 펼쳐 같은 내용을 값과 함께 볼 수 있다.
 
 ---
 
@@ -22,7 +24,7 @@ pnpm dev
 |---|---|---|
 | 1 | `/` → 종목 클릭 | 20종목 상세 — 분기 막대·YoY/QoQ 꺾은선·누적 막대 등 7섹션 차트. 특히 **헬릭스미스**(손실 분기가 기준선 아래·전환 칩·무배당 0%) · **LG화학**(음수 EPS 하향 막대·적자 연도 배당 분리 표기) · **신영증권**(3월 결산 — "제N기" 분기 라벨) · **KB금융**(금융 프로필 분기 6종) |
 | 2 | 종목 상세의 아무 수치 `원문 보기 ›` | collapse 5탭 → **"지금 다시 호출"** → 라이브 DART 대조 「일치」 배지 |
-| 3 | `/kitchen-sink` | 차트 프리미티브 12종 데모 + 데이터 상태 표기 9종 |
+| 3 | `/kitchen-sink` | 차트 프리미티브 8종 데모 + 데이터 상태 표기 9종(실 데이터가 만들지 못하는 경계 상태 포함) |
 
 프로덕션 모드로 보려면: `pnpm build && pnpm start` (동일 포트).
 
@@ -53,7 +55,7 @@ pnpm dev
 | 명령 | 하는 일 | DART 호출 |
 |---|---|---|
 | `pnpm dev` / `pnpm build` / `pnpm start` | 개발 / 빌드(SSG 25라우트) / 프로덕션 서빙 | 0 |
-| `pnpm vitest run` | 테스트 151개 (실제 스냅샷 픽스처 기반) | 0 |
+| `pnpm vitest run` | 테스트 219개 (실제 스냅샷 픽스처 기반 — 정규화 값·산식 자기무결성·차트 도메인 전수 고정 포함) | 0 |
 | `pnpm snapshot:build` | 스냅샷 → `data/derived.json` 재정규화 | **0 (오프라인)** |
 | `pnpm snapshot:fetch --dry-run` | 수집 계획만 출력 | 0 |
 | `pnpm snapshot:fetch` | 스냅샷 재수집 (기존 파일 스킵, `--force`로 무시) | 전량 재수집 시 ~746회 (일일 한도의 ~3.7%) |
@@ -103,11 +105,11 @@ pnpm dlx vercel deploy --prod       # 빌드·업로드 (이후 재배포는 이
 ## 5. 구조 한 장
 
 ```
-app/            화면 — `/`(종목 리스트) · `/stock/[code]`(종목 상세) · `/kitchen-sink`(차트 프리미티브 데모) 3종 + `/api/dart/probe`(라이브 대조 API). 전부 서버 컴포넌트, 차트 JS 번들 0KB
+app/            화면 — `/`(종목 리스트) · `/stock/[code]`(종목 상세) · `/kitchen-sink`(차트 프리미티브 데모) 3종 + `/api/dart/probe`(라이브 대조 API). 페이지·출처 패널은 서버 컴포넌트, 차트만 클라이언트(Recharts)
 lib/dart/       DART 클라이언트 (status 판정·키 마스킹·허용목록 프록시)
-lib/normalize/  정규화 엔진 — 원본→Resolution(폴백 이력·displayState 6종)
-lib/profiles.ts 프로필 카탈로그 — 이 파일만 고치면 표시 지표가 바뀜
-components/     SourcePanel(collapse)·MetricValue·charts 12종(0축 막대·꺾은선·누적/그룹 막대 등)
+lib/normalize/  정규화 엔진 — 원본→Resolution(폴백 이력·displayState 9종·산식 derivationDetail)
+lib/profiles.ts 프로필 카탈로그 — 이 파일만 고치면 표시 지표·산식 설명이 바뀜
+components/     SourcePanel(collapse)·MetricValue·charts 8종(0축 막대·꺾은선·누적/그룹/겹침 막대·워터폴 등) + chartTheme.ts(색·치수 단일 출처)
 data/           universe.json(20종목)·derived.json(정규화 결과 — 연간 years[]+분기 quarters[])·manifest.json
 public/snapshots/  DART 원본 응답 746건 (재현성 위해 커밋)
 scripts/        snapshot-fetch / snapshot-build / resolve-corp-codes
