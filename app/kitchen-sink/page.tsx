@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { CATEGORY_PALETTE, GREEN, LOSS } from "@/components/charts/chartTheme";
 import LineChart from "@/components/charts/LineChart";
 import OverlaidBars from "@/components/charts/OverlaidBars";
 import PieChart from "@/components/charts/PieChart";
@@ -175,7 +176,7 @@ export default function KitchenSinkPage() {
           <div className={styles.demoTitle}>LineChart (확장 — baseline 기준선)</div>
           <div className={styles.demoRef}>학습가이드 c5 부채비율 threshold 문법 인용 · 값은 도메인 강제 포함 검증용으로 낮게 구성</div>
           <LineChart
-            color="var(--chart-4)"
+            color={CATEGORY_PALETTE[3]}
             unit="%"
             baseline={{ value: 100, label: "빨간 점선 = 부채비율 100% 기준(도메인에 강제 포함)" }}
             points={[
@@ -213,22 +214,22 @@ export default function KitchenSinkPage() {
               {
                 label: "2024",
                 segments: [
-                  { label: "자본", value: 1150, color: "var(--green)" },
-                  { label: "부채", value: 750, color: "var(--up)", opacity: 0.55 },
+                  { label: "자본", value: 1150, color: GREEN },
+                  { label: "부채", value: 750, color: LOSS, opacity: 0.55 },
                 ],
               },
               {
                 label: "2025",
                 segments: [
-                  { label: "자본", value: 1180, color: "var(--green)" },
-                  { label: "부채", value: 780, color: "var(--up)", opacity: 0.55 },
+                  { label: "자본", value: 1180, color: GREEN },
+                  { label: "부채", value: 780, color: LOSS, opacity: 0.55 },
                 ],
               },
               {
                 label: "최근",
                 segments: [
-                  { label: "자본", value: 1200, color: "var(--green)" },
-                  { label: "부채", value: 800, color: "var(--up)", opacity: 0.55 },
+                  { label: "자본", value: 1200, color: GREEN },
+                  { label: "부채", value: 800, color: LOSS, opacity: 0.55 },
                 ],
               },
             ]}

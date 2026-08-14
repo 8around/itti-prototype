@@ -21,6 +21,7 @@ import MetricValue from "@/components/MetricValue";
 import type { MetricValueProps } from "@/components/MetricValue";
 import { SourceCollapse } from "@/components/SourceCollapse";
 import SourcePanel from "@/components/SourcePanel";
+import { CATEGORY_PALETTE, GREEN, LOSS } from "@/components/charts/chartTheme";
 import { formatEstDt, loadCompany } from "@/lib/company";
 import { caveatTone } from "@/lib/derivationText";
 import { toEok } from "@/lib/format";
@@ -549,11 +550,11 @@ function PnlSection({
         <QuarterSourceRow profile={profile} corpCode={corpCode} accMt={accMt} quarters={quarterWindow} resolutionKey="yoy_revenue" sourceMetricKey="revenue" unit="KRW" />
 
         <div className={styles.sectionTitle}>영업이익 YoY — 전년 동분기 대비 · % · 0% 기준선</div>
-        <LineChart points={yoyOperatingIncomePoints} unit="%" sign baseline={{ value: 0, label: "0% 기준선" }} color="var(--chart-2)" />
+        <LineChart points={yoyOperatingIncomePoints} unit="%" sign baseline={{ value: 0, label: "0% 기준선" }} color={CATEGORY_PALETTE[1]} />
         <QuarterSourceRow profile={profile} corpCode={corpCode} accMt={accMt} quarters={quarterWindow} resolutionKey="yoy_operating_income" sourceMetricKey="operating_income" unit="KRW" />
 
         <div className={styles.sectionTitle}>영업이익 QoQ — 전분기 대비 · %</div>
-        <LineChart points={qoqOperatingIncomePoints} unit="%" sign color="var(--chart-3)" />
+        <LineChart points={qoqOperatingIncomePoints} unit="%" sign color={CATEGORY_PALETTE[2]} />
         <QuarterSourceRow profile={profile} corpCode={corpCode} accMt={accMt} quarters={quarterWindow} resolutionKey="qoq_operating_income" sourceMetricKey="operating_income" unit="KRW" />
 
         <div className={styles.coverageBox}>
@@ -664,7 +665,7 @@ function PnlSection({
             <QuarterSourceRow profile={profile} corpCode={corpCode} accMt={accMt} quarters={finQuarterWindow} resolutionKey={`yoy_${key}`} sourceMetricKey={key} unit="KRW" />
 
             <div className={styles.sectionTitle}>{label} QoQ — 전분기 대비 · %</div>
-            <LineChart points={qoqPoints} unit="%" sign color="var(--chart-3)" />
+            <LineChart points={qoqPoints} unit="%" sign color={CATEGORY_PALETTE[2]} />
             <QuarterSourceRow profile={profile} corpCode={corpCode} accMt={accMt} quarters={finQuarterWindow} resolutionKey={`qoq_${key}`} sourceMetricKey={key} unit="KRW" />
           </Fragment>
         );
@@ -717,16 +718,16 @@ function BalanceSection({
   const bsBars: StackedBarsAbsBar[] = years.map((y) => ({
     label: `${y.year.slice(2)}년`,
     segments: [
-      { label: "자본", value: eok(y.resolutions.total_equity), color: "var(--green)" },
-      { label: "부채", value: eok(y.resolutions.total_liabilities), color: "var(--up)", opacity: 0.55 },
+      { label: "자본", value: eok(y.resolutions.total_equity), color: GREEN },
+      { label: "부채", value: eok(y.resolutions.total_liabilities), color: LOSS, opacity: 0.55 },
     ],
   }));
   if (latestQuarter && latestQuarterLabel) {
     bsBars.push({
       label: `${latestQuarterLabel}(잠정)`,
       segments: [
-        { label: "자본", value: eok(latestQuarter.resolutions.total_equity), color: "var(--green)" },
-        { label: "부채", value: eok(latestQuarter.resolutions.total_liabilities), color: "var(--up)", opacity: 0.55 },
+        { label: "자본", value: eok(latestQuarter.resolutions.total_equity), color: GREEN },
+        { label: "부채", value: eok(latestQuarter.resolutions.total_liabilities), color: LOSS, opacity: 0.55 },
       ],
     });
   }
@@ -896,7 +897,7 @@ function ProfitabilitySection({ profile, corpCode, years }: { profile: ProfileId
       </SourceCollapse>
 
       <div className={styles.sectionTitle}>영업이익률 추이 — 연간 3개년(FY23~25) · %</div>
-      <LineChart points={marginPoints} unit="%" sign color="var(--chart-2)" />
+      <LineChart points={marginPoints} unit="%" sign color={CATEGORY_PALETTE[1]} />
       {/* 연간 축에서 산식이 있는 유일한 차트다 — 나머지(ROE·부채비율·BS·연간 CF·워터폴)는 전부
           직독값이라 FormulaPanel이 null을 반환한다. 슬롯을 안 붙인 건 그래서다. */}
       <SourceCollapse count={years.filter((y) => y.resolutions.operating_margin).length} formulaSlot={<FormulaPanel entries={annualFormulaEntries(years, "operating_margin")} />}>

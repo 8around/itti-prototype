@@ -44,9 +44,10 @@ import { lineDomain, MissingMarker, splitLineRuns, StateChip, ValueLabel } from 
  *   추이 차트가 평선이 됐다. 데이터가 플롯의 1/4 미만으로 눌리는 경우 기준선을 도메인에서 빼고,
  *   대신 차트 아래 문구로 "축 범위 밖"임을 알린다(`lineDomain` doc). 도메인 안에 들어올 때는
  *   종전대로 `--up`(적색) 점선으로 그린다(기준선=경고선 관례, 학습가이드와 동일 배색).
- * - `color`: 선·점 색(기본 `--green`) — CSS 색상 값 또는 `var(--token)` 문자열을 그대로 받는
- *   기존 계약 유지(task-V1-report.md §1 확인 — `stroke`에 직접 대입하는 단순 경로는 `var()`도
- *   안전하다).
+ * - `color`: 선·점 색(기본 `GREEN`) — 호출부는 **`chartTheme` 상수**를 넘긴다. `var(--token)`
+ *   문자열도 `stroke`에 직접 대입하는 단순 경로에서는 동작하지만(task-V1-report.md §1), 그러면
+ *   같은 팔레트에 TS 배열과 CSS 토큰이라는 두 접근 경로가 생겨 `CATEGORY_PALETTE` 재배치 때
+ *   양쪽이 다른 색을 집는다 — V6에서 호출부를 전부 상수로 통일했다.
  * - `points[].state`: 값 대신 상태 칩(예: "흑자전환")을 표시. 값이 있어도 내부적으로 null
  *   취급해 선을 끊는다. **자체 문구를 새로 정의하지 말 것**: `DisplayState`의
  *   `TURN_TO_PROFIT`/`TURN_TO_LOSS`/`LOSS_CONTINUED`가 이미 `MetricValue`에서
@@ -80,7 +81,7 @@ export type LineChartProps = {
   points: LineChartPoint[];
   /** 도메인에 반드시 포함되는 기준선. label을 주면 차트 아래에 문구로 표시된다. */
   baseline?: { value: number; label?: string };
-  /** 선·점 색상(CSS 색상 값 또는 `var(--token)`). 기본 `--green`. */
+  /** 선·점 색상. `chartTheme`의 상수를 넘길 것(위 doc). 기본 `GREEN`. */
   color?: string;
   /** 값 뒤에 붙는 단위 접미사 (예: "%", "배"). */
   unit?: string;
