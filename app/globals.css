@@ -18,6 +18,15 @@
   --green-dk: #2e7d32;
   --green-dp: #1f5c2a;
   --green-bg: #edf4ee;
+  /* 연한 초록 헤어라인. 소비처 3곳 — 목록 카드 hover 테두리(app/page.module.css `.card:hover`)와
+     "표준" 프로필 배지 외곽선(`app/page.module.css` · `app/stock/[code]/page.module.css`의
+     `.badgeStandard`). V3이 `.bar-b`(막대 채움) 소비처만 보고 지웠다가 이 3곳이 미정의 var()를
+     참조하게 됐던 토큰이라 되살렸다 — 미정의 var()는 invalid at computed-value time이라
+     `border-color`는 currentColor(거의 검정)로, `border` 숏핸드는 border-style:none으로 떨어져
+     배지 테두리가 통째로 사라진다(빌드·테스트 어디에도 안 걸린다). 대비 1.42:1이지만 정보를
+     나르지 않는 장식 헤어라인이라 WCAG 1.4.11(비텍스트 3:1)의 적용 대상이 아니다. 지우려면 위
+     3개 선언을 먼저 옮길 것 — 토큰 정리 시 `*.module.css`까지 grep할 것. */
+  --green-bd: #c9decb;
   --ink: #16241d;
   --ink-2: #3a4a40;
   --gray: #5b6b62;
@@ -362,8 +371,11 @@ a {
 /* ---- GroupedBars — V3 정리. 종목 페이지에서 미사용(킷친싱크 데모 전용)이었다. 화면 ②손익은
    매출·영업이익을 각각 별도 `ZeroAxisBars`로 그리는 현 구조(app/stock/[code]/page.tsx)로
    완전히 대체됐다는 판정에 따라 컴포넌트를 삭제했다(task-V3-report.md 근거). `.bars/.bcol/
-   .bwrap/.bar-a/.bar-b/.blabel`(목업 150-157줄)도 함께 제거 — `.bar-b`가 쓰던 `--green-bd`
-   (#c9decb, 대비 1.42:1, V0이 이월한 항목)도 다른 소비자가 없어 `:root`에서 함께 정리했다. ----
+   .bwrap/.bar-a/.bar-b/.blabel`(목업 150-157줄)도 함께 제거. 다만 `.bar-b`가 쓰던 `--green-bd`
+   (#c9decb, 대비 1.42:1, V0이 이월한 항목)까지 "다른 소비자가 없다"고 판단해 `:root`에서 지운
+   것은 **틀린 판단이었다** — 당시 사용처 grep이 `app/globals.css`와 `.tsx` 인라인 스타일만 훑고
+   `*.module.css`를 빠뜨려, 살아 있는 소비처 3곳(목록 카드 hover 테두리 · `.badgeStandard` 2곳)을
+   놓쳤다. 토큰은 위 `:root`에 복원돼 있다(그 옆 주석에 남은 소비처를 적어 뒀다). ----
 */
 .leg {
   display: flex;
