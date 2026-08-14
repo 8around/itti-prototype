@@ -114,7 +114,7 @@ export default function StackedBarsAbs({ bars }: StackedBarsAbsProps): ReactElem
     return row;
   });
   const maxTotal = Math.max(1, ...data.map((r) => r[TOTAL_KEY] as number));
-  const domain = padDomain([0, maxTotal]);
+  const { domain, tickCount } = padDomain([0, maxTotal]);
 
   return (
     <div data-chart="stacked-bars-abs">
@@ -132,6 +132,7 @@ export default function StackedBarsAbs({ bars }: StackedBarsAbsProps): ReactElem
             />
             <YAxis
               domain={domain}
+              tickCount={tickCount}
               tick={{ fill: AXIS_TEXT, fontSize: LABEL_FONT_SIZE_MIN }}
               tickLine={{ stroke: GRID_LINE }}
               axisLine={false}

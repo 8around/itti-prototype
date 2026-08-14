@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { niceDomain, padDomain, splitLineRuns } from "./rechartsPrimitives";
+import { lineDomain, niceDomain, padDomain, splitLineRuns } from "./rechartsPrimitives";
 
 /**
  * `splitLineRuns`의 M5 회귀 테스트 — `chartUtils.buildLineRuns`(V1까지, 픽셀 x/y 입력)에서
@@ -70,38 +70,146 @@ describe("splitLineRuns — 구간별 점선 판정(M5)", () => {
   });
 });
 
-describe("padDomain — 0을 지나는 도메인의 nice-round(V1, 회귀 확인용)", () => {
-  it("여전히 하단을 0에 고정하고 상단만 올림한다", () => {
-    expect(padDomain([0, 938373])).toEqual([0, 1_000_000]);
+/**
+ * V6 — 1/2/5 사다리를 도메인 **경계**가 아니라 눈금 **간격**에 적용하도록 바꾼 뒤의 계약.
+ * 종전 구현은 경계를 사다리에 스냅해 도메인이 최대 5배 부풀었고(POSCO홀딩스 부채비율 3.3px =
+ * 육안 평선), 그 대가로 얻기로 한 "깔끔한 눈금"은 Recharts가 양 끝만 고정한 채 균등 분할하는
+ * 탓에 실제로는 나오지도 않았다. 그래서 `tickCount`를 함께 반환한다.
+ */
+const spanOf = ({ domain }: { domain: [number, number] }) => domain[1] - domain[0];
+/** 도메인 스팬이 눈금 간격의 정확한 배수인가 — 이게 성립해야 Recharts 균등 분할이 step 배수에 떨어진다. */
+function stepOf(scale: { domain: [number, number]; tickCount: number }): number {
+  return spanOf(scale) / (scale.tickCount - 1);
+}
+
+describe("padDomain — 0을 지나는 발산 막대 축", () => {
+  it("데이터가 도메인의 절반 이상을 쓴다 — 종전에는 938,373이 [0, 1,000,000]으로 부풀었다", () => {
+    const scale = padDomain([0, 938_373]);
+    expect(scale.domain[0]).toBe(0);
+    expect(scale.domain[1]).toBeGreaterThanOrEqual(938_373);
+    expect(938_373 / spanOf(scale)).toBeGreaterThan(0.55);
+  });
+
+  it("0을 항상 포함하고, 0이 눈금 자리와 정확히 겹친다 — 승인규칙 ①이 격자에서도 지켜진다", () => {
+    for (const values of [
+      [-853_800, 729_800],
+      [0, 21_200],
+      [-1_237, -600],
+      [12, 55],
+    ] as [number, number][]) {
+      const scale = padDomain(values);
+      expect(scale.domain[0]).toBeLessThanOrEqual(0);
+      expect(scale.domain[1]).toBeGreaterThanOrEqual(0);
+      // 0 = domain[0] + k*step 인 정수 k가 존재한다.
+      const k = -scale.domain[0] / stepOf(scale);
+      expect(Math.abs(k - Math.round(k))).toBeLessThan(1e-6);
+    }
+  });
+
+  it("위/아래 px-per-unit 대칭 — 도메인이 선형이라 0 위아래 단위당 픽셀이 같다(승인규칙 ①)", () => {
+    // 삼성전자 24년 현금흐름(억원): 영업 +729,800 / 투자 −853,800.
+    const { domain } = padDomain([-853_800, 729_800]);
+    const plot = 200;
+    const perUnit = plot / (domain[1] - domain[0]);
+    expect(Math.abs(729_800 * perUnit - (729_800 / (domain[1] - domain[0])) * plot)).toBeLessThan(1e-9);
+    expect(domain[0]).toBeLessThanOrEqual(-853_800);
+    expect(domain[1]).toBeGreaterThanOrEqual(729_800);
+  });
+
+  it("전부 결측이라 [0,0]으로 들어와도 스팬이 0이 되지 않는다", () => {
+    const scale = padDomain([0, 0]);
+    expect(spanOf(scale)).toBeGreaterThan(0);
+    expect(scale.domain[0]).toBe(0);
   });
 });
 
-describe("niceDomain — 0을 지나지 않아도 되는 양방향 도메인(V2, LineChart 전용)", () => {
-  it("전 구간 양수(ROE류)에서도 하단을 0에 붙이지 않고 데이터 쪽으로 내림한다", () => {
-    const [lo, hi] = niceDomain([7.625, 12.875]);
-    expect(lo).toBe(5);
-    expect(hi).toBe(20);
-    expect(lo).toBeGreaterThan(0);
+describe("niceDomain — 0을 지나지 않아도 되는 양방향 축", () => {
+  it("전 구간 양수(ROE류)에서 하단을 0에 붙이지 않고, 데이터가 도메인의 절반 이상을 쓴다", () => {
+    const scale = niceDomain([7.625, 12.875]);
+    expect(scale.domain[0]).toBeGreaterThan(0);
+    expect(scale.domain[0]).toBeLessThanOrEqual(7.625);
+    expect(scale.domain[1]).toBeGreaterThanOrEqual(12.875);
+    expect(5.25 / spanOf(scale)).toBeGreaterThan(0.55);
   });
 
-  it("baseline이 데이터에서 먼 경우(부채비율)에도 baseline 쪽 끝은 정확히 보존한다", () => {
-    // LineChart가 [23.75, 100](데이터 25%~30% + 25% 여백, baseline 100 union) 형태로 넘기는 값.
-    const [lo, hi] = niceDomain([23.75, 100]);
-    expect(lo).toBeLessThanOrEqual(23.75);
-    expect(hi).toBe(100);
-  });
-
-  it("음수를 포함하는 도메인도 양방향으로 올바르게 반올림한다", () => {
-    expect(niceDomain([-118, 12])).toEqual([-200, 20]);
+  it("음수를 포함하는 도메인도 양방향으로 경계를 맞춘다", () => {
+    const scale = niceDomain([-118, 12]);
+    expect(scale.domain[0]).toBeLessThanOrEqual(-118);
+    expect(scale.domain[1]).toBeGreaterThanOrEqual(12);
+    expect(130 / spanOf(scale)).toBeGreaterThan(0.55);
   });
 
   it("min===max(포인트 1개)여도 0으로 나누지 않고 유효한 span을 만든다", () => {
-    const [lo, hi] = niceDomain([10, 10]);
-    expect(hi).toBeGreaterThan(lo);
+    expect(spanOf(niceDomain([10, 10]))).toBeGreaterThan(0);
+    expect(spanOf(niceDomain([0, 0]))).toBeGreaterThan(0);
   });
 
-  it("min===max===0이어도 유효한 span을 만든다", () => {
-    const [lo, hi] = niceDomain([0, 0]);
-    expect(hi).toBeGreaterThan(lo);
+  it("경계가 언제나 눈금 간격의 배수이고 눈금은 3~6개다 — Recharts 균등 분할이 딱 떨어지게 하는 계약", () => {
+    const inputs: [number, number][] = [
+      [7.625, 12.875],
+      [23.75, 100],
+      [-118, 12],
+      [68.04, 69.42],
+      [1109.9, 1220.3],
+      [0, 938_373],
+      [-853_800, 729_800],
+      [0.0031, 0.0047],
+    ];
+    for (const input of inputs) {
+      const scale = niceDomain(input);
+      const step = stepOf(scale);
+      expect(scale.tickCount).toBeGreaterThanOrEqual(3);
+      expect(scale.tickCount).toBeLessThanOrEqual(6);
+      for (const edge of scale.domain) {
+        const k = edge / step;
+        expect(Math.abs(k - Math.round(k))).toBeLessThan(1e-6);
+      }
+      expect(scale.domain[0]).toBeLessThanOrEqual(input[0]);
+      expect(scale.domain[1]).toBeGreaterThanOrEqual(input[1]);
+    }
+  });
+});
+
+describe("lineDomain — 꺾은선 축(데이터 여백 + 기준선 포함 판정)", () => {
+  /** 180px 플롯에서 데이터가 차지하는 세로 픽셀. */
+  const spanPx = (values: number[], baseline?: number) => {
+    const scale = lineDomain(values, baseline);
+    return ((Math.max(...values) - Math.min(...values)) / (scale.domain[1] - scale.domain[0])) * 180;
+  };
+
+  it("POSCO홀딩스 부채비율 — 기준선 100%를 빼고 데이터 해상도를 택한다(3.3px → 100px 이상)", () => {
+    const values = [69.19, 68.27, 68.64];
+    const scale = lineDomain(values, 100);
+    expect(scale.baselineInDomain).toBe(false);
+    expect(scale.domain[1]).toBeLessThan(100);
+    expect(spanPx(values, 100)).toBeGreaterThan(100);
+  });
+
+  it("리뷰가 지목한 평선 4종이 전부 20px 이상으로 살아난다", () => {
+    // [값들, 기준선, 종전 스팬(px)] — review-A-rules.md §2 Important-1 실측표.
+    const cases: [number[], number, number][] = [
+      [[69.19, 68.27, 68.64], 100, 3.3],
+      [[127.28, 125.66, 129.1], 100, 6.2],
+      [[1128.29, 1157.65, 1201.94], 100, 7.0],
+      [[1115.73, 1166.98, 1211.73], 100, 9.1],
+      [[25.36, 27.93, 29.94], 100, 10.3],
+      [[81.69, 84.85, 82.49], 100, 11.4],
+      [[47.45, 41.36, 41.9], 100, 13.7],
+    ];
+    for (const [values, baseline] of cases) expect(spanPx(values, baseline)).toBeGreaterThan(20);
+  });
+
+  it("기준선이 데이터 근처면 종전대로 도메인에 넣는다 — 0% 기준선(YoY)은 사라지지 않는다", () => {
+    expect(lineDomain([10, 30, 22], 0).baselineInDomain).toBe(true);
+    expect(lineDomain([-12, 30, 22], 0).baselineInDomain).toBe(true);
+    // KB금융 ROE처럼 기준선이 아예 없는 경우.
+    expect(lineDomain([8.08, 8.49, 9.68]).baselineInDomain).toBe(false);
+    expect(spanPx([8.08, 8.49, 9.68])).toBeGreaterThan(60);
+  });
+
+  it("그릴 수 있는 값이 0개(전 구간 전환 상태)여도 기준선 주변으로 유효한 축을 만든다", () => {
+    const scale = lineDomain([], 0);
+    expect(scale.domain[1]).toBeGreaterThan(scale.domain[0]);
+    expect(scale.baselineInDomain).toBe(true);
   });
 });

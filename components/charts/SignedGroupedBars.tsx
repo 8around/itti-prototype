@@ -97,7 +97,7 @@ export default function SignedGroupedBars({ groups, seriesLabels }: SignedGroupe
     });
     return row;
   });
-  const domain = padDomain(zeroInclusiveDomain(groups.flatMap((g) => g.values)));
+  const { domain, tickCount } = padDomain(zeroInclusiveDomain(groups.flatMap((g) => g.values)));
 
   return (
     <div data-chart="signed-grouped-bars">
@@ -115,6 +115,7 @@ export default function SignedGroupedBars({ groups, seriesLabels }: SignedGroupe
             />
             <YAxis
               domain={domain}
+              tickCount={tickCount}
               tick={{ fill: AXIS_TEXT, fontSize: LABEL_FONT_SIZE_MIN }}
               tickLine={{ stroke: GRID_LINE }}
               axisLine={false}

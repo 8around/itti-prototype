@@ -6,7 +6,7 @@ import type { DotItemDotProps, LineDrawShapeProps } from "recharts";
 
 import { AXIS_TEXT, GREEN, GRID_LINE, LABEL_FONT_SIZE_MIN, LOSS, MUTED_TEXT, PAPER, PROVISIONAL } from "./chartTheme";
 import { formatComma, NULL_PLACEHOLDER } from "./chartUtils";
-import { MissingMarker, niceDomain, splitLineRuns, StateChip, ValueLabel } from "./rechartsPrimitives";
+import { lineDomain, MissingMarker, splitLineRuns, StateChip, ValueLabel } from "./rechartsPrimitives";
 
 /**
  * LineChart — 꺾은선 (Recharts 재작성, V2). 목업 `<polyline>` + `stroke-dasharray`를 대체한다
@@ -15,7 +15,7 @@ import { MissingMarker, niceDomain, splitLineRuns, StateChip, ValueLabel } from 
  * 표시한다.
  *
  * V1 패턴 재사용(task-V1-report.md §8): `padDomain`/`zeroInclusiveDomain`은 0을 지나는 발산
- * 막대 전용이라 여기서는 대신 `niceDomain`(양방향 nice-round, 0 통과를 강제하지 않음)을 쓴다.
+ * 막대 전용이라 여기서는 대신 `lineDomain`(25% 여백 + 눈금 간격 사다리 + 기준선 포함 판정)을 쓴다.
  * 그래픽 아이템은 `<Line>` **하나**만 두고(V1의 `Bar shape` 패턴과 동일 구조) 커스텀 `shape`로
  * run(구간)별 실선/점선 `<polyline>`을, 커스텀 `dot`로 점·값 라벨·상태 칩·결측 마커를 그린다.
  *
@@ -38,11 +38,12 @@ import { MissingMarker, niceDomain, splitLineRuns, StateChip, ValueLabel } from 
  *
  * v2 T3 확장 (전부 옵셔널 — 기존 `points: {label,value,provisional?}[]` 단독 호출부는
  * 그대로 동작해 하위호환 유지):
- * - `baseline`: 도메인(min/max)에 강제 포함되는 기준선(예: 부채비율 100%) — 학습가이드 `line()`의
- *   `opts.threshold` 처리를 그대로 이식하되, **데이터 쪽 해상도를 우선 확보**한다(아래 도메인
- *   계산 참고 — 학습가이드 원본처럼 threshold를 먼저 min/max에 접고 나서 25% 패딩하면, 기준선이
- *   데이터에서 멀 때(부채비율 25~30% vs 기준선 100%) 패딩 자체가 훨씬 커져 데이터가 더 눌린다).
- *   항상 `--up`(적색) 점선으로 그린다(기준선=경고선 관례, 학습가이드와 동일 배색).
+ * - `baseline`: 기준선(예: 부채비율 100%) — 학습가이드 `line()`의 `opts.threshold` 처리를 이식하되
+ *   **데이터 쪽 해상도를 우선 확보**한다. V6에서 "무조건 도메인에 포함"을 그만뒀다: 기준선이
+ *   데이터에서 멀면(부채비율 68~69% vs 기준선 100%) 그 하나 때문에 3개년 변동이 3.3px로 눌려
+ *   추이 차트가 평선이 됐다. 데이터가 플롯의 1/4 미만으로 눌리는 경우 기준선을 도메인에서 빼고,
+ *   대신 차트 아래 문구로 "축 범위 밖"임을 알린다(`lineDomain` doc). 도메인 안에 들어올 때는
+ *   종전대로 `--up`(적색) 점선으로 그린다(기준선=경고선 관례, 학습가이드와 동일 배색).
  * - `color`: 선·점 색(기본 `--green`) — CSS 색상 값 또는 `var(--token)` 문자열을 그대로 받는
  *   기존 계약 유지(task-V1-report.md §1 확인 — `stroke`에 직접 대입하는 단순 경로는 `var()`도
  *   안전하다).
@@ -55,8 +56,8 @@ import { MissingMarker, niceDomain, splitLineRuns, StateChip, ValueLabel } from 
  * - `unit`/`sign`: 값 라벨에 단위 접미사·양수 `+` 접두사. 음수 값은 `--up`(적색)으로 표시.
  *
  * 개선점 B(v2 컨트롤러 육안 검증): 전 포인트가 `state`만 있고(예: 8분기 전부 "적자지속") 그릴 수
- * 있는 값이 0개면 선·점은 하나도 안 그려지지만 `baseline`(있으면)은 그대로 렌더해 축·기준선을
- * 유지하고, 그 경우 SVG 안에 음소거 톤(`--gray-2`) 안내 문구 1줄을 추가한다.
+ * 있는 값이 0개면 선·점은 하나도 안 그려지지만 `baseline`(있으면)은 그 주변으로 도메인을 잡아
+ * 축·기준선을 유지하고, 그 경우 SVG 안에 음소거 톤(`--gray-2`) 안내 문구 1줄을 추가한다.
  *
  * 값 라벨 위치(V2에서 고친 결함): 예전에는 SVG 밖 별도 행(`.qbrow.eps`)에 7.5px로 표시해 "어느
  * 점의 값인지 대응이 멀다"는 문제가 있었다 — 이제 각 점 바로 위(SVG 안)에 라벨을 붙인다.
@@ -166,29 +167,11 @@ export default function LineChart({ points, baseline, color, unit, sign }: LineC
   const definedValues = displayValues.filter((v): v is number => v !== null);
   const hasDrawablePoints = definedValues.length > 0;
 
-  // 도메인: 데이터 범위 25% 여백(학습가이드 line()) 우선 계산 → baseline은 필요할 때만
-  // 도메인을 "확장"한다(학습가이드 원본처럼 threshold를 먼저 접고 나서 패딩하면 baseline이 먼
-  // 값(부채비율 100%)일 때 패딩 자체가 커져 데이터 쪽 해상도가 더 줄어든다 — task-V2-brief.md
-  // "기준선을 포함하되 데이터 쪽 해상도를 확보" 지시).
-  let rawMin: number;
-  let rawMax: number;
-  if (hasDrawablePoints) {
-    const dataMin = Math.min(...definedValues);
-    const dataMax = Math.max(...definedValues);
-    const span = dataMax - dataMin;
-    const pad = span > 0 ? span * 0.25 : Math.max(Math.abs(dataMax) * 0.25, 1);
-    rawMin = dataMin - pad;
-    rawMax = dataMax + pad;
-  } else {
-    // 그릴 수 있는 값이 0개(전 구간 state) — baseline이 있으면 그 주변에, 없으면 임의 [0,1].
-    rawMin = baseline ? baseline.value - 1 : 0;
-    rawMax = baseline ? baseline.value + 1 : 1;
-  }
-  if (baseline) {
-    rawMin = Math.min(rawMin, baseline.value);
-    rawMax = Math.max(rawMax, baseline.value);
-  }
-  const domain = niceDomain([rawMin, rawMax]);
+  // 도메인·눈금 개수·기준선 포함 여부는 `lineDomain` 한 곳에서 함께 정해진다(V6) — 25% 여백과
+  // 눈금 간격 사다리, 그리고 "기준선을 넣으면 데이터가 눌리는가" 판정이 서로 맞물려 있어서
+  // 나눠 두면 어느 한쪽만 고쳤을 때 조용히 어긋난다. 기준선이 데이터에서 멀 때 무조건 도메인에
+  // 접던 종전 동작이 부채비율 추이를 평선으로 만든 원인이었다(rechartsPrimitives `lineDomain` doc).
+  const { domain, tickCount, baselineInDomain } = lineDomain(definedValues, baseline?.value);
   const domainMid = (domain[0] + domain[1]) / 2;
 
   const rows: Row[] = points.map((p, i) => {
@@ -225,13 +208,14 @@ export default function LineChart({ points, baseline, color, unit, sign }: LineC
             />
             <YAxis
               domain={domain}
+              tickCount={tickCount}
               tick={{ fill: AXIS_TEXT, fontSize: LABEL_FONT_SIZE_MIN }}
               tickLine={{ stroke: GRID_LINE }}
               axisLine={false}
               tickFormatter={(v: number) => `${formatComma(v)}${unit ?? ""}`}
               width={52}
             />
-            {baseline && <ReferenceLine y={baseline.value} stroke={LOSS} strokeWidth={1.2} strokeDasharray="4 3" />}
+            {baseline && baselineInDomain && <ReferenceLine y={baseline.value} stroke={LOSS} strokeWidth={1.2} strokeDasharray="4 3" />}
             <Line
               data={rows}
               dataKey="value"
@@ -252,7 +236,7 @@ export default function LineChart({ points, baseline, color, unit, sign }: LineC
           </RechartsLineChart>
         </ResponsiveContainer>
       </div>
-      {baseline?.label && <div className="cnote">{baseline.label}</div>}
+      {baseline?.label && <div className="cnote">{baselineInDomain ? baseline.label : `${baseline.label} — 축 범위 밖이라 표시하지 않는다(데이터 구간만 그린다)`}</div>}
       {hasProvisional && <div className="cnote">실선 확정 · 점선 잠정 구간</div>}
     </div>
   );

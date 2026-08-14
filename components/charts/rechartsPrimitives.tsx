@@ -113,66 +113,125 @@ export function pixelForValue(background: { y: number; height: number }, domain:
 }
 
 /**
- * 양수 값을 "보기 좋은" 다음 자리로 올림한다(1/2/5 × 10^n 계열 — d3·matplotlib 등이 쓰는 표준
- * "nice number" 규칙). Y축 눈금이 `1,539,544.606` 같은 지저분한 수 대신 `2,000,000`처럼 딱
- * 떨어지는 수에서 시작하게 하려고 쓴다.
+ * Y축 도메인 + 그 도메인을 정확히 눈금 간격으로 나누는 눈금 개수. 둘은 **반드시 함께** 정해야
+ * 한다 — 이유는 아래 `axisScale` doc 참고.
  */
-function niceCeilPositive(value: number): number {
-  if (value <= 0) return 0;
-  const exponent = Math.floor(Math.log10(value));
-  const fraction = value / 10 ** exponent;
+export type AxisScale = { domain: [number, number]; tickCount: number };
+
+/** 눈금 개수 목표. Recharts `tickCount` 기본값과 같은 5에서 출발하고, 경계를 step 배수로 맞추는
+ *  과정에서 최대 6까지 늘어난다. */
+const TARGET_TICK_COUNT = 5;
+
+/**
+ * 눈금 **간격**을 1/2/5 × 10^n 사다리에서 고른다(d3 `tickIncrement`·matplotlib과 같은 규칙).
+ *
+ * V3까지는 이 사다리를 도메인 **경계**에 직접 적용했는데, 그건 규칙을 잘못 쓴 것이다. 한 자릿수당
+ * 단계가 3개뿐이라 경계값이 조금만 넘어가면 도메인이 2~5배로 뛴다(`10.08 → 20`, `51 → 100`).
+ * 실측 피해: POSCO홀딩스 부채비율(69.19/68.27/68.64)이 도메인 `[50,100]`으로 계산돼 180px 플롯에서
+ * 세로 변동 3.3px = 육안 완전 평선이었고, 연간 꺾은선 54건 중 9건이 스팬 20px 미만이었다.
+ * "3개년 추세"를 보여주겠다는 차트가 아무 추이도 보여주지 못한 것이 사용자 원 불만("차트가 안
+ * 읽힌다")의 잔존분이다.
+ */
+function niceStep(rough: number): number {
+  if (!Number.isFinite(rough) || rough <= 0) return 1;
+  const exponent = Math.floor(Math.log10(rough));
+  const fraction = rough / 10 ** exponent;
   const niceFraction = fraction <= 1 ? 1 : fraction <= 2 ? 2 : fraction <= 5 ? 5 : 10;
   return niceFraction * 10 ** exponent;
 }
 
-/** `niceCeilPositive`의 반대 방향 — 양수 값을 "보기 좋은" 이전 자리로 내림한다. */
-function niceFloorPositive(value: number): number {
-  if (value <= 0) return 0;
-  const exponent = Math.floor(Math.log10(value));
-  const fraction = value / 10 ** exponent;
-  const niceFraction = fraction >= 5 ? 5 : fraction >= 2 ? 2 : 1;
-  return niceFraction * 10 ** exponent;
-}
-
-function niceCeilSigned(value: number): number {
-  if (value === 0) return 0;
-  return value > 0 ? niceCeilPositive(value) : -niceFloorPositive(-value);
-}
-
-function niceFloorSigned(value: number): number {
-  if (value === 0) return 0;
-  return value > 0 ? niceFloorPositive(value) : -niceCeilPositive(-value);
+/** `k * step`의 부동소수 잔차(68.99999999999999)를 없앤다 — 경계가 그대로 축 라벨로 나간다. */
+function snapToStep(k: number, step: number): number {
+  return Number((k * step).toPrecision(12));
 }
 
 /**
- * `zeroInclusiveDomain`이 계산한 [min,max]를 Recharts `YAxis domain`에 바로 쓸 수 있는 "보기
- * 좋은" 경계로 확장한다. 데이터 최댓값을 그대로 도메인 상한으로 쓰면(예: `domain={[0, 938373]}`)
- * Recharts가 그 값을 도메인 "끝"으로 취급해 눈금 하나를 정확히 그 값에 찍는다 — `domain`이
- * 리터럴 숫자일 때는 `'auto'`일 때와 달리 "nice tick" 반올림을 하지 않기 때문이다(Recharts
- * YAxis 문서: "auto"일 때만 comprehensible한 눈금을 계산한다고 명시). `niceCeil`로 직접
- * 반올림해서 넘기면 이 문제를 피하면서, 값 라벨이 막대 "밖"(위/아래)에 그려질 여백도 자연히
- * 확보된다(반올림 자체가 데이터보다 큰 수로 올라가므로 별도 퍼센트 패딩이 필요 없다).
- */
-export function padDomain([min, max]: [number, number]): [number, number] {
-  const top = max > 0 ? niceCeilPositive(max) : 0;
-  const bottom = min < 0 ? -niceCeilPositive(-min) : 0;
-  return [bottom, top];
-}
-
-/**
- * `padDomain`은 발산 막대 전용이라 하단을 항상 0으로 고정한다(0을 지나는 도메인이 전제). 꺾은선은
- * 0을 지나지 않는 도메인이 흔하므로(ROE 8~12%처럼 전 구간 양수, 또는 threshold가 데이터에서 먼
- * 부채비율처럼 하단이 0이 아닌 값이어야 함) 양 끝을 각각 독립적으로 내림/올림한다.
+ * d3 `scale.nice()`와 같은 2단계로 축을 만든다: **간격을 먼저 고르고**(`niceStep`) 경계를 그
+ * 간격의 배수로 맞춘다. 반환하는 `tickCount`를 `<YAxis tickCount>`에 그대로 넘겨야 의미가 있다.
  *
- * `min === max`(포인트가 1개뿐이거나 전 구간 같은 값)면 0으로 나누기를 피하려고 값의 25%(0이면
- * 최소 1)를 임시 여백으로 반영한 뒤 반올림한다.
+ * `tickCount`가 왜 필수인가 — Recharts 3.10.1은 리터럴 숫자 도메인에 대해
+ * `getTickValuesFixedDomain(domain, tickCount, ...)`를 호출해 **양 끝을 고정한 채 그 사이를 균등
+ * 분할**한다(`node_modules/recharts/es6/state/selectors/axisSelectors.js`). 즉 도메인만 예쁘게
+ * 만들고 `tickCount`를 안 주면 기본값 5로 나뉘어 `50 · 65 · 80 · 95 · 100`처럼 **첫/마지막만 딱
+ * 떨어지고 중간은 지저분한 데다 마지막 간격만 짧은** 눈금이 나온다. `CartesianGrid`가 그 자리에
+ * 선을 그으므로 축이 비선형처럼 보여, 승인규칙 ①(위/아래 px-per-unit 대칭)의 육안 검증까지
+ * 무력화한다. 도메인 스팬이 `step × (tickCount-1)`이면 균등 분할이 정확히 step 배수에 떨어진다.
+ *
+ * `anchorZero`(발산 막대용)면 0을 반드시 도메인에 넣는다. 0은 어떤 step의 배수이기도 하므로 0선이
+ * 항상 눈금·격자선과 겹친다 — 승인규칙 ①이 스케일뿐 아니라 격자에서도 지켜진다.
  */
-export function niceDomain([min, max]: [number, number]): [number, number] {
-  if (min === max) {
-    const pad = Math.max(Math.abs(min) * 0.25, 1);
-    return [niceFloorSigned(min - pad), niceCeilSigned(max + pad)];
+function axisScale(min: number, max: number, anchorZero: boolean): AxisScale {
+  let lo = anchorZero ? Math.min(0, min) : min;
+  let hi = anchorZero ? Math.max(0, max) : max;
+  if (!(hi > lo)) {
+    // 스팬 0 — 포인트가 1개뿐이거나 전 구간 같은 값(전부 결측이면 [0,0]으로 들어온다).
+    const pad = Math.max(Math.abs(hi) * 0.25, 1);
+    hi += pad;
+    if (!anchorZero) lo -= pad;
   }
-  return [niceFloorSigned(min), niceCeilSigned(max)];
+  const step = niceStep((hi - lo) / (TARGET_TICK_COUNT - 1));
+  // 경계가 이미 step의 배수면 floor/ceil이 그 자리를 유지하도록 미세 오차를 흡수한다.
+  const loK = Math.floor(lo / step + 1e-9);
+  const hiK = Math.ceil(hi / step - 1e-9);
+  return { domain: [snapToStep(loK, step), snapToStep(hiK, step)], tickCount: hiK - loK + 1 };
+}
+
+/**
+ * `zeroInclusiveDomain`이 계산한 [min,max]를 발산 막대용 축으로 만든다 — 0을 반드시 포함하고
+ * 경계는 눈금 간격의 배수다. 값 라벨이 막대 "밖"(위/아래)에 그려질 여백은 경계 올림이 자연히
+ * 만들어 준다(별도 퍼센트 패딩 불필요).
+ */
+export function padDomain([min, max]: [number, number]): AxisScale {
+  return axisScale(min, max, true);
+}
+
+/**
+ * `padDomain`은 0을 지나는 도메인이 전제다. 꺾은선은 0을 지나지 않는 도메인이 흔하므로
+ * (ROE 8~12%처럼 전 구간 양수) 0 고정 없이 양 끝을 눈금 간격의 배수로 맞춘다.
+ */
+export function niceDomain([min, max]: [number, number]): AxisScale {
+  return axisScale(min, max, false);
+}
+
+/** 꺾은선 축 — `AxisScale`에 "기준선이 도메인 안에 들어왔는가"가 붙는다. */
+export type LineAxisScale = AxisScale & { baselineInDomain: boolean };
+
+/**
+ * 기준선을 넣느라 데이터 구간이 플롯의 이 비율 미만으로 눌리면 기준선을 도메인에서 뺀다.
+ * 25%는 "데이터가 최소한 플롯의 1/4은 쓴다"는 하한이다.
+ */
+const MIN_DATA_SHARE = 0.25;
+
+/**
+ * 꺾은선 도메인 — 데이터 범위에 25% 여백(학습가이드 `line()`)을 두고 눈금 간격의 배수로 맞춘다.
+ * 여백은 값 라벨이 점 바로 위에 그려지는 구조라 필요하다.
+ *
+ * **기준선(부채비율 100% 등)은 조건부로만 도메인에 넣는다.** 종전에는 무조건 접었는데, 기준선이
+ * 데이터에서 멀면 그 하나 때문에 데이터가 통째로 눌렸다 — 신한지주 부채비율(1,128~1,202%)은
+ * 기준선 100% 탓에 도메인이 `[100, 2000]`이 되어 3개년 변동이 7px, POSCO홀딩스는 3.3px였다.
+ * 데이터 구간이 플롯의 `MIN_DATA_SHARE` 미만으로 눌리면 기준선을 빼고 데이터 해상도를 택한다.
+ * 그때 `baselineInDomain: false`가 나가고, 호출부는 기준선을 그리는 대신 "축 범위 밖"임을 문구로
+ * 알린다 — 없는 것처럼 감추지 않는다.
+ */
+export function lineDomain(values: readonly number[], baseline?: number): LineAxisScale {
+  if (values.length === 0) {
+    const center = baseline ?? 0;
+    return { ...niceDomain([center - 1, center + 1]), baselineInDomain: baseline !== undefined };
+  }
+  const dataMin = Math.min(...values);
+  const dataMax = Math.max(...values);
+  const span = dataMax - dataMin;
+  const pad = span > 0 ? span * 0.25 : Math.max(Math.abs(dataMax) * 0.25, 1);
+  const paddedMin = dataMin - pad;
+  const paddedMax = dataMax + pad;
+
+  const dataOnly = niceDomain([paddedMin, paddedMax]);
+  if (baseline === undefined) return { ...dataOnly, baselineInDomain: false };
+  if (baseline >= dataOnly.domain[0] && baseline <= dataOnly.domain[1]) return { ...dataOnly, baselineInDomain: true };
+
+  const withBaseline = niceDomain([Math.min(paddedMin, baseline), Math.max(paddedMax, baseline)]);
+  const share = (paddedMax - paddedMin) / (withBaseline.domain[1] - withBaseline.domain[0]);
+  return share >= MIN_DATA_SHARE ? { ...withBaseline, baselineInDomain: true } : { ...dataOnly, baselineInDomain: false };
 }
 
 export type LineRun = { startIndex: number; endIndex: number; dashed: boolean };

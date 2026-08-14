@@ -94,7 +94,7 @@ export default function ZeroAxisBars({ bars, unit, compactLabels }: ZeroAxisBars
     negative: (b.value ?? 0) < 0,
     provisional: Boolean(b.provisional),
   }));
-  const domain = padDomain(zeroInclusiveDomain(bars.map((b) => b.value)));
+  const { domain, tickCount } = padDomain(zeroInclusiveDomain(bars.map((b) => b.value)));
 
   return (
     <div data-chart="zero-axis-bars">
@@ -114,6 +114,7 @@ export default function ZeroAxisBars({ bars, unit, compactLabels }: ZeroAxisBars
             />
             <YAxis
               domain={domain}
+              tickCount={tickCount}
               tick={{ fill: AXIS_TEXT, fontSize: LABEL_FONT_SIZE_MIN }}
               tickLine={{ stroke: GRID_LINE }}
               axisLine={false}

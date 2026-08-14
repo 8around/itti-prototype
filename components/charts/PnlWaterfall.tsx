@@ -85,7 +85,7 @@ export default function PnlWaterfall({ rows }: PnlWaterfallProps): ReactElement 
       negative: !missing && ratio < 0,
     };
   });
-  const domain = padDomain(zeroInclusiveDomain(rows.map((r) => r.ratioPct)));
+  const { domain, tickCount } = padDomain(zeroInclusiveDomain(rows.map((r) => r.ratioPct)));
 
   return (
     <div className="wf3" data-chart="pnl-waterfall">
@@ -103,6 +103,7 @@ export default function PnlWaterfall({ rows }: PnlWaterfallProps): ReactElement 
             <XAxis
               type="number"
               domain={domain}
+              tickCount={tickCount}
               tick={{ fill: AXIS_TEXT, fontSize: LABEL_FONT_SIZE_MIN }}
               tickLine={{ stroke: GRID_LINE }}
               axisLine={{ stroke: GRID_LINE }}

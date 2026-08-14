@@ -123,7 +123,7 @@ function drawOverlayBar(props: BarShapeProps, domain: [number, number]): ReactEl
 export default function OverlaidBars({ bars, outerLabel, innerLabel }: OverlaidBarsProps): ReactElement {
   // ZERO_BY_FACT(무배당)는 값과 무관하게 안쪽 막대를 그리지 않으므로 스케일 계산에서도 뺀다.
   const innerForDomain = bars.map((b) => (b.innerState === "ZERO_BY_FACT" ? null : b.inner));
-  const domain = padDomain(zeroInclusiveDomain([...bars.map((b) => b.outer), ...innerForDomain]));
+  const { domain, tickCount } = padDomain(zeroInclusiveDomain([...bars.map((b) => b.outer), ...innerForDomain]));
 
   const data: Row[] = bars.map((b, i) => {
     const zeroByFact = b.innerState === "ZERO_BY_FACT";
@@ -162,6 +162,7 @@ export default function OverlaidBars({ bars, outerLabel, innerLabel }: OverlaidB
             />
             <YAxis
               domain={domain}
+              tickCount={tickCount}
               tick={{ fill: AXIS_TEXT, fontSize: LABEL_FONT_SIZE_MIN }}
               tickLine={{ stroke: GRID_LINE }}
               axisLine={false}
