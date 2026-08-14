@@ -18,7 +18,18 @@ import {
   SINGL_INDX_CANDIDATES,
   STOCK_TOTQY_CANDIDATES,
 } from "./catalog";
-import { deriveFcf, deriveOperatingMargin, deriveQ4, deriveQoQ, deriveQuarterCf, deriveRoa, deriveYoY, missingResolution } from "./derive";
+import {
+  deriveFcf,
+  deriveOperatingMargin,
+  deriveQ4,
+  deriveQoQ,
+  deriveQuarterCf,
+  deriveRoa,
+  deriveRoeOwners,
+  deriveRoeOwnersOnTotalEquity,
+  deriveYoY,
+  missingResolution,
+} from "./derive";
 import type { DerivationLabels } from "./derive";
 import type { AcntAllBody, AcntAllRow, FsDiv } from "./resolve";
 import { resolveAcntAllField, resolveFsDiv } from "./resolve";
@@ -126,6 +137,18 @@ export function resolveStockYear(dir: string, stock: StockRef, year: string): Ye
   const fsRes = { fsDiv: annual.fsDiv, fsDivFallbackApplied: annual.fsDivFallbackApplied };
 
   resolutions.roa = deriveRoa(resolutions.net_income, resolutions.total_assets);
+  // v4 — ROE 산정기준 병기. 기존 `roe`(M211550 직독)는 아래 SINGL_INDX 루프가 채운다.
+  resolutions.roe_owners = deriveRoeOwners(
+    resolutions.net_income_attributable_to_owners,
+    resolutions.net_income,
+    resolutions.equity_attributable_to_owners,
+    resolutions.total_equity,
+  );
+  resolutions.roe_owners_on_total_equity = deriveRoeOwnersOnTotalEquity(
+    resolutions.net_income_attributable_to_owners,
+    resolutions.net_income,
+    resolutions.total_equity,
+  );
   resolutions.operating_margin = deriveOperatingMargin(resolutions.operating_income, resolutions.revenue);
   resolutions.fcf = deriveFcf(resolutions.operating_cf, resolutions.capex);
 

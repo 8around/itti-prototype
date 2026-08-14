@@ -882,13 +882,22 @@ function ProfitabilitySection({ profile, corpCode, years }: { profile: ProfileId
   const netIncomeAttrMetric = findProfileMetric(profile, "net_income_attributable_to_owners");
   const netIncomeTotalMetric = findProfileMetric(profile, "net_income");
 
-  const roePoints: LineChartPoint[] = years.map((y) => ({ label: `${y.year.slice(2)}년`, value: y.resolutions.roe?.normalized ?? null }));
-  const marginPoints: LineChartPoint[] = years.map((y) => ({ label: `${y.year.slice(2)}년`, value: y.resolutions.operating_margin?.normalized ?? null }));
+  const linePoints = (key: string): LineChartPoint[] => years.map((y) => ({ label: `${y.year.slice(2)}년`, value: y.resolutions[key]?.normalized ?? null }));
+  const roePoints = linePoints("roe");
+  const roeOwnersPoints = linePoints("roe_owners");
+  const roeOwnersOnTotalEquityPoints = linePoints("roe_owners_on_total_equity");
+  const marginPoints = linePoints("operating_margin");
 
   return (
     <section className={styles.section}>
       <h2>⑤ 수익성</h2>
-      <div className={styles.sectionTitle}>ROE 추이 — 연간 3개년(FY23~25) · %</div>
+
+      {/* v4 — ROE는 산정기준에 따라 값이 갈린다. 어느 기준인지 라벨에 박고 셋을 나란히 놓는다.
+          한 차트에 겹치지 않는 이유: LineChart는 단일 시리즈 전용이고(LineChart.tsx §다중 Line
+          함정) 기준마다 산식 패널이 따로 붙어야 한다. */}
+      <div className={styles.subSection}>⑤-1 ROE 산정기준 — 지배기업 소유주 귀속 기준</div>
+
+      <div className={styles.sectionTitle}>ROE — DART 산출 · 평균 자본총계 기준 · 연간 3개년(FY23~25) · %</div>
       <LineChart points={roePoints} unit="%" sign />
       <SourceCollapse count={years.filter((y) => y.resolutions.roe).length}>
         {years.map((y) => (
@@ -896,10 +905,55 @@ function ProfitabilitySection({ profile, corpCode, years }: { profile: ProfileId
         ))}
       </SourceCollapse>
 
+      <div className={styles.sectionTitle}>ROE — 지배기업 소유주 귀속 기준 · 연간 3개년(FY23~25) · % · 요구사항 정본</div>
+      <LineChart points={roeOwnersPoints} unit="%" sign color={CATEGORY_PALETTE[2]} />
+      <SourceCollapse
+        count={years.filter((y) => y.resolutions.roe_owners).length}
+        formulaSlot={<FormulaPanel entries={annualFormulaEntries(years, "roe_owners")} />}
+      >
+        {years.map((y) => (
+          <TraceOnly
+            key={y.year}
+            profile={profile}
+            corpCode={corpCode}
+            year={y.year}
+            metric={{ key: "roe_owners", label: `ROE(지배기업 소유주 귀속) ${y.year}`, sourceAvailable: true, unit: "PCT" }}
+            resolution={y.resolutions.roe_owners}
+          />
+        ))}
+      </SourceCollapse>
+
+      <div className={styles.sectionTitle}>ROE — 지배기업 소유주 귀속 손익 ÷ 자본총계 · 연간 3개년(FY23~25) · % · 연구원 엑셀 방식</div>
+      <LineChart points={roeOwnersOnTotalEquityPoints} unit="%" sign color={CATEGORY_PALETTE[3]} />
+      <SourceCollapse
+        count={years.filter((y) => y.resolutions.roe_owners_on_total_equity).length}
+        formulaSlot={<FormulaPanel entries={annualFormulaEntries(years, "roe_owners_on_total_equity")} />}
+      >
+        {years.map((y) => (
+          <TraceOnly
+            key={y.year}
+            profile={profile}
+            corpCode={corpCode}
+            year={y.year}
+            metric={{ key: "roe_owners_on_total_equity", label: `ROE(귀속손익÷자본총계) ${y.year}`, sourceAvailable: true, unit: "PCT" }}
+            resolution={y.resolutions.roe_owners_on_total_equity}
+          />
+        ))}
+      </SourceCollapse>
+
+      <div className={styles.noteText}>
+        세 값은 계산 오류가 아니라 <b>산정기준 차이</b>다. DART 지표는 분자가 당기순이익 총액(비지배 포함)이고 분모가 <b>평균</b> 자본총계다. 요구사항
+        기준은 분자·분모를 모두 지배기업 소유주 귀속분으로 맞춘 <b>기말</b> 기준이다. 연구원 엑셀은 분자만 귀속분이고 분모는 자본총계여서 둘의 중간에
+        놓인다. 분모 시점(평균/기말) 차이가 비지배지분 포함 여부보다 크게 작용한다.
+      </div>
+
+      <div className={styles.subSection}>⑤-2 그 밖의 수익성 지표</div>
+
       <div className={styles.sectionTitle}>영업이익률 추이 — 연간 3개년(FY23~25) · %</div>
       <LineChart points={marginPoints} unit="%" sign color={CATEGORY_PALETTE[1]} />
-      {/* 연간 축에서 산식이 있는 유일한 차트다 — 나머지(ROE·부채비율·BS·연간 CF·워터폴)는 전부
-          직독값이라 FormulaPanel이 null을 반환한다. 슬롯을 안 붙인 건 그래서다. */}
+      {/* v4 이전에는 연간 축에서 산식이 있는 유일한 차트였다. 지금은 ⑤-1의 ROE 파생 2종이 합류해
+          셋이다. 나머지(DART 직독 ROE·부채비율·BS·연간 CF·워터폴)는 여전히 직독값이라
+          FormulaPanel이 null을 반환한다 — 그쪽에 슬롯을 안 붙인 건 그래서다. */}
       <SourceCollapse count={years.filter((y) => y.resolutions.operating_margin).length} formulaSlot={<FormulaPanel entries={annualFormulaEntries(years, "operating_margin")} />}>
         {years.map((y) => (
           <TraceOnly
@@ -918,7 +972,27 @@ function ProfitabilitySection({ profile, corpCode, years }: { profile: ProfileId
           <GatedField profile={profile} corpCode={corpCode} year={LATEST_ANNUAL_YEAR} metric={netIncomeAttrMetric} resolution={yLatest.resolutions.net_income_attributable_to_owners} />
         )}
         {netIncomeTotalMetric && <GatedField profile={profile} corpCode={corpCode} year={LATEST_ANNUAL_YEAR} metric={netIncomeTotalMetric} resolution={yLatest.resolutions.net_income} />}
-        <RawField corpCode={corpCode} profile={profile} year={LATEST_ANNUAL_YEAR} metricKey="roe" label="ROE(자기자본이익률, DART 산출)" unit="PCT" panelUnit="PCT" resolution={yLatest.resolutions.roe} />
+        <RawField corpCode={corpCode} profile={profile} year={LATEST_ANNUAL_YEAR} metricKey="roe" label="ROE(DART 산출 · 평균 자본총계 기준)" unit="PCT" panelUnit="PCT" resolution={yLatest.resolutions.roe} />
+        <RawField
+          corpCode={corpCode}
+          profile={profile}
+          year={LATEST_ANNUAL_YEAR}
+          metricKey="roe_owners"
+          label="ROE(지배기업 소유주 귀속 기준)"
+          unit="PCT"
+          panelUnit="PCT"
+          resolution={yLatest.resolutions.roe_owners}
+        />
+        <RawField
+          corpCode={corpCode}
+          profile={profile}
+          year={LATEST_ANNUAL_YEAR}
+          metricKey="roe_owners_on_total_equity"
+          label="ROE(귀속 손익 ÷ 자본총계)"
+          unit="PCT"
+          panelUnit="PCT"
+          resolution={yLatest.resolutions.roe_owners_on_total_equity}
+        />
         <RawField
           corpCode={corpCode}
           profile={profile}
