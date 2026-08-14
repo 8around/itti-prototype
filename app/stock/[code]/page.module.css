@@ -120,6 +120,16 @@
   letter-spacing: 0.04em;
 }
 
+/* v4 — 섹션 안에서 차트 여러 개를 한 묶음으로 감싸는 소제목(⑤-1 ROE 산정기준). h2(15px)와
+   sectionTitle(11px 회색) 사이 층위를 채운다. */
+.subSection {
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--ink);
+  padding-top: 4px;
+  border-top: 1px solid var(--line);
+}
+
 .fieldList {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
