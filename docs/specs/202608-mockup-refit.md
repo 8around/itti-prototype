@@ -2,7 +2,7 @@
 
 **상태** 계획 확정 · 구현 미착수
 **작성일** 2026-08-12
-**선행 계획** [`prototype-plan.md`](./prototype-plan.md) (T0~T7+T10, 구현 완료 — main `895e0e6`)
+**선행 계획** [`prototype-plan.md`](./2608_prototype-plan.md) (T0~T7+T10, 구현 완료 — main `895e0e6`)
 **명명 규칙** 이 문서부터 계획 문서는 `YYYYMM-` 숫자 prefix를 붙인다
 
 ---
@@ -176,4 +176,4 @@ KPI 그리드·**ROE 등 비율 추이 꺾은선**·6행 표. BIO 오버레이: 
 - 목업: [`이띠_R1_배포앱_목업_6.html`](../../../ete-django/docs/goals-in-2months/이띠_R1_배포앱_목업_6.html) (읽기 전용)
 - 발라내기: `../../../ete-django/docs/goals-in-2months/금융업 발라내기.xlsx`
 - DART 명세: [`dart-api/`](../../../ete-django/docs/dart-api/) 9종
-- 선행 계획·완료 기록: [`prototype-plan.md`](./prototype-plan.md) (main `895e0e6`, 리뷰 클린)
+- 선행 계획·완료 기록: [`prototype-plan.md`](./2608_prototype-plan.md) (main `895e0e6`, 리뷰 클린)
