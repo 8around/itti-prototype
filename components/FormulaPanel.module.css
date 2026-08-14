@@ -60,6 +60,15 @@
   padding: 3px 7px;
 }
 
+/* 규약 설명(ℹ) — 진짜 경고(⚠)와 같은 자리에 놓되 강조를 걷어 낸다. `.caveat`의 주황 필을
+   그대로 쓰면 이 kind면 무조건 붙는 안내가 경고의 변별력을 먹는다(`caveatTone` 참고). */
+.caveatNote {
+  flex-basis: 100%;
+  font-size: 11px;
+  color: var(--gray);
+  padding: 3px 7px;
+}
+
 .prov {
   flex-basis: 100%;
   font-size: 11px;

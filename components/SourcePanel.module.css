@@ -77,6 +77,14 @@
   margin: 0 0 10px;
 }
 
+/* 규약 설명(ℹ) — `.derivationCaveat`과 같은 자리, 강조 없음(`caveatTone` 참고). */
+.derivationNote {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--gray);
+  margin: 0 0 10px;
+}
+
 .metaGrid {
   display: grid;
   grid-template-columns: 120px 1fr;

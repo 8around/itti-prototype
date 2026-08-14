@@ -123,6 +123,27 @@ function parenCloseIndex(steps: DerivationStep[]): number | null {
   return hasMinusBefore ? scaleAt - 1 : null;
 }
 
+/**
+ * `caveat`을 ⚠(경고)로 띄울지 ℹ(안내)로 내릴지.
+ *
+ * V6 최종 리뷰 — ⚠가 붙는 산식이 1,015/2,659 = 38%였는데, 그중 684건은 **그 값 고유의 문제가
+ * 아니라 규약 설명**이었다(현금흐름표 누적 신고 규약 641건 · DART 배당성향 분모 기준 차이 43건 —
+ * 둘 다 해당 kind면 예외 없이 전부 붙는다). 무조건 붙는 안내가 ⚠의 변별력을 희석해, 정작 진짜
+ * 경고 65건(계정 불일치 4 · EPS 가중평균주식수 근사 58 · CAPEX 부호 3)이 그 안에 묻혔다.
+ *
+ * 판정은 **kind 화이트리스트**로 한다 — 문구 매칭이 아니라 "이 kind면 언제나 붙는가"가 기준이고,
+ * 새로 생기는 caveat은 기본값 `warning`으로 떨어져 조용히 묻히지 않는다. 전환 3종은 caveat이
+ * 계산 실패가 아니라 상태 설명(흑자전환 사유)이라 역시 안내다.
+ */
+export type CaveatTone = "warning" | "note";
+
+const CONVENTION_NOTE_KINDS: ReadonlySet<DerivationDetail["kind"]> = new Set(["cf_diff", "dividend_payout_fallback"]);
+
+export function caveatTone(detail: DerivationDetail): CaveatTone {
+  if (detail.transition) return "note";
+  return CONVENTION_NOTE_KINDS.has(detail.kind) ? "note" : "warning";
+}
+
 export type DerivationLine = {
   /** "24.4Q 영업이익 6조 4,927억" — 무엇이 얼마인지. */
   head: string;
@@ -131,6 +152,8 @@ export type DerivationLine = {
   /** true면 `body`는 계산식이 아니라 "직전 → 당기" 상태 비교다(등호로 잇지 말 것). */
   transition: boolean;
   caveat?: string;
+  /** `caveat`이 있을 때만 의미가 있다 — ⚠(진짜 경고) vs ℹ(규약 설명). `caveatTone` 참고. */
+  caveatTone: CaveatTone;
 };
 
 /**
@@ -148,6 +171,7 @@ export function buildDerivationLine(detail: DerivationDetail, normalized: number
       body: `${prev.label} ${formatStepValue(prev, precision)} → ${cur.label} ${formatStepValue(cur, precision)}`,
       transition: true,
       caveat: detail.caveat,
+      caveatTone: caveatTone(detail),
     };
   }
 
@@ -166,5 +190,5 @@ export function buildDerivationLine(detail: DerivationDetail, normalized: number
     })
     .join(" ");
 
-  return { head: `${subject} ${formatDerivationResult(detail, normalized)}`.trim(), body, transition: false, caveat: detail.caveat };
+  return { head: `${subject} ${formatDerivationResult(detail, normalized)}`.trim(), body, transition: false, caveat: detail.caveat, caveatTone: caveatTone(detail) };
 }

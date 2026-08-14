@@ -163,6 +163,13 @@
   color: var(--orange-dk);
 }
 
+/* 규약 설명(ℹ) — `.fieldCaveat`과 같은 자리, 강조 없음(`caveatTone` 참고). */
+.fieldNote {
+  font-size: 10.5px;
+  line-height: 1.5;
+  color: var(--gray);
+}
+
 .overviewGrid {
   display: grid;
   grid-template-columns: 90px 1fr;

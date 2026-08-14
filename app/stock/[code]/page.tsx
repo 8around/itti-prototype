@@ -22,6 +22,7 @@ import type { MetricValueProps } from "@/components/MetricValue";
 import { SourceCollapse } from "@/components/SourceCollapse";
 import SourcePanel from "@/components/SourcePanel";
 import { formatEstDt, loadCompany } from "@/lib/company";
+import { caveatTone } from "@/lib/derivationText";
 import { toEok } from "@/lib/format";
 import { metricDoc } from "@/lib/metricDocs";
 import type { MetricDoc } from "@/lib/metricDocs";
@@ -143,7 +144,11 @@ function FieldRow({
   // 설명(description)은 라벨 툴팁으로 돌린다 — 20여 개 필드에 전부 인라인으로 깔면 V4가 줄여
   // 놓은 세로 길이를 도로 까먹기 때문이다(자세한 논리구조는 docs/specs/2608_metric-formulas.md).
   const doc = metricDoc(metricKey, docOverride);
-  const caveat = resolution?.derivationDetail?.caveat;
+  const detail = resolution?.derivationDetail;
+  const caveat = detail?.caveat;
+  // 규약 설명(현금흐름 누적 신고 등)은 ⚠가 아니라 ℹ로 내린다 — 무조건 붙는 안내가 진짜 경고
+  // (계정 불일치·EPS 근사·CAPEX 부호)를 묻어 버린다(lib/derivationText.ts `caveatTone`).
+  const tone = detail ? caveatTone(detail) : "warning";
   return (
     <div className={styles.field}>
       <div className={doc?.description ? `${styles.fieldLabel} ${styles.fieldLabelDoc}` : styles.fieldLabel} title={doc?.description}>
@@ -151,7 +156,11 @@ function FieldRow({
       </div>
       <MetricValue state={state} value={value} unit={unit} basis={basis} note={note} />
       {doc?.formula && <div className={styles.fieldFormula}>산식 {doc.formula}</div>}
-      {caveat && <div className={styles.fieldCaveat}>⚠ {caveat}</div>}
+      {caveat && (
+        <div className={tone === "warning" ? styles.fieldCaveat : styles.fieldNote}>
+          {tone === "warning" ? "⚠" : "ℹ"} {caveat}
+        </div>
+      )}
       {resolution && <SourcePanel {...buildSourcePanelProps(metricKey, corpCode, year, withDisplayState(resolution, state), panelUnit, profile)} />}
     </div>
   );

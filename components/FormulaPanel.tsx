@@ -49,7 +49,11 @@ export default function FormulaPanel({ entries }: { entries: FormulaEntry[] }) {
               {line.transition ? "—" : "="}
             </span>
             <span className={styles.body}>{line.body}</span>
-            {line.caveat && <span className={styles.caveat}>⚠ {line.caveat}</span>}
+            {line.caveat && (
+              <span className={line.caveatTone === "warning" ? styles.caveat : styles.caveatNote}>
+                {line.caveatTone === "warning" ? "⚠" : "ℹ"} {line.caveat}
+              </span>
+            )}
             {line.provisional && <span className={styles.prov}>차트에는 잠정치(점선)로 표시된다</span>}
           </li>
         ))}

@@ -419,7 +419,11 @@ function DerivationTab({ resolution }: { resolution: Resolution }) {
           <strong>{line.head}</strong> {line.transition ? "—" : "="} {line.body}
         </p>
       )}
-      {line?.caveat && <p className={styles.derivationCaveat}>⚠ {line.caveat}</p>}
+      {line?.caveat && (
+        <p className={line.caveatTone === "warning" ? styles.derivationCaveat : styles.derivationNote}>
+          {line.caveatTone === "warning" ? "⚠" : "ℹ"} {line.caveat}
+        </p>
+      )}
       <p className={styles.hint}>원문(엔진 기록)</p>
       <p className={styles.mono}>{resolution.derivation}</p>
       <p className={styles.hint}>parserVersion {resolution.parserVersion}</p>

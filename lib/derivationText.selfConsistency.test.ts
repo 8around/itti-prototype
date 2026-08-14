@@ -19,7 +19,7 @@ import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
-import { buildDerivationLine, formatDerivationResult, formatStepValue, pickStepPrecision } from "./derivationText";
+import { buildDerivationLine, caveatTone, formatDerivationResult, formatStepValue, pickStepPrecision } from "./derivationText";
 import type { DerivationDetail, DerivationStep, Resolution } from "./normalize/types";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -150,6 +150,33 @@ describe("산식 자기무결성 — data/derived.json 전수", () => {
     const q4 = find("삼성전자 2024Q4 operating_income");
     expect(pickStepPrecision(q4.detail, q4.normalized)).toBe(0);
     expect(buildDerivationLine(q4.detail, q4.normalized, "OK", "24.4Q").body).toBe("2024 사업보고서 연간 32조 7,260억 − 2024 3분기보고서 누적 26조 2,333억");
+  });
+});
+
+describe("⚠ 변별력 — 규약 설명은 ℹ, 진짜 경고만 ⚠", () => {
+  const withCaveat = ALL.filter((e) => e.detail.caveat);
+
+  it("caveat 1,015건 중 ⚠로 남는 것은 63건뿐이다 — 종전에는 전부 ⚠였다", () => {
+    expect(withCaveat.length).toBe(1_015);
+    expect(withCaveat.filter((e) => caveatTone(e.detail) === "warning").length).toBe(63);
+  });
+
+  it("⚠로 남는 것은 그 값 고유의 문제뿐 — 계정 불일치 4 · EPS 근사 58 · CAPEX 부호 3(중복 2)", () => {
+    const warnings = withCaveat.filter((e) => caveatTone(e.detail) === "warning");
+    expect(warnings.filter((e) => e.detail.caveat!.includes("계정이 달라")).length).toBe(4);
+    expect(warnings.filter((e) => e.detail.caveat!.includes("가중평균주식수")).length).toBe(58);
+    expect(warnings.filter((e) => e.detail.kind === "fcf").length).toBe(3);
+  });
+
+  it("해당 kind면 예외 없이 전부 붙는 안내는 ℹ로 내려간다 — 현금흐름 규약 641 · 배당성향 43 · 전환 268", () => {
+    const notes = withCaveat.filter((e) => caveatTone(e.detail) === "note");
+    expect(notes.filter((e) => e.detail.kind === "cf_diff").length).toBe(641);
+    expect(notes.filter((e) => e.detail.kind === "dividend_payout_fallback").length).toBe(43);
+    expect(notes.filter((e) => e.detail.transition).length).toBe(268);
+  });
+
+  it("모르는 caveat은 ⚠로 남는다 — 새 경고가 조용히 묻히지 않게 하는 기본값", () => {
+    expect(caveatTone({ kind: "ratio", resultLabel: "ROA", steps: [], unit: "PCT", caveat: "새 사유" })).toBe("warning");
   });
 });
 
