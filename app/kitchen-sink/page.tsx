@@ -173,12 +173,30 @@ export default function KitchenSinkPage() {
         </div>
 
         <div className={styles.demo}>
-          <div className={styles.demoTitle}>LineChart (확장 — baseline 기준선)</div>
-          <div className={styles.demoRef}>학습가이드 c5 부채비율 threshold 문법 인용 · 값은 도메인 강제 포함 검증용으로 낮게 구성</div>
+          <div className={styles.demoTitle}>LineChart (확장 — baseline 유지)</div>
+          <div className={styles.demoRef}>학습가이드 c5 부채비율 threshold 문법 인용 · 값이 기준선 근처라 도메인에 함께 담긴다</div>
           <LineChart
             color={CATEGORY_PALETTE[3]}
             unit="%"
-            baseline={{ value: 100, label: "빨간 점선 = 부채비율 100% 기준(도메인에 강제 포함)" }}
+            baseline={{ value: 100, label: "빨간 점선 = 부채비율 100% 기준" }}
+            points={[
+              { label: "1Q25", value: 85 },
+              { label: "2Q25", value: 92 },
+              { label: "3Q25", value: 97 },
+              { label: "4Q25", value: 90 },
+              { label: "1Q26", value: 95 },
+            ]}
+          />
+          <div className={styles.demoNote}>기준선을 도메인에 담아도 데이터 구간이 충분히 남는 경우(85~97% vs 기준선 100%) — 기준선을 그대로 그린다.</div>
+        </div>
+
+        <div className={styles.demo}>
+          <div className={styles.demoTitle}>LineChart (확장 — baseline 축 범위 밖)</div>
+          <div className={styles.demoRef}>기준선이 데이터에서 멀 때의 분기 · V6에서 도입</div>
+          <LineChart
+            color={CATEGORY_PALETTE[3]}
+            unit="%"
+            baseline={{ value: 100, label: "부채비율 100% 기준" }}
             points={[
               { label: "1Q25", value: 42 },
               { label: "2Q25", value: 45 },
@@ -187,7 +205,10 @@ export default function KitchenSinkPage() {
               { label: "1Q26", value: 50 },
             ]}
           />
-          <div className={styles.demoNote}>값이 전부 100%를 크게 밑돌아도(42~50%) 100% 기준선이 도메인에 강제 포함되어 화면 밖으로 밀려나지 않는지 확인하는 데모.</div>
+          <div className={styles.demoNote}>
+            기준선까지 담으면 데이터 구간(42~50%)이 플롯의 1/4 미만으로 눌린다 — 이 경우 기준선을 축에서 빼고
+            차트 아래 문구로 &quot;축 범위 밖&quot;임을 알린다. 값을 감추지 않고 데이터 쪽 해상도를 우선한다.
+          </div>
         </div>
 
         <div className={styles.demo}>

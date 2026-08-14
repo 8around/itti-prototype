@@ -79,7 +79,11 @@ export type LineChartPoint = {
 
 export type LineChartProps = {
   points: LineChartPoint[];
-  /** 도메인에 반드시 포함되는 기준선. label을 주면 차트 아래에 문구로 표시된다. */
+  /**
+   * 기준선(예: 부채비율 100%). **도메인에 항상 포함되지는 않는다** — 기준선까지 담으면 데이터
+   * 구간이 플롯의 1/4 미만으로 눌리는 경우 기준선을 도메인에서 빼고 차트 아래 문구로 "축 범위
+   * 밖"임을 알린다(V6, 위 컴포넌트 doc 참고). label을 주면 차트 아래에 문구로 표시된다.
+   */
   baseline?: { value: number; label?: string };
   /** 선·점 색상. `chartTheme`의 상수를 넘길 것(위 doc). 기본 `GREEN`. */
   color?: string;
