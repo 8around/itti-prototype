@@ -82,8 +82,10 @@ function foldFromScreen(steps: DerivationStep[], tokens: string[]): number {
 
 describe("산식 자기무결성 — data/derived.json 전수", () => {
   it("검사 대상 규모가 유지된다 — 0건짜리 빈 검사가 통과하는 사고를 막는다", () => {
-    expect(ALL.length).toBe(2_659);
-    expect(FOLDABLE.length).toBe(2_391);
+    // v4에서 ROE 파생 2종(roe_owners·roe_owners_on_total_equity)이 20종목 × 3개년 = 118건
+    // 늘었다(2,659 → 2,777). 연간 축 지표라 분기 항목은 생기지 않는다.
+    expect(ALL.length).toBe(2_777);
+    expect(FOLDABLE.length).toBe(2_509);
   });
 
   it("화면에 찍힌 숫자만으로 접으면 화면에 찍힌 결과가 나온다 (불일치 0건)", () => {
@@ -111,14 +113,14 @@ describe("산식 자기무결성 — data/derived.json 전수", () => {
     expect(missing.slice(0, 10)).toEqual([]);
   });
 
-  it("정밀도가 올라가는 것은 깨져 있던 460건뿐 — 나머지 1,931건은 종전 표기 그대로다", () => {
+  it("정밀도가 올라가는 것은 462건 — v3에서 깨져 있던 460건 + v4 ROE 파생 2건", () => {
     const byPrecision = new Map<string, number>();
     for (const { detail, normalized } of FOLDABLE) {
       const key = String(pickStepPrecision(detail, normalized));
       byPrecision.set(key, (byPrecision.get(key) ?? 0) + 1);
     }
-    expect(byPrecision.get("0")).toBe(1_931);
-    expect(FOLDABLE.length - byPrecision.get("0")!).toBe(460);
+    expect(byPrecision.get("0")).toBe(2_047);
+    expect(FOLDABLE.length - byPrecision.get("0")!).toBe(462);
     // 원 단위까지 내려가는 것은 결과가 1억 미만 금액인 케이스뿐이다(억 반올림으로는 재현 불가).
     expect(byPrecision.get("won")).toBe(13);
   });
@@ -156,16 +158,19 @@ describe("산식 자기무결성 — data/derived.json 전수", () => {
 describe("⚠ 변별력 — 규약 설명은 ℹ, 진짜 경고만 ⚠", () => {
   const withCaveat = ALL.filter((e) => e.detail.caveat);
 
-  it("caveat 1,015건 중 ⚠로 남는 것은 63건뿐이다 — 종전에는 전부 ⚠였다", () => {
-    expect(withCaveat.length).toBe(1_015);
-    expect(withCaveat.filter((e) => caveatTone(e.detail) === "warning").length).toBe(63);
+  it("caveat 1,027건 중 ⚠로 남는 것은 75건뿐이다 — 종전에는 전부 ⚠였다", () => {
+    expect(withCaveat.length).toBe(1_027);
+    expect(withCaveat.filter((e) => caveatTone(e.detail) === "warning").length).toBe(75);
   });
 
-  it("⚠로 남는 것은 그 값 고유의 문제뿐 — 계정 불일치 4 · EPS 근사 58 · CAPEX 부호 3(중복 2)", () => {
+  it("⚠로 남는 것은 그 값 고유의 문제뿐 — 계정 불일치 4 · EPS 근사 58 · CAPEX 부호 3(중복 2) · 귀속계정 폴백 12", () => {
     const warnings = withCaveat.filter((e) => caveatTone(e.detail) === "warning");
     expect(warnings.filter((e) => e.detail.caveat!.includes("계정이 달라")).length).toBe(4);
     expect(warnings.filter((e) => e.detail.caveat!.includes("가중평균주식수")).length).toBe(58);
     expect(warnings.filter((e) => e.detail.kind === "fcf").length).toBe(3);
+    // v4 — 앱클론(OFS 전용)·신라젠(비지배 0) 2종목 × 3개년 × ROE 파생 2종. 값은 정의상 정확하지만
+    // 폴백 경로를 탔다는 사실 자체는 검수자가 알아야 하므로 caveatTone의 기본값(warning)을 따른다.
+    expect(warnings.filter((e) => e.detail.caveat!.includes("총액으로 대체")).length).toBe(12);
   });
 
   it("해당 kind면 예외 없이 전부 붙는 안내는 ℹ로 내려간다 — 현금흐름 규약 641 · 배당성향 43 · 전환 268", () => {
