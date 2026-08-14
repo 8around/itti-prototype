@@ -198,5 +198,18 @@ export function resolveDividendPayoutFallback(
     normalized: value,
     displayState: "OK",
     derivation: `배당성향(fallback) = ${dividendTotal.toLocaleString("en-US")} ÷ ${netIncome.toLocaleString("en-US")} × 100`,
+    // v3 V5 — 두 피연산자는 alotMatter 원본이 **백만원 단위**로 공시한 값이다("현금배당금총액(백만원)"
+    // "당기순이익(백만원)" 라벨이 원문 그대로다). 원 단위로 오해하면 화면 환산이 10^6배 어긋난다.
+    derivationDetail: {
+      kind: "dividend_payout_fallback",
+      resultLabel: "배당성향(fallback)",
+      steps: [
+        { label: "현금배당금총액", value: dividendTotal, unit: "KRW_MILLION" },
+        { label: "당기순이익(배당공시 기준)", value: netIncome, op: "div", unit: "KRW_MILLION" },
+        { label: "백분율 환산", value: 100, op: "mul", unit: "SCALAR" },
+      ],
+      unit: "PCT",
+      caveat: "DART 자체 산출 배당성향(dividend_payout_indx, M451000)과는 분모 기준이 달라 값이 갈릴 수 있는 별개 산식이다",
+    },
   };
 }

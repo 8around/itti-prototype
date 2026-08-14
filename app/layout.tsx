@@ -9,17 +9,14 @@ export const metadata: Metadata = {
 };
 
 /**
- * 리뷰 픽스(I6) — 화면 5개(종목 리스트·유니버스·비교·킷친싱크·디버그)를 오가려면 지금까지는
- * 주소창에 직접 경로를 입력해야 했다. 서버 컴포넌트 그대로 유지한다("use client" 없이
- * next/link만 사용) — 전역 제약(§2)의 "차트·지표 컴포넌트는 서버 컴포넌트" 원칙과 별개로,
- * 레이아웃 자체도 처음부터 클라이언트 컴포넌트였던 적이 없다.
+ * 리뷰 픽스(I6) — 화면들을 오가려면 지금까지는 주소창에 직접 경로를 입력해야 했다. 서버
+ * 컴포넌트 그대로 유지한다("use client" 없이 next/link만 사용) — 전역 제약(§2)의
+ * "차트·지표 컴포넌트는 서버 컴포넌트" 원칙과 별개로, 레이아웃 자체도 처음부터 클라이언트
+ * 컴포넌트였던 적이 없다.
  */
 const NAV_LINKS = [
   { href: "/", label: "종목" },
-  { href: "/universe", label: "유니버스" },
-  { href: "/compare/pnl", label: "비교(삼성vsKB)" },
   { href: "/kitchen-sink", label: "킷친싱크" },
-  { href: "/debug", label: "디버그" },
 ] as const;
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

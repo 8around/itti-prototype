@@ -4,6 +4,7 @@ import Link from "next/link";
 import MetricValue from "@/components/MetricValue";
 import { toEok } from "@/lib/format";
 import { findProfileMetric, PROFILE_CATALOG, resolveDisplay, summarizeCoverage } from "@/lib/profiles";
+import { ALL_ANNUAL_YEARS, LATEST_ANNUAL_YEAR } from "@/lib/period";
 import { loadStockYearView, profileIdOf, UNIVERSE } from "@/lib/stockView";
 import type { ProfileId } from "@/lib/normalize/types";
 import type { ProfileMetric } from "@/lib/profiles";
@@ -41,8 +42,6 @@ const PROFILE_BADGE_CLASS: Record<ProfileId, string> = {
   FIN_INSURANCE: styles.badgeFin,
 };
 
-const YEARS = ["2023", "2024", "2025"] as const;
-
 /** STANDARD는 매출액 고정(브리프 명시), 금융 프로필은 카탈로그의 첫 stacked 지표를 그대로 쓴다 — 지표 키를 프로필별로 하드코딩하지 않는다. */
 function representativeMetric(profile: ProfileId): ProfileMetric | undefined {
   if (profile === "STANDARD") return findProfileMetric("STANDARD", "revenue");
@@ -54,8 +53,8 @@ export default function HomePage() {
   const cards = UNIVERSE.map((row) => {
     const profileId = profileIdOf(row);
     const repMetric = representativeMetric(profileId);
-    const yearViews = YEARS.map((year) => loadStockYearView(row, year));
-    const coverageResolutions = yearViews.find((v) => v.year === "2024")!.resolutions;
+    const yearViews = ALL_ANNUAL_YEARS.map((year) => loadStockYearView(row, year));
+    const coverageResolutions = yearViews.find((v) => v.year === LATEST_ANNUAL_YEAR)!.resolutions;
     const coverage = summarizeCoverage(profileId, coverageResolutions);
     return { row, profileId, repMetric, yearViews, coverage };
   });

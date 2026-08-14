@@ -25,6 +25,7 @@ export function extraCandidatesFor(profile: ProfileId): MetricCandidate[] {
   return EXTRA_CANDIDATES_BY_PROFILE[profile] ?? [];
 }
 
-export function resolveProfileExtras(snapshotsDir: string, profile: ProfileId, corpCode: string, year: string): FinExtrasResult {
-  return resolveFinExtras(snapshotsDir, corpCode, year, extraCandidatesFor(profile));
+/** `reprtCode` v2 T2 추가(기본 "11011") — resolveFinExtras와 동일하게 기존 호출부(연간)는 무변. */
+export function resolveProfileExtras(snapshotsDir: string, profile: ProfileId, corpCode: string, year: string, reprtCode = "11011"): FinExtrasResult {
+  return resolveFinExtras(snapshotsDir, corpCode, year, extraCandidatesFor(profile), reprtCode);
 }

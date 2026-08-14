@@ -108,6 +108,11 @@ function findCandidate(metricKey: string, profile: ProfileId): MetricCandidate |
  * 되고 acntAll/singlIndx/alotMatter/stockTotqy 4갈래 분기를 직접 하지 않는다.
  * `panelUnit`은 SourcePanel 정규화 탭 표기 기준(KRW/PCT/X) — MetricValue 전용 단위(WON/SHARES)와
  * 별개다(SourcePanel.tsx 주석 참조).
+ *
+ * v2 T5 — `reprtCode`(기본 "11011" = 연간)는 분기 차트가 해당 분기의 실제 스냅샷
+ * (11013/11012/11014/11011)을 가리키게 하려고 추가했다. singlIndx/alotMatter/stockTotqy는
+ * 분기 미수집(T1V)이라 이 값을 쓰지 않는다 — acntAll 분기(revenue/operating_income 등)에서만
+ * 의미가 있다. 기본값이 기존 동작과 동일해 연간 호출부(40여 곳)는 전부 무변경이다.
  */
 export function buildSourcePanelProps(
   metricKey: string,
@@ -116,6 +121,7 @@ export function buildSourcePanelProps(
   resolution: Resolution,
   panelUnit: "KRW" | "PCT" | "X",
   profile: ProfileId,
+  reprtCode = "11011",
 ): SourcePanelProps {
   const candidate = findCandidate(metricKey, profile);
   const source = candidate?.source ?? "acntAll";
@@ -151,13 +157,14 @@ export function buildSourcePanelProps(
     };
   }
 
-  // acntAll + 파생(q4_*/roa/operating_margin/fcf/dividend_payout_fallback) 공통 — 파생 지표는
-  // 전부 같은 연도의 acntAll 스냅샷 값으로 계산되므로 그 스냅샷을 "근거 원문"으로 보여준다.
-  const requestId = acntAllRequestId(corpCode, year, resolution.fsDiv);
+  // acntAll + 파생(q4_*/roa/operating_margin/fcf/dividend_payout_fallback/qoq_*/yoy_* 등) 공통 —
+  // 파생 지표는 전부 같은 연도(분기)의 acntAll 스냅샷 값으로 계산되므로 그 스냅샷을 "근거 원문"으로
+  // 보여준다.
+  const requestId = acntAllRequestId(corpCode, year, resolution.fsDiv, reprtCode);
   return {
     resolution,
     requestId,
-    probeParams: acntAllProbeParams(corpCode, year, resolution.fsDiv),
+    probeParams: acntAllProbeParams(corpCode, year, resolution.fsDiv, reprtCode),
     summaryMeta: { source: "DART 사업보고서", basis: basisLabel(resolution.fsDiv), asOf: reportDateFromSnapshot(requestId), parserVersion: resolution.parserVersion, unit: panelUnit },
   };
 }

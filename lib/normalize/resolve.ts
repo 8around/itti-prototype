@@ -21,6 +21,9 @@ export interface AcntAllRow {
   ord: string;
   thstrm_amount?: string;
   thstrm_add_amount?: string;
+  /** v2 T2 — 분기 축 fiscalPeriodName 원문 추출용 (예: "제 56 기 1분기", 신영증권처럼 비12월
+   *  결산 종목은 bsns_year만으로 기수가 정렬되지 않아 화면 라벨로 원문을 그대로 노출한다). */
+  thstrm_nm?: string;
 }
 
 export interface AcntAllBody {

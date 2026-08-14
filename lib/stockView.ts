@@ -10,6 +10,8 @@ import { join } from "node:path";
 
 import { findStockByCode, findYear, loadDerived } from "./derived";
 import type { DerivedFile } from "./derived";
+import type { QuarterResolutions } from "./normalize/engine";
+import { resolveProfileExtrasQuarters } from "./normalize/resolveFinExtrasQuarters";
 import type { FsDiv } from "./normalize/resolve";
 import { resolveProfileExtras } from "./normalize/resolveProfileExtras";
 import type { Resolution } from "./normalize/types";
@@ -69,4 +71,32 @@ export function loadStockYearView(row: UniverseRow, year: string, derived: Deriv
 
 export function profileIdOf(row: UniverseRow): ProfileId {
   return toProfileId(row.profile);
+}
+
+/**
+ * v2 T5 — derived.json의 종목별 quarters[](T2 산출, 16개)를 그대로 노출한다. `loadStockYearView`와
+ * 달리 프로필 확장(resolveProfileExtras)을 병합하지 않는다 — 금융 프로필의 분기 확장 지표는
+ * T6 범위(브리프 명시 "금융 프로필은 이번 범위 밖")라 여기서는 base quarters만 반환한다.
+ */
+export function loadStockQuarters(row: UniverseRow, derived: DerivedFile = getDerived()): QuarterResolutions[] {
+  const stock = findStockByCode(derived, row.stockCode);
+  return stock.quarters;
+}
+
+/**
+ * v2 T6 — `loadStockQuarters`(base만)에 금융 프로필 확장 손익(net_interest_income·net_fee_income·
+ * insurance_result 등)의 분기 resolutions를 요청 시점에 병합한다. `loadStockYearView`가 연간에서
+ * 이미 하던 패턴(resolveProfileExtras 병합)의 분기판이다. STANDARD 프로필은 확장 후보가 없어
+ * (`extraCandidatesFor` 빈 배열) `resolveProfileExtrasQuarters`가 파일 I/O 없이 즉시 `[]`를
+ * 반환하므로 base 배열을 그대로 돌려준다 — 표준 프로필 섹션(T5)은 이 함수를 써도 동작이
+ * 완전히 동일하다(additive, 회귀 없음).
+ */
+export function loadStockQuartersWithFinExtras(row: UniverseRow, derived: DerivedFile = getDerived()): QuarterResolutions[] {
+  const base = loadStockQuarters(row, derived);
+  const profileId = toProfileId(row.profile);
+  const extraQuarters = resolveProfileExtrasQuarters(SNAPSHOTS_DIR, profileId, row.corpCode);
+  if (extraQuarters.length === 0) return base;
+
+  const extrasByPeriod = new Map(extraQuarters.map((q) => [q.period, q.resolutions]));
+  return base.map((q) => ({ ...q, resolutions: { ...q.resolutions, ...(extrasByPeriod.get(q.period) ?? {}) } }));
 }

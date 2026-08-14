@@ -114,3 +114,30 @@ export const STOCK_TOTQY_CANDIDATES: MetricCandidate[] = [
 
 /** 4Q 역산 대상 — IS/CIS 흐름 계정만(#39). BS 항목(자산총계 등)은 시점 데이터라 제외한다. */
 export const Q4_DERIVABLE_KEYS = ["revenue", "operating_income", "net_income"] as const;
+
+/**
+ * v2 T2 — 분기 축(quarters[]) 계정 분류. T1V 판정(task-T1-report.md PART B)에서 도출된 규약을
+ * 그대로 코드화한다: IS/CIS는 흐름(Q1~Q3 thstrm 직독·Q4=FY.thstrm−Q3.thstrm_add 역산),
+ * BS는 시점(매 분기 thstrm 직독, 차분 금지), CF는 누적(Q1=thstrm 직독·Q2~Q4=인접 reprt 차분).
+ * ACNT_ALL_CANDIDATES와 동일한 key를 재사용한다 — 별도 카탈로그를 두지 않는다(원장이 하나이므로).
+ */
+export const QUARTER_FLOW_KEYS = [
+  "revenue",
+  "gross_profit",
+  "operating_income",
+  "net_income",
+  "net_income_attributable_to_owners",
+  "eps_basic",
+] as const;
+
+/** BS(시점) — 분기말 스냅샷을 그대로 쓴다. 연간 3개년+최신 분기말 1개 노출은 §3 컨트롤러 확정 사항. */
+export const QUARTER_POINT_KEYS = ["total_assets", "total_liabilities", "total_equity", "equity_attributable_to_owners"] as const;
+
+/** CF(누적) — T1V 판정2: thstrm_add_amount 필드가 없어 인접 reprt 차분이 유일한 단일분기화 경로다. */
+export const QUARTER_CUMULATIVE_KEYS = ["operating_cf", "investing_cf", "financing_cf", "capex"] as const;
+
+/** Q4 역산이 가중평균주식수 변동으로 부정확한 지표 — QUARTER_FLOW_KEYS의 부분집합, provisional 사유 문구가 추가된다. */
+export const QUARTER_EPS_LIKE_KEYS = ["eps_basic"] as const;
+
+/** QoQ/YoY derive 대상 — 브리프 최소 요구 4종(§4). */
+export const GROWTH_KEYS = ["revenue", "operating_income", "net_income_attributable_to_owners", "eps_basic"] as const;
