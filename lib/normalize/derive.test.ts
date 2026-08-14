@@ -1,7 +1,18 @@
 import { describe, expect, it } from "vitest";
 
 import { ACNT_ALL_CANDIDATES } from "./catalog";
-import { deriveFcf, deriveOperatingMargin, deriveQ4, deriveQoQ, deriveQuarterCf, deriveRoa, deriveYoY, missingResolution } from "./derive";
+import {
+  deriveFcf,
+  deriveOperatingMargin,
+  deriveQ4,
+  deriveQoQ,
+  deriveQuarterCf,
+  deriveRoa,
+  deriveRoeOwners,
+  deriveRoeOwnersOnTotalEquity,
+  deriveYoY,
+  missingResolution,
+} from "./derive";
 import { resolveAcntAllField } from "./resolve";
 import type { AcntAllBody } from "./resolve";
 import type { Resolution } from "./types";
@@ -160,6 +171,75 @@ describe("deriveRoa / deriveOperatingMargin / deriveFcf", () => {
     const fcf = deriveFcf(operatingCf, capex);
     expect(fcf.normalized).toBe(21576266000000);
     expect(fcf.displayState).toBe("OK");
+  });
+});
+
+/**
+ * v4 — ROE 산정기준 2종. 기존 `roe`(DART M211550 직독)는 파생이 아니라 여기 대상이 아니다.
+ * 기대값은 전부 `public/snapshots`의 실제 계정값에서 나온다.
+ */
+describe("deriveRoeOwners / deriveRoeOwnersOnTotalEquity — ROE 산정기준", () => {
+  function inputs(corpCode: string, year: string, fs: "CFS" | "OFS") {
+    const list = acntAll(corpCode, year, "11011", fs).body.list ?? [];
+    const pick = (key: string) => resolveAcntAllField(candidate(key), list, "thstrm_amount", fs, false);
+    return {
+      netIncomeAttr: pick("net_income_attributable_to_owners"),
+      netIncomeTotal: pick("net_income"),
+      equityAttr: pick("equity_attributable_to_owners"),
+      totalEquity: pick("total_equity"),
+    };
+  }
+
+  it("삼성전자 2025 — 지배기업 소유주 귀속 기준 = 10.43%, 이띠 목업 v21.5 표기 '10.4%'와 일치", () => {
+    const i = inputs(CORP.삼성전자, "2025", "CFS");
+    expect(i.netIncomeAttr.normalized).toBe(44260956000000);
+    expect(i.equityAttr.normalized).toBe(424313255000000);
+
+    const roe = deriveRoeOwners(i.netIncomeAttr, i.netIncomeTotal, i.equityAttr, i.totalEquity);
+    expect(roe.displayState).toBe("OK");
+    expect(roe.normalized).toBeCloseTo((44260956000000 / 424313255000000) * 100, 6);
+    expect(roe.normalized).toBeCloseTo(10.43, 2);
+    // 폴백을 타지 않았으므로 caveat가 없어야 한다.
+    expect(roe.derivationDetail?.caveat).toBeUndefined();
+  });
+
+  it("삼성전자 2025 — 연구원 엑셀 방식(분모 자본총계)은 같은 해 10.14%로 갈린다", () => {
+    const i = inputs(CORP.삼성전자, "2025", "CFS");
+    const mixed = deriveRoeOwnersOnTotalEquity(i.netIncomeAttr, i.netIncomeTotal, i.totalEquity);
+    expect(mixed.normalized).toBeCloseTo((44260956000000 / 436320337000000) * 100, 6);
+    expect(mixed.normalized).toBeCloseTo(10.14, 2);
+  });
+
+  it("LG화학 2024 — 총액은 흑자인데 귀속분은 적자라 부호가 갈린다", () => {
+    const i = inputs(CORP.LG화학, "2024", "CFS");
+    expect(i.netIncomeTotal.normalized).toBe(515011000000); // 총액 흑자
+    expect(i.netIncomeAttr.normalized).toBe(-690854000000); // 귀속분 적자
+
+    const roe = deriveRoeOwners(i.netIncomeAttr, i.netIncomeTotal, i.equityAttr, i.totalEquity);
+    expect(roe.normalized).toBeCloseTo((-690854000000 / 33284180000000) * 100, 6);
+    expect(roe.normalized).toBeLessThan(0);
+  });
+
+  it("앱클론 2025 — 연결 미작성(OFS)이라 귀속 계정이 없어 총액으로 폴백하고 caveat를 남긴다", () => {
+    const i = inputs(CORP.앱클론, "2025", "OFS");
+    expect(i.netIncomeAttr.displayState).toBe("MISSING");
+    expect(i.equityAttr.displayState).toBe("MISSING");
+
+    const roe = deriveRoeOwners(i.netIncomeAttr, i.netIncomeTotal, i.equityAttr, i.totalEquity);
+    expect(roe.displayState).toBe("OK");
+    expect(roe.normalized).toBeCloseTo((-17906959742 / 60438725297) * 100, 6);
+    expect(roe.derivationDetail?.caveat).toContain("총액으로 대체");
+
+    // 폴백 경로에서는 두 기준이 같은 값이 된다(총액 = 귀속분).
+    const mixed = deriveRoeOwnersOnTotalEquity(i.netIncomeAttr, i.netIncomeTotal, i.totalEquity);
+    expect(mixed.normalized).toBeCloseTo(roe.normalized!, 9);
+  });
+
+  it("분모가 0 이하면 NA_NEGATIVE_BASE (자본잠식)", () => {
+    const ni = res(100);
+    const eq = res(-50);
+    expect(deriveRoeOwners(ni, ni, eq, eq).displayState).toBe("NA_NEGATIVE_BASE");
+    expect(deriveRoeOwnersOnTotalEquity(ni, ni, eq).displayState).toBe("NA_NEGATIVE_BASE");
   });
 });
 

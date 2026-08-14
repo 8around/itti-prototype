@@ -93,6 +93,8 @@ function ratioMetric(
   scale: number,
   label: string,
   labels: DerivationLabels,
+  /** 값은 정상이지만 피연산자 선택에 단서가 붙은 경우(v4 귀속계정 폴백). `deriveQ4`와 같은 표기 규약. */
+  caveat?: string,
 ): Resolution {
   const base = baseOf(metricKey, numerator);
   if (numerator.normalized === null || denominator.normalized === null) {
@@ -102,21 +104,23 @@ function ratioMetric(
     return { ...base, normalized: null, displayState: "NA_NEGATIVE_BASE" };
   }
   const value = (numerator.normalized / denominator.normalized) * scale;
+  const derivation = `${label} = ${formatAmount(numerator.normalized)} ÷ ${formatAmount(denominator.normalized)} × ${scale}`;
   return {
     ...base,
     normalized: value,
     displayState: "OK",
-    derivation: `${label} = ${formatAmount(numerator.normalized)} ÷ ${formatAmount(denominator.normalized)} × ${scale}`,
+    derivation: caveat ? `${derivation} — 주의: ${caveat}` : derivation,
     derivationDetail: {
       kind: "ratio",
       resultLabel: labels.result,
       steps: [
         { label: labels.left, value: numerator.normalized },
         { label: labels.right, value: denominator.normalized, op: "div" },
-        // scale은 지금 두 호출부 모두 100이지만 파라미터이므로 상수를 박지 않고 실제 값을 싣는다.
+        // scale은 지금 전 호출부가 100이지만 파라미터이므로 상수를 박지 않고 실제 값을 싣는다.
         { ...PERCENT_STEP, value: scale },
       ],
       unit: "PCT",
+      ...(caveat ? { caveat } : {}),
     },
   };
 }
@@ -124,6 +128,84 @@ function ratioMetric(
 /** ROA = 당기순이익 ÷ 자산총계 × 100. `M212000`(총자산영업이익률)은 영업이익 기준이라 ROA가 아니다. */
 export function deriveRoa(netIncome: Resolution, totalAssets: Resolution): Resolution {
   return ratioMetric("roa", netIncome, totalAssets, 100, "ROA(%)", { result: "ROA", left: "당기순이익(총액)", right: "자산총계" });
+}
+
+/* -------------------------------------------------------------------------------------------- */
+/* v4 — ROE 산정기준 2종 (기존 `roe`는 DART M211550 직독이라 여기 없다)                            */
+/* -------------------------------------------------------------------------------------------- */
+
+/**
+ * 지배기업 소유주 귀속 계정이 없으면 총액으로 폴백한다.
+ *
+ * 두 경우에 귀속 행이 아예 없는데 **둘 다 총액 = 귀속분이 정의상 성립**해서 폴백이 근사가 아니다:
+ * ① 연결재무제표 미작성(OFS 전용 — 앱클론)은 지배/비지배 구분 자체가 없다. ② 종속기업을 100%
+ * 소유해 비지배지분이 0인 회사(신라젠)는 귀속 손익 행이 생략된다(귀속 자본은 자본총계와 동일한
+ * 값으로 존재).
+ *
+ * 실측 17종목 커버리지 — 귀속 자본 16/17 · 귀속 손익 15/17.
+ */
+function ownersOrTotal(attributable: Resolution, total: Resolution): { resolution: Resolution; fellBack: boolean } {
+  return attributable.normalized !== null ? { resolution: attributable, fellBack: false } : { resolution: total, fellBack: true };
+}
+
+const OWNERS_FALLBACK_CAVEAT =
+  "지배기업 소유주 귀속 계정이 없어 총액으로 대체했다 — 연결 미작성(별도재무제표)이거나 비지배지분이 0인 회사라 두 값은 정의상 같다.";
+
+function ownersCaveat(...picks: { fellBack: boolean }[]): string | undefined {
+  return picks.some((p) => p.fellBack) ? OWNERS_FALLBACK_CAVEAT : undefined;
+}
+
+/**
+ * **ROE(지배기업 소유주 귀속 기준)** = 지배기업 소유주 귀속 당기순이익 ÷ 기말 지배기업 소유주 귀속 자본 × 100.
+ *
+ * 이띠 요구사항 문서가 지정한 정본 기준이다 — 투자자앱 목업 v21.5 재무비율 카드의
+ * `ROE (지배주주·기말 기준)`, 상세구현명세 별도부록 V-08의 *"ROE·EPS 지배주주 기준 우선"*.
+ * 삼성전자 FY2025로 계산하면 10.43%로 목업 표기 `10.4%`와 일치한다.
+ *
+ * DART 산출지표 `M211550`(기존 `roe` 키)과는 **분자·분모가 둘 다 다르다**: 저쪽은 비지배 몫을
+ * 포함한 당기순이익을 평균 자본총계로 나눈다(실측 24/24 재현). 자본이 급증한 해에는 평균 분모가
+ * 기말보다 작아 격차가 커진다 — SK하이닉스 FY2025는 비지배지분이 0.12%뿐인데도 8.53%p 벌어진다.
+ */
+export function deriveRoeOwners(
+  netIncomeAttributable: Resolution,
+  netIncomeTotal: Resolution,
+  equityAttributable: Resolution,
+  totalEquity: Resolution,
+): Resolution {
+  const num = ownersOrTotal(netIncomeAttributable, netIncomeTotal);
+  const den = ownersOrTotal(equityAttributable, totalEquity);
+  return ratioMetric("roe_owners", num.resolution, den.resolution, 100, "ROE(지배기업 소유주 귀속)(%)", {
+    result: "ROE(지배기업 소유주 귀속 기준)",
+    left: num.fellBack ? "당기순이익(총액 — 귀속 계정 없음)" : "당기순이익(지배기업 소유주 귀속)",
+    right: den.fellBack ? "자본총계(총액 — 귀속 계정 없음)" : "지배기업 소유주 귀속 자본(기말)",
+  }, ownersCaveat(num, den));
+}
+
+/**
+ * **ROE(지배기업 소유주 귀속 손익 ÷ 자본총계)** — 이띠 연구원이 실제로 쓰는 혼합 기준이다.
+ *
+ * `금융업 발라내기.xlsx` FS-A 시트(KB금융 2013~2025)를 역산해 13/13 일치를 확인했다(최대 잔차
+ * 0.0040%p, 시트 저장 정밀도 ±0.005 이내). 단 **시트에 수식이 없어 값 적합으로 얻은 추론**이며
+ * 원 작성자 확인은 받지 않았다.
+ *
+ * 분자는 지배주주 몫인데 분모는 비지배지분을 포함한 자본총계라 **분자·분모의 범위가 어긋난다**.
+ * 요구사항 문서(위 `deriveRoeOwners`)와 다른 값이 나오며, 비지배지분 비중에 비례해 벌어진다 —
+ * FY2025 실측으로 LG화학 1.68%p · 카카오 1.13%p · 삼성전자 0.29%p.
+ *
+ * 이띠 내부의 명세↔산출물 불일치를 대면미팅에서 숫자로 보여주려고 병기하는 것이므로,
+ * **기준이 확정되면 이 지표와 대응 차트는 제거 대상이다.**
+ */
+export function deriveRoeOwnersOnTotalEquity(
+  netIncomeAttributable: Resolution,
+  netIncomeTotal: Resolution,
+  totalEquity: Resolution,
+): Resolution {
+  const num = ownersOrTotal(netIncomeAttributable, netIncomeTotal);
+  return ratioMetric("roe_owners_on_total_equity", num.resolution, totalEquity, 100, "ROE(귀속손익÷자본총계)(%)", {
+    result: "ROE(지배기업 소유주 귀속 손익 ÷ 자본총계)",
+    left: num.fellBack ? "당기순이익(총액 — 귀속 계정 없음)" : "당기순이익(지배기업 소유주 귀속)",
+    right: "자본총계(기말 · 비지배지분 포함)",
+  }, ownersCaveat(num));
 }
 
 /**
