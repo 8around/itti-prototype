@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -28,6 +29,9 @@ import {
   withDisplayState,
 } from "@/lib/profiles";
 import type { ProfileMetric } from "@/lib/profiles";
+import { buildBasisComparisons } from "@/lib/basisCompare";
+import type { BasisComparison } from "@/lib/basisCompare";
+import { METRIC_BASIS } from "@/lib/metricBasis";
 import { basisLabel, buildSourcePanelProps } from "@/lib/sourcePanelHelpers";
 import { availableYears, loadQuarterSeries, loadStockYearView, profileIdOf, UNIVERSE } from "@/lib/stockView";
 import type { StockYearView, UniverseRow } from "@/lib/stockView";
@@ -102,12 +106,16 @@ function defaultNoteFor(state: DisplayState, profile: ProfileId): string | undef
  * - `trace` **원천 추적 화면.** 위에 더해 지표마다 출처 collapse(요청 URL·원본 JSON·폴백
  *           이력·정규화·파생 계산식)와 커버리지·실증 노트를 전부 노출한다. 우리가 데이터를
  *           제대로 읽고 있는지 검증하는 용도라 클라이언트 시연 화면에는 넣지 않는다.
+ * - `basis` **산출 기준 화면.** 값이 아니라 **"왜 이 값인가"**를 보여준다. 같은 공식이라도
+ *           분자·분모·기준시점을 무엇으로 잡느냐에 따라 결과가 달라지므로(ROE에서 실제로
+ *           클레임이 발생했다), 채택한 정의와 그 근거, 다른 관점을 택했을 때 이 종목이
+ *           얼마가 되는지를 실측으로 대조한다.
  *
  * 결측 사유 배지(`데이터 없음`/`해당 없음`/`원천 미확보`/`무배당 확인`)는 **두 모드 모두에
  * 남긴다** — 이건 디버깅 정보가 아니라 "근거 없는 숫자를 만들지 않는다"는 약속의 표현이라,
  * 클라이언트에게야말로 보여야 하는 것이다.
  */
-export type ViewMode = "data" | "trace";
+export type ViewMode = "data" | "trace" | "basis";
 
 type FieldContext = {
   corpCode: string;
@@ -798,7 +806,125 @@ function ValuationSection({ ctx, current }: { ctx: FieldContext; current: StockY
 const VIEW_TABS: { id: ViewMode; label: string; hint: string }[] = [
   { id: "data", label: "데이터", hint: "클라이언트 제공 화면 — 수치와 차트만" },
   { id: "trace", label: "원천 추적", hint: "지표마다 DART 원문·폴백 이력·계산식까지" },
+  { id: "basis", label: "산출 기준", hint: "이 값을 어떤 정의로 뽑았는지와 다른 관점을 택했을 때의 차이" },
 ];
+
+/* ── 산출 기준 화면 ──────────────────────────────────────────────────────── */
+
+/**
+ * 카탈로그 문자열의 최소 인라인 마크업(`**강조**` · `` `코드` ``)을 React 노드로 바꾼다.
+ *
+ * lib/metricBasis.ts는 사람이 읽고 고치는 설명문 뭉치라 마크다운 표기가 자연스럽다. 그대로
+ * 렌더하면 별표·백틱이 화면에 노출되므로 여기서 푼다 — 마크다운 파서를 넣을 만한 규모가
+ * 아니라(두 종류뿐) 정규식 분할로 충분하다.
+ */
+function renderCodeSpans(text: string, keyPrefix: string): ReactNode[] {
+  return text.split(/(`[^`]+`)/g).map((part, i) =>
+    part.startsWith("`") && part.endsWith("`") ? <code key={`${keyPrefix}c${i}`}>{part.slice(1, -1)}</code> : part,
+  );
+}
+
+function renderInline(text: string): ReactNode[] {
+  // 강조를 먼저 가르고 그 **안쪽에서 다시** 코드 조각을 가른다. 한 번에 가르면
+  // `**… `계정ID` …**` 처럼 중첩된 문장에서 안쪽 백틱이 그대로 노출된다(실제로 그랬다).
+  return text.split(/(\*\*[^*]+\*\*)/g).flatMap((part, i) =>
+    part.startsWith("**") && part.endsWith("**")
+      ? [<strong key={`b${i}`}>{renderCodeSpans(part.slice(2, -2), `b${i}`)}</strong>]
+      : renderCodeSpans(part, `t${i}`),
+  );
+}
+
+/** 대안 수치 표기 — BPS는 원 단위, FCF처럼 큰 금액은 억원, 비율은 그대로. */
+function formatBasisValue(value: number | null, unit: BasisComparison["unit"]): string {
+  if (value === null) return "산출 불가";
+  if (unit === "%") return `${value.toFixed(2)}%`;
+  if (unit === "배") return `${value.toFixed(2)}배`;
+  return Math.abs(value) >= 1e8 ? `${Math.round(toEok(value)).toLocaleString("ko-KR")}억원` : `${Math.round(value).toLocaleString("ko-KR")}원`;
+}
+
+/** 이 종목의 실측 대조표 — "다른 기준으로 보면 얼마인가"를 숫자로 보여준다. */
+function BasisComparisonTable({ current, prev }: { current: StockYearView; prev?: StockYearView }) {
+  const comparisons = buildBasisComparisons(current, prev).filter((c) => c.adopted.value !== null || c.alternatives.some((a) => a.value !== null));
+  if (comparisons.length === 0) return null;
+
+  return (
+    <section className={styles.section}>
+      <h2>이 종목의 실측 대조</h2>
+      <p className={styles.noteText}>
+        관점이 갈리는 지표를 이 종목·이 연도 데이터로 직접 계산했다. <strong>부호가 뒤집히는 지표는 붉게 표시</strong>된다 — 그런 종목이 바로 &ldquo;데이터가
+        이상하다&rdquo;는 피드백이 나오는 지점이다.
+      </p>
+      {comparisons.map((c) => (
+        <div key={c.metric} className={`${styles.basisCard} ${c.signFlips ? styles.basisCardFlip : ""}`}>
+          <div className={styles.basisCardHead}>
+            <span className={styles.basisMetric}>{c.metric}</span>
+            {c.signFlips && <span className={styles.basisFlipBadge}>부호 역전</span>}
+          </div>
+          <div className={styles.basisRow}>
+            <div className={styles.basisRowLabel}>
+              <strong>채택</strong> {renderInline(c.adopted.label)}
+            </div>
+            <div className={styles.basisAdoptedValue}>{formatBasisValue(c.adopted.value, c.unit)}</div>
+          </div>
+          {c.alternatives.map((alt) => (
+            <div className={styles.basisRow} key={alt.label}>
+              <div className={styles.basisRowLabel}>
+                {alt.label}
+                {alt.note && <span className={styles.basisAltNote}>{alt.note}</span>}
+              </div>
+              <div className={styles.basisAltValue}>{formatBasisValue(alt.value, c.unit)}</div>
+            </div>
+          ))}
+        </div>
+      ))}
+    </section>
+  );
+}
+
+/** 지표별 채택 정의·근거·다른 관점 — lib/metricBasis.ts 카탈로그를 그대로 렌더한다. */
+function BasisView({ ctx, current, prev }: { ctx: FieldContext; current: StockYearView; prev?: StockYearView }) {
+  return (
+    <>
+      <BasisComparisonTable current={current} prev={prev} />
+      {METRIC_BASIS.map((section) => (
+        <section className={styles.section} key={section.title}>
+          <h2>{section.title}</h2>
+          {section.metrics.map((m) => (
+            <div className={styles.basisItem} key={m.label}>
+              <div className={styles.basisItemHead}>
+                <span className={styles.basisItemLabel}>{m.label}</span>
+                <span className={styles.basisSource}>{m.source}</span>
+                {m.contested && <span className={styles.basisContested}>관점 차이 주의</span>}
+              </div>
+              <dl className={styles.basisDl}>
+                <dt>채택</dt>
+                <dd>{renderInline(m.adopted)}</dd>
+                <dt>근거</dt>
+                <dd>{renderInline(m.rationale)}</dd>
+              </dl>
+              {m.alternatives && m.alternatives.length > 0 && (
+                <div className={styles.basisAlts}>
+                  <div className={styles.sectionTitle}>다른 관점</div>
+                  {m.alternatives.map((alt) => (
+                    <div className={styles.basisAlt} key={alt.definition}>
+                      <div className={styles.basisAltDef}>{renderInline(alt.definition)}</div>
+                      <div className={styles.basisAltMeta}>쓰는 곳: {alt.usedBy}</div>
+                      <div className={styles.basisAltImpact}>{renderInline(alt.impact)}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </section>
+      ))}
+      <p className={styles.noteText}>
+        기준연도 {ctx.year} · {basisLabel(current.fsDiv)} 기준. 정의는 <code>lib/metricBasis.ts</code>, 실측 대조는 <code>lib/basisCompare.ts</code>에 있다 —
+        계산 로직을 바꾸면 두 파일도 함께 고쳐야 한다.
+      </p>
+    </>
+  );
+}
 
 export default async function StockDetailPage({
   params,
@@ -816,13 +942,15 @@ export default async function StockDetailPage({
   // 알 수 없는 연도가 오면 404가 아니라 최신 연도로 떨어뜨린다 — 링크 오타로 화면이 죽지 않게.
   const selectedYear = query.year && years.includes(query.year) ? query.year : years[years.length - 1];
   // 기본은 클라이언트 화면이다 — 시연 중 실수로 내부 추적 정보가 노출되지 않게 하는 쪽이 안전하다.
-  const view: ViewMode = query.view === "trace" ? "trace" : "data";
+  const view: ViewMode = query.view === "trace" ? "trace" : query.view === "basis" ? "basis" : "data";
   const hrefWith = (next: { year?: string; view?: ViewMode }) =>
     `/stock/${row.stockCode}?year=${next.year ?? selectedYear}&view=${next.view ?? view}`;
 
   const profile = profileIdOf(row);
   const yearViews = years.map((year) => loadStockYearView(row, year));
   const current = yearViews.find((y) => y.year === selectedYear)!;
+  // 평균 자본·평균 자산 기준 대안값을 계산하려면 전기(직전 연도)가 필요하다.
+  const prevYearView = yearViews[years.indexOf(selectedYear) - 1];
   const ctx: FieldContext = { corpCode: row.corpCode, profile, year: selectedYear, view };
 
   const quarterSeries: Record<string, DerivedQuarterSeries["points"]> = {
@@ -875,8 +1003,18 @@ export default async function StockDetailPage({
           {view === "trace" && ` · 커버리지 ${coveragePct}% (${coverage.hit}/${coverage.total})`}
         </p>
         {view === "trace" && <p className={styles.traceBanner}>원천 추적 모드 — 지표마다 붙은 &ldquo;출처&rdquo;를 펼치면 요청 URL·원본 JSON·폴백 이력·계산식을 볼 수 있다. 클라이언트 시연에는 &ldquo;데이터&rdquo; 탭을 쓴다.</p>}
+        {view === "basis" && (
+          <p className={styles.basisBanner}>
+            산출 기준 모드 — 같은 공식이라도 <strong>분자·분모·기준시점</strong>을 무엇으로 잡느냐에 따라 값이 달라진다. 아래는 이 화면이 채택한 정의와 그 근거,
+            그리고 다른 관점을 택했을 때 <strong>이 종목이 실제로 얼마가 되는지</strong>다. 화면의 값은 채택안 그대로이며 아래 대안 수치는 참고용이다.
+          </p>
+        )}
       </header>
 
+      {view === "basis" ? (
+        <BasisView ctx={ctx} current={current} prev={prevYearView} />
+      ) : (
+        <>
       <OverviewSection ctx={ctx} row={row} />
       <PnlSection ctx={ctx} years={yearViews} current={current} quarterSeries={quarterSeries} />
       <BalanceSection ctx={ctx} years={yearViews} current={current} />
@@ -885,6 +1023,8 @@ export default async function StockDetailPage({
       <StabilitySection ctx={ctx} years={yearViews} current={current} />
       <ShareholderReturnSection ctx={ctx} years={yearViews} current={current} epsQuarters={quarterSeries.eps_basic} />
       <ValuationSection ctx={ctx} current={current} />
+        </>
+      )}
     </main>
   );
 }

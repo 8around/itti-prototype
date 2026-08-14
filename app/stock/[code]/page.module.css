@@ -329,3 +329,188 @@
   border-radius: 8px;
   padding: 6px 9px;
 }
+
+/* ── 산출 기준 탭(?view=basis) ─────────────────────────────────────────────
+   값이 아니라 "왜 이 값인가"를 읽는 화면이라, 차트 화면보다 본문 폭을 넓게 쓰고
+   글 읽기에 맞춘 타이포를 쓴다. */
+.basisBanner {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--t2);
+  background: var(--t2-bg);
+  border-radius: 8px;
+  padding: 9px 13px;
+  line-height: 1.65;
+}
+
+/* 실측 대조 카드 — 채택값 1줄 + 대안 n줄 */
+.basisCard {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* 부호가 뒤집히는 지표 — 클레임이 나오는 지점이라 시각적으로 확실히 구분한다. */
+.basisCardFlip {
+  border-color: var(--up);
+  background: #fdf1f1;
+}
+
+.basisCardHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.basisMetric {
+  font-size: 13.5px;
+  font-weight: 900;
+  color: var(--ink);
+}
+
+.basisFlipBadge {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--paper);
+  background: var(--up);
+  border-radius: 4px;
+  padding: 2px 7px;
+}
+
+.basisRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 5px 0;
+  border-top: 1px dashed var(--line-2);
+}
+
+.basisRowLabel {
+  font-size: 11.5px;
+  color: var(--gray);
+  line-height: 1.55;
+}
+
+.basisRowLabel strong {
+  color: var(--green);
+  font-weight: 800;
+  margin-right: 4px;
+}
+
+.basisAltNote {
+  display: block;
+  font-size: 10.5px;
+  color: var(--gray-2);
+}
+
+.basisAdoptedValue {
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--ink);
+  white-space: nowrap;
+  font-feature-settings: "tnum";
+}
+
+.basisAltValue {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gray);
+  white-space: nowrap;
+  font-feature-settings: "tnum";
+}
+
+/* 지표별 근거 항목 */
+.basisItem {
+  border-top: 1px solid var(--line-2);
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.basisItemHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+}
+
+.basisItemLabel {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.basisSource {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--gray);
+  background: var(--wash);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+
+.basisContested {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--orange-dk);
+  background: var(--orange-bg);
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+
+.basisDl {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 3px 10px;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.basisDl dt {
+  font-weight: 800;
+  color: var(--gray-2);
+}
+
+.basisDl dd {
+  color: var(--ink-2);
+}
+
+.basisAlts {
+  background: var(--wash);
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.basisAlt {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.basisAltDef {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.basisAltMeta {
+  font-size: 10.5px;
+  color: var(--gray-2);
+  font-weight: 600;
+}
+
+.basisAltImpact {
+  font-size: 11.5px;
+  color: var(--gray);
+  line-height: 1.65;
+}

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-12T12:53:59.431Z",
+  "generatedAt": "2026-08-14T06:34:58.490Z",
   "parserVersion": "t4.1",
   "years": [
     "2023",
@@ -21432,9 +21432,9 @@
               "fsDiv": "CFS",
               "fsDivFallbackApplied": false,
               "parserVersion": "t4.1",
-              "normalized": 20496353000000,
+              "normalized": -5423429000000,
               "displayState": "OK",
-              "derivation": "FCF = 7,536,462,000,000 − -12,959,891,000,000"
+              "derivation": "FCF = 7,536,462,000,000 − 12,959,891,000,000 (원본이 음수 공시 — 유출 크기로 정규화)"
             },
             "roe": {
               "metricKey": "roe",
@@ -22531,9 +22531,9 @@
               "fsDiv": "CFS",
               "fsDivFallbackApplied": false,
               "parserVersion": "t4.1",
-              "normalized": 21627202000000,
+              "normalized": -7602524000000,
               "displayState": "OK",
-              "derivation": "FCF = 7,012,339,000,000 − -14,614,863,000,000"
+              "derivation": "FCF = 7,012,339,000,000 − 14,614,863,000,000 (원본이 음수 공시 — 유출 크기로 정규화)"
             },
             "roe": {
               "metricKey": "roe",
@@ -44293,9 +44293,9 @@
               "fsDiv": "CFS",
               "fsDivFallbackApplied": false,
               "parserVersion": "t4.1",
-              "normalized": -6685780217,
+              "normalized": -7111134637,
               "displayState": "OK",
-              "derivation": "FCF = -6,898,457,427 − -212,677,210"
+              "derivation": "FCF = -6,898,457,427 − 212,677,210 (원본이 음수 공시 — 유출 크기로 정규화)"
             },
             "roe": {
               "metricKey": "roe",

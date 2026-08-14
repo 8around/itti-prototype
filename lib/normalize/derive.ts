@@ -207,17 +207,28 @@ export function deriveGrowth(metricKey: string, current: Resolution, previous: R
   };
 }
 
-/** FCF = 영업활동현금흐름 − CAPEX. FCF 자체는 음수여도 정상값이므로 NA_NEGATIVE_BASE 대상이 아니다. */
+/**
+ * FCF = 영업활동현금흐름 − CAPEX. FCF 자체는 음수여도 정상값이므로 NA_NEGATIVE_BASE 대상이 아니다.
+ *
+ * ⚠️ **CAPEX는 반드시 절대값으로 뺀다.** DART 현금흐름표의 "유형자산의 취득"은 **부호 규약이
+ * 회사마다 다르다** — 삼성전자 2024는 `+51.41조`(유출을 양수 크기로), LG화학 2024는
+ * `−14.61조`(유출을 음수로) 공시한다. 부호를 그대로 빼면 음수로 공시한 회사는 CAPEX가
+ * **더해져** FCF가 폭등한다(LG화학 2024: 정답 −7.60조인데 +21.63조로 나왔다).
+ *
+ * CAPEX는 정의상 언제나 지출이므로 크기만 쓰는 것이 안전하다. 원본 부호가 음수였다면 그 사실을
+ * derivation에 남겨, 화면에서 원문과 대조할 때 혼란이 없게 한다.
+ */
 export function deriveFcf(operatingCf: Resolution, capex: Resolution): Resolution {
   const base = baseOf("fcf", operatingCf);
   if (operatingCf.normalized === null || capex.normalized === null) {
     return { ...base, normalized: null, displayState: "MISSING" };
   }
-  const value = operatingCf.normalized - capex.normalized;
+  const capexOutflow = Math.abs(capex.normalized);
+  const signNote = capex.normalized < 0 ? " (원본이 음수 공시 — 유출 크기로 정규화)" : "";
   return {
     ...base,
-    normalized: value,
+    normalized: operatingCf.normalized - capexOutflow,
     displayState: "OK",
-    derivation: `FCF = ${formatAmount(operatingCf.normalized)} − ${formatAmount(capex.normalized)}`,
+    derivation: `FCF = ${formatAmount(operatingCf.normalized)} − ${formatAmount(capexOutflow)}${signNote}`,
   };
 }

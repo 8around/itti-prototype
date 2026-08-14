@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { deriveBps, deriveGrowth, deriveInterestCoverage, deriveNetDebt, deriveNetIncomeAttributableFallback } from "./derive";
+import { deriveBps, deriveFcf, deriveGrowth, deriveInterestCoverage, deriveNetDebt, deriveNetIncomeAttributableFallback } from "./derive";
 import type { Resolution } from "./types";
 
 /** 파생 함수는 Resolution만 입력으로 받으므로 스냅샷 없이 최소 픽스처로 검증한다. */
@@ -154,5 +154,25 @@ describe("deriveGrowth — QoQ · YoY 성장률", () => {
   it("입력 중 하나라도 결측이면 MISSING", () => {
     const growth = deriveGrowth("revenue_qoq", res("revenue", 100), res("revenue", null), "QoQ");
     expect(growth.displayState).toBe("MISSING");
+  });
+});
+
+describe("deriveFcf — CAPEX 부호 규약 (회사마다 다름)", () => {
+  it("CAPEX가 양수로 공시되면 그대로 뺀다 (삼성전자 2024: 영업 72.98조 − 51.41조)", () => {
+    const fcf = deriveFcf(res("operating_cf", 72982000000000), res("capex", 51406355000000));
+    expect(fcf.normalized).toBe(72982000000000 - 51406355000000);
+    expect(fcf.derivation).not.toContain("음수 공시");
+  });
+
+  it("CAPEX가 음수로 공시돼도 유출로 빼야 한다 (LG화학 2024: 영업 7.01조 − |−14.61조| = −7.60조)", () => {
+    const fcf = deriveFcf(res("operating_cf", 7005000000000), res("capex", -14608000000000));
+    // 부호를 그대로 빼면 +21.61조가 되어 적자가 흑자로 뒤집힌다.
+    expect(fcf.normalized).toBe(7005000000000 - 14608000000000);
+    expect(fcf.normalized!).toBeLessThan(0);
+    expect(fcf.derivation).toContain("음수 공시");
+  });
+
+  it("입력이 결측이면 MISSING", () => {
+    expect(deriveFcf(res("operating_cf", null), res("capex", 1)).displayState).toBe("MISSING");
   });
 });
